@@ -2,6 +2,7 @@ module JennCad
 
   class Register
     def initialize
+      @counts = {}
       @objects = {}
     end
 
@@ -13,7 +14,14 @@ module JennCad
     end
 
     def register_new(cl,args)
+       @counts[cl] ||= {}
        @objects[cl] ||= {}
+       if  @counts[cl][args]
+         @counts[cl][args] += 1
+       else
+         @counts[cl][args] = 1
+       end
+
        @objects[cl][args] = cl.send :new, args
     end
   end

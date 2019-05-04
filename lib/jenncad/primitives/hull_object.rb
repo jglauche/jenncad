@@ -1,4 +1,4 @@
-module JennCad
-  class UnionObject < BooleanObject
+module JennCad::Primitives
+  class HullObject < BooleanObject
   end
 end

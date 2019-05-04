@@ -1,5 +1,5 @@
 module JennCad
-  class Move < Transformation
+  class Scale < Transformation
     def initialize(args)
     end
   end

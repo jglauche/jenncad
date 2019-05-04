@@ -1,6 +1,6 @@
 module JennCad::Primitives
 	class Primitive
-		attr_accessor :children
+		attr_accessor :children, :transformations
 
 		def initialize(*args)
 			@transformations = []
@@ -19,12 +19,12 @@ module JennCad::Primitives
 
 		def rotate_around(point,args)
 			x,y,z= point.x, point.y, point.z
-			self.translate(x:-x,y:-y,z:-z).rotate(args).translate(x:x,y:y,z:z)
+			self.move(x:-x,y:-y,z:-z).rotate(args).move(x:x,y:y,z:z)
 		end
 
-		def translate(args)
+		def move(args)
 			@transformations ||= []
-			@transformations << Translate.new(args)
+			@transformations << Move.new(args)
 			self
 		end
 

@@ -1,9 +1,7 @@
 module JennCad
   class Transformation
     attr_accessor :x,:y,:z, :coordinates
-    def initialize(*args)
-      puts args.inspect
-      args = args.flatten
+    def initialize(args)
       @x = args[:x]
       @y = args[:y]
       @z = args[:z]

@@ -1,4 +1,4 @@
-module JennCad
+module JennCad::Primitives
   class SubtractObject < BooleanObject
   end
 end

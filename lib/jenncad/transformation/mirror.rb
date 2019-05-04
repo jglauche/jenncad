@@ -1,6 +1,7 @@
 module JennCad
-  class Move < Transformation
+  class Mirror < Transformation
     def initialize(args)
+      super(args)
     end
   end
 end
