@@ -1,6 +1,7 @@
 module JennCad::Primitives
   class Cylinder < Primitive
-    def initialize(args)
+    attr_accessor :d, :h
+		def initialize(args)
       @d = args[:d]
       @h = args[:h]
     end

@@ -2,6 +2,10 @@ module JennCad::Primitives
 	class Primitive
 		attr_accessor :children
 
+		def initialize(*args)
+			@transformations = []
+		end
+
 		def rotate(args)
 		  # always make sure we have a z parameter; otherwise RubyScad will produce a 2-dimensional output
 		  # which can result in openscad weirdness
