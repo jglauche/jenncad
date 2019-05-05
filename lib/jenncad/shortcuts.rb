@@ -3,6 +3,10 @@ module JennCad
     Cylinder.new(args)
   end
 
+  def long_slot(args)
+    cylinder(d:args[:d],r:args[:r],h:args[:h]) & cylinder(d:args[:d],r:args[:r],h:args[:h]).move(x:args[:l])
+  end
+
   def cube(args={}, center=false)
     if args.kind_of? Array
       args = {size:args}
