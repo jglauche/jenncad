@@ -1,6 +1,8 @@
 require "jenncad/version"
 require "jenncad/primitives/primitive"
 require "jenncad/primitives/aggregation"
+require "jenncad/primitives/openscad_include"
+
 
 require "jenncad/primitives/cylinder"
 require "jenncad/primitives/cube"

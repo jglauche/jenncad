@@ -2,10 +2,14 @@ module JennCad
 
   class OpenScad
     def initialize(part, fn=64)
+      @imports = []
       @modules = {}
       @main = root(part, "$fn=#{fn};")
 
       @export = ""
+      @imports.uniq.each do |val|
+        @export += "use <#{val}.scad>\n"
+      end
       @modules.each do |key, val|
         @export += val
       end
@@ -22,8 +26,10 @@ module JennCad
 
     def root(part, head="")
       res = head
-      part.transformations.reverse.each do |trans|
-        res << transformation(trans)
+      if part.transformations
+        part.transformations.reverse.each do |trans|
+          res << transformation(trans)
+        end
       end
       res << parse(part)
     end
@@ -42,6 +48,8 @@ module JennCad
 
     def parse(part)
       case part
+      when JennCad::OpenScadImport
+        handle_import(part)
       when JennCad::Aggregation
         handle_aggregation(part)
       when JennCad::UnionObject
@@ -116,6 +124,11 @@ module JennCad
       end
       return res
     end
+  end
+
+  def handle_import(part)
+    @imports << part.import
+    return "#{part.name}(#{fmt_params(part.args)});"
   end
 
   def handle_aggregation(part)

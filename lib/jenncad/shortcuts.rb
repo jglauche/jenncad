@@ -18,6 +18,11 @@ module JennCad
 		Cube.new(args)
 	end
 
+  # import/use OpenScad library
+  def import(import,name,args)
+    OpenScadImport.new(import, name, args)
+  end
+
 	def +(args)
 		if self.kind_of? UnionObject
 			self.add(args)
