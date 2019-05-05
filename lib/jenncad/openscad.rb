@@ -55,6 +55,7 @@ module JennCad
       when JennCad::UnionObject
         cmd('union', nil, part.parts)
       when JennCad::SubtractObject
+        part.analyze_z_fighting
         cmd('difference', nil, part.parts)
       when JennCad::IntersectionObject
         cmd('intersection', nil, part.parts)
