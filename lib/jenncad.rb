@@ -1,4 +1,6 @@
 require "jenncad/version"
+require "jenncad/thing"
+
 require "jenncad/primitives/primitive"
 require "jenncad/primitives/aggregation"
 require "jenncad/primitives/openscad_include"
@@ -32,8 +34,6 @@ require "jenncad/extras/din934"
 
 
 
-
-require "jenncad/thing"
 
 require "jenncad/register"
 require "jenncad/shortcuts"

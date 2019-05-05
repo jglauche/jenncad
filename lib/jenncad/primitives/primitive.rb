@@ -1,5 +1,5 @@
 module JennCad::Primitives
-	class Primitive
+	class Primitive < JennCad::Thing
 		attr_accessor :children, :transformations, :name
 
 		def initialize(args)
