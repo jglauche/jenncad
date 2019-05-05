@@ -62,7 +62,7 @@ module JennCad::Extras
       end
       res = hull(
         nut_934(false,@margin,@slot_margin),
-        nut_934(false,@margin,@slot_margin).translate(pos)
+        nut_934(false,@margin,@slot_margin).move(pos)
       )
       if @cylinder_length > 0
         res += cylinder(d:@size+@margin,h:@cylinder_length)

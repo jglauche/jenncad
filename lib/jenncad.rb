@@ -29,8 +29,13 @@ require "jenncad/transformation/multmatrix"
 
 
 require "jenncad/extras/hardware"
-
+require "jenncad/extras/din912"
+require "jenncad/extras/din933"
 require "jenncad/extras/din934"
+require "jenncad/extras/iso7380"
+
+
+
 
 
 
