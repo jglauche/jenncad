@@ -1,9 +1,10 @@
 module JennCad::Primitives
 	class Primitive
-		attr_accessor :children, :transformations
+		attr_accessor :children, :transformations, :name
 
-		def initialize(*args)
+		def initialize(args)
 			@transformations = []
+		  @name = args[:name] || ""
 		end
 
 		def rotate(args)
@@ -27,6 +28,7 @@ module JennCad::Primitives
 			@transformations << Move.new(args)
 			self
 		end
+    alias :translate :move
 
 		def union(args)
 			@transformations ||= []
@@ -56,6 +58,11 @@ module JennCad::Primitives
 			self
 		end
 
+    def color(args)
+      @transformations ||= []
+      @transformations << Color.new(args)
+      self
+    end
 
   end
 end
