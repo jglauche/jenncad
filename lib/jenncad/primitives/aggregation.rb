@@ -3,8 +3,13 @@ module JennCad::Primitives
     attr_accessor :part
 
     def initialize(name, part)
+      super({})
       @name = name
       @part = part
+    end
+
+    def parts
+      [@part]
     end
   end
 end

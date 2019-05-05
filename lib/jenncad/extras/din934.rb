@@ -87,7 +87,6 @@ module JennCad::Extras
         res -= add_support
       end
       res.color("Gainsboro")
-      res.move(z:-@z_fight)
       res
     end
 

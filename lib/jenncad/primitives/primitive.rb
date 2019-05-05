@@ -1,18 +1,19 @@
 module JennCad::Primitives
 	class Primitive < JennCad::Thing
 		attr_accessor :children, :transformations, :name
+    attr_accessor :calc_x, :calc_y, :calc_z, :calc_h
 
 		def initialize(args)
 			@transformations = []
 		  @name = args[:name] || ""
+		  # calculated origin; only works for move atm
+		  @calc_x = 0
+		  @calc_y = 0
+		  @calc_z = 0
+      @calc_h = args[:h] || 0
 		end
 
 		def rotate(args)
-		  # always make sure we have a z parameter; otherwise RubyScad will produce a 2-dimensional output
-		  # which can result in openscad weirdness
-		  if args[:z] == nil
-		    args[:z] = 0
-		  end
 			@transformations ||= []
 			@transformations << Rotate.new(args)
 			self
@@ -26,6 +27,9 @@ module JennCad::Primitives
 		def move(args)
 			@transformations ||= []
 			@transformations << Move.new(args)
+	    @calc_x += args[:x].to_f
+      @calc_y += args[:y].to_f
+      @calc_z += args[:z].to_f
 			self
 		end
     alias :translate :move

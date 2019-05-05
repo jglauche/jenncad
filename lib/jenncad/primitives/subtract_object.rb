@@ -17,7 +17,7 @@ module JennCad::Primitives
       elsif obj.respond_to? :parts
         if obj.parts != nil
           obj.parts.each do |part|
-            res << get_primitives(part) unless part.kind_of? SubtractObject
+            res << get_primitives(part) #unless part.kind_of? SubtractObject
           end
         end
       else
@@ -36,23 +36,44 @@ module JennCad::Primitives
       res
     end
 
+    def get_z(obj)
+      res = []
+      obj.each do |part|
+        if part.respond_to? :calc_z
+          res << part.calc_z
+        end
+      end
+      res
+    end
+
     def analyze_z_fighting
       first = get_primitives(@parts.first).flatten
       others = get_primitives(@parts[1..-1]).flatten
 
       first_h = get_heights(first).uniq
-      puts first_h.inspect
+      first_z = get_z(first).uniq
+      puts first_z.inspect
       if first_h.size > 1
-        #puts "first heights mismatch: #{first_h.inspect}"
+        puts "first item has mutliple height: #{first_h.inspect}"
         return
       end
-      compare_to = first_h.first
+
+      compare_h = first_h.first
+      compare_z = first_z.first
       others.each do |part|
         if part.respond_to? :h
-          if part.h == compare_to
+          if part.h == compare_h
             puts "fixing possible z fighting: #{part.class} #{part.h}"
             part.h+=0.008
             part.translate(z:-0.004)
+          elsif part.calc_z == compare_z
+            puts "z fighting at bottom: #{part.calc_z}"
+            part.h+=0.004
+            part.translate(z:-0.002)
+          elsif part.calc_z+part.h == compare_h
+            puts "z fighting at top: #{compare_h}"
+            part.h+=0.004
+            part.translate(z:0.002)
           end
         end
       end

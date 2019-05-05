@@ -28,6 +28,7 @@ module JennCad
   end
 
   def +(args)
+    return args if self == nil
     if self.kind_of? UnionObject
       self.add(args)
       return self

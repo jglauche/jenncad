@@ -2,8 +2,6 @@ module JennCad::Extras
   class Hardware
     attr_accessor :z_fight
     def initialize(args)
-      @z_fight = args[:z_fight] || 0.01
-      @height += @z_fight*2
       @options ||= {}
     end
 
