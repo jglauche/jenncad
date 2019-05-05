@@ -82,7 +82,7 @@ module JennCad::Extras
       size = @s + margin
 
       res = cylinder(d:(size/Math.sqrt(3))*2,h:@height+height_margin,fn:6)
-      res -= cylinder(d:@size,h:@height) if show == true
+      res -= cylinder(d:@size,h:@height).translate(z:-@z_fight) if show == true
       if @support
         res -= add_support
       end
