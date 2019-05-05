@@ -33,6 +33,7 @@ require "jenncad/extras/din934"
 
 
 
+require "jenncad/thing"
 
 require "jenncad/register"
 require "jenncad/shortcuts"
