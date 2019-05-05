@@ -64,5 +64,27 @@ module JennCad::Primitives
       self
     end
 
+    def multmatrix(args)
+      @transformations ||= []
+      @transformations << Multmatrix.new(args)
+      self
+    end
+
+    def skew(args)
+      xy = args[:xy] || 0
+      x = args[:x] || 0
+      yx = args[:yx] || 0
+      y = args[:y] || 0
+      zx = args[:zx] || 0
+      zy = args[:zy] || 0
+
+      multmatrix([
+        [1, xy, x, 0],
+        [yx, 1, y, 0],
+        [zx, zy, 1, 0],
+        [0, 0, 0, 1]
+      ])
+    end
+
   end
 end

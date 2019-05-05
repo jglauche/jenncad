@@ -77,6 +77,8 @@ module JennCad
         return args.map do |l|
           if l == nil
             0
+          elsif l.kind_of? Array
+            l # skipping check of 2-dmin Arrays for now (used in multmatrix)
           elsif l.to_i == l.to_f
             l.to_i
           else
@@ -92,7 +94,7 @@ module JennCad
           if v == nil
             next
           end
-          if v == v.to_i
+          if !v.kind_of?(Array) && v == v.to_i
             v = v.to_i
           end
           res << "#{k}=#{v}"
@@ -154,7 +156,7 @@ module JennCad
 
   def collect_params(part)
     res = {}
-    [:d,:r,:h, :r1, :r2, :d1, :d2, :size, :fn].each do |var|
+    [:d,:r,:h, :r1, :r2, :d1, :d2, :size, :m, :fn].each do |var|
       if part.respond_to? var
         res[var] = part.send var
       end
@@ -172,7 +174,9 @@ module JennCad
       cmd_call("mirror",trans.coordinates)
     when JennCad::Color
       cmd_call("color",trans.color)
-  else
+    when JennCad::Multmatrix
+      cmd_call("multmatrix",trans.m)
+    else
       puts "[openscad exporter] Unkown transformation #{trans.class}"
       ""
     end

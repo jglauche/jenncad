@@ -2,22 +2,22 @@ module JennCad::Primitives
   class Cube < Primitive
     attr_accessor :x,:y,:z
 
-    def initialize(*args)
-			super(*args)
-			if args[0].kind_of? Array
-				size = args[0]
-			elsif args[0].kind_of? Hash
-				size = args[0][:size]
-			end
-			if size
-				@x,@y,@z = size.map{|l| l.to_f}
-    	end
-		end
+    def initialize(args)
+      super(args)
+      if args.kind_of? Array
+        size = args
+      elsif args.kind_of? Hash
+        size = args[:size]
+      end
+      if size
+        @x,@y,@z = size.map{|l| l.to_f}
+      end
+    end
 
-		# used for openscad export
-		def size
-			[@x, @y, @z]
-		end
+    # used for openscad export
+    def size
+      [@x, @y, @z]
+    end
 
     def center_xy
       @transformations << Move.new({x:-@x/2,y:-@y/2})

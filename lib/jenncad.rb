@@ -20,6 +20,8 @@ require "jenncad/transformation/rotate"
 require "jenncad/transformation/scale"
 require "jenncad/transformation/mirror"
 require "jenncad/transformation/color"
+require "jenncad/transformation/multmatrix"
+
 
 
 
