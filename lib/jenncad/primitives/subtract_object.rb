@@ -54,7 +54,7 @@ module JennCad::Primitives
       first_z = get_z(first).uniq
       puts first_z.inspect
       if first_h.size > 1
-        puts "first item has mutliple height: #{first_h.inspect}"
+        puts "first item has multiple heights: #{first_h.inspect}"
         return
       end
 
