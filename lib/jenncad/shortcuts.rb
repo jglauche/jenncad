@@ -4,8 +4,18 @@ module JennCad
   end
 
   def slot(args)
-    cylinder(d:args[:d],r:args[:r],h:args[:h]) & cylinder(d:args[:d],r:args[:r],h:args[:h]).move(x:args[:l])
-  end
+		c1 = cylinder(d:args[:d],r:args[:r],h:args[:h])
+		c2 = cylinder(d:args[:d],r:args[:r],h:args[:h])
+
+		if args[:x]
+			c2.move(x:args[:x])
+  	end
+		if args[:y]
+			c2.move(y:args[:y])
+		end
+
+		c1&c2
+	end
 
   def cube(args={}, center=false)
     if args.kind_of? Array
