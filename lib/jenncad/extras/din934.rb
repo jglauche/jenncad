@@ -1,6 +1,17 @@
 module JennCad::Extras
   class Din934 < Hardware
     attr_accessor :height
+		attr_accessor :data
+	  Data =   {2.5=> {side_to_side:5,height:2, support_diameter:2.8},
+                    3 => {side_to_side:5.5,height:2.4, support_diameter:3.5},
+                    4 => {side_to_side:7,height:3.2, support_diameter:4.4},
+                    5 => {side_to_side:8,height:4, support_diameter:5.3},
+                    6 => {side_to_side:10,height:5, support_diameter:6.3},
+                    8 => {side_to_side:13,height:6.5, support_diameter:8.3},
+                   10 => {side_to_side:17,height:8, support_diameter:10.3},
+                   12 => {side_to_side:19,height:10, support_diameter:12.3},
+                  }
+
 
     def initialize(size,args={})
       @size = size
@@ -19,18 +30,9 @@ module JennCad::Extras
 
       @direction = args[:direction] || @slot_direction
 
-      @data =   {2.5=> {side_to_side:5,height:2, support_diameter:2.8},
-                    3 => {side_to_side:5.5,height:2.4, support_diameter:3.5},
-                    4 => {side_to_side:7,height:3.2, support_diameter:4.4},
-                    5 => {side_to_side:8,height:4, support_diameter:5.3},
-                    6 => {side_to_side:10,height:5, support_diameter:6.3},
-                    8 => {side_to_side:13,height:6.5, support_diameter:8.3},
-                   10 => {side_to_side:17,height:8, support_diameter:10.3},
-                   12 => {side_to_side:19,height:10, support_diameter:12.3},
-                  }
-      @s = @data[@size][:side_to_side]
-      @height = @data[@size][:height]
-      @support_diameter = @data[@size][:support_diameter]
+      @s = Data[@size][:side_to_side]
+      @height = Data[@size][:height]
+      @support_diameter = Data[@size][:support_diameter]
       super(args)
     end
 
