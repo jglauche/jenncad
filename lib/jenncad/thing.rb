@@ -87,15 +87,17 @@ module JennCad
 		end
 
 
-		def children_list
-			get_children(self).flatten
+		def children_list(stop_at=nil)
+			get_children(self, stop_at).flatten
 		end
 
-		def get_children(item)
+		def get_children(item, stop_at)
 			res = [item]
 			if item.respond_to?(:parts) && item.parts != nil
 				item.parts.each do |part|
-					res << get_children(part)
+					unless stop_at != nil && part.kind_of?(stop_at)
+						res << get_children(part, stop_at)
+					end
 				end
 			end
 			res

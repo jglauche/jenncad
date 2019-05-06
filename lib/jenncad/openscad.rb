@@ -155,8 +155,8 @@ module JennCad
 		if part && part.respond_to?(:color) && part.color
 			if part.respond_to?(:parts)
 				res = []
-				if part.children_list.map{|l| l.color != nil && l.color != part.color}.include?(true)
-					part.children_list.each do |child|
+				if part.children_list(JennCad::Aggregation).map{|l| l.color != nil && l.color != part.color}.include?(true)
+					part.children_list(JennCad::Aggregation).each do |child|
 						if child.color == nil && child.color != part.color && !child.kind_of?(BooleanObject)
 							child.fallback_color = part.color
 						end
