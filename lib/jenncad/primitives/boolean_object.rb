@@ -1,6 +1,5 @@
 module JennCad::Primitives
   class BooleanObject < Primitive
-    attr_accessor :parts
     def initialize(part1, part2)
       @transformations = []
       @parts = [part1, part2]

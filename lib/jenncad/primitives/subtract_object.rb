@@ -12,18 +12,12 @@ module JennCad::Primitives
       res = []
       if obj.kind_of? Array
         obj.each do |part|
-          res << get_primitives(part)
-        end
-      elsif obj.respond_to? :parts
-        if obj.parts != nil
-          obj.parts.each do |part|
-            res << get_primitives(part) #unless part.kind_of? SubtractObject
-          end
+          res << part.children_list
         end
       else
-        res << obj
-      end
-      res
+				res << obj.children_list
+			end
+			res
     end
 
     def get_heights(obj)
@@ -50,9 +44,9 @@ module JennCad::Primitives
       first = get_primitives(@parts.first).flatten
       others = get_primitives(@parts[1..-1]).flatten
 
-      first_h = get_heights(first).uniq
+			first_h = get_heights(first).uniq
       first_z = get_z(first).uniq
-      puts first_z.inspect
+      puts first.inspect
       if first_h.size > 1
 				puts "first item has multiple heights: #{first_h.inspect}"
       	first_h.each do |h|
@@ -70,8 +64,8 @@ module JennCad::Primitives
 		# (it should move the calls to the Aggregation, not the Aggregation itself)
 		def compare_z(others,compare_h,compare_z)
 			others.each do |part|
-				puts part.inspect
-				puts "#{part.calc_z+part.calc_h} ; #{compare_h}"
+				#puts part.inspect
+				#puts "#{part.calc_z+part.calc_h} ; #{compare_h}"
 				if part.respond_to? :h
           if part.h == compare_h
             puts "fixing possible z fighting: #{part.class} #{part.h}"

@@ -5,6 +5,7 @@ include JennCad::Extras
 Nut = Din934
 
 res = cube([30,30,10]).center_xy
+res -= cylinder(d:20,h:2)
 
 cyl = cylinder(d:10,h:5).translate(z:5)
 res -= cyl

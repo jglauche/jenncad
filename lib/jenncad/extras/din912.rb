@@ -19,12 +19,12 @@ module JennCad::Extras
 		end
 
 		def cut
-			Aggregation.new("din912c#{@size}#{option_string}", bolt_912(@args[:additional_length], @args[:additional_diameter], @args[:head_margin])
+			Aggregation.new("din912c#{@size}#{option_string}", bolt_912(false, @args[:additional_length], @args[:additional_diameter], @args[:head_margin])
 )
 		end
 
 		def show
-			res = bolt_912(0,0)
+			res = bolt_912(true, 0,0)
 #			if @washer
 #				res += @washer.show
 #				res = res.move(z:-@washer.height)
@@ -33,7 +33,7 @@ module JennCad::Extras
 			Aggregation.new("din912s#{@size}#{option_string}", res)
 		end
 		# DIN 912
-		def bolt_912(additional_length=0, addtional_diameter=0, head_margin=0)
+		def bolt_912(show, additional_length=0, addtional_diameter=0, head_margin=0)
 
 			chart_din912 = {2 => {head_dia:3.8,head_length:2,thread_length:16},
 											2.5=> {head_dia:4.5,head_length:2.5,thread_length:17},
@@ -56,14 +56,19 @@ module JennCad::Extras
 
 										 }
 
-			res = cylinder(d:chart_din912[@size][:head_dia]+head_margin,h:chart_din912[@size][:head_length]).move(z:-chart_din912[@size][:head_length]).color("Gainsboro")
-			total_length = @length + additional_length
-			thread_length=chart_din912[@size][:thread_length]
-			if total_length.to_f <= thread_length
-				res+= cylinder(d:@size+addtional_diameter, h:total_length).color("DarkGray")
+			res = cylinder(d:chart_din912[@size][:head_dia]+head_margin,h:chart_din912[@size][:head_length]).move(z:-chart_din912[@size][:head_length])
+			if show
+				res.color("Gainsboro")
+				total_length = @length + additional_length
+				thread_length=chart_din912[@size][:thread_length]
+				if total_length.to_f <= thread_length
+					res+= cylinder(d:@size+addtional_diameter, h:total_length).color("DarkGray")
+				else
+					res+= cylinder(d:@size+addtional_diameter, h:total_length-thread_length)
+					res+= cylinder(d:@size+addtional_diameter, h:thread_length).move(z:total_length-thread_length).color("DarkGray")
+				end
 			else
-				res+= cylinder(d:@size+addtional_diameter, h:total_length-thread_length).color("Gainsboro")
-				res+= cylinder(d:@size+addtional_diameter, h:thread_length).move(z:total_length-thread_length).color("DarkGray")
+				res+= cylinder(d:@size+addtional_diameter, h:total_length)
 			end
 			res
 		end

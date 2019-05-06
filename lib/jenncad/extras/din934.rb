@@ -86,7 +86,7 @@ module JennCad::Extras
       if @support
         res -= add_support
       end
-      res.color("Gainsboro")
+      res.color("Gainsboro") if show
       res
     end
 

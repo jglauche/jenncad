@@ -30,7 +30,7 @@ module JennCad::Extras
 			#	res += @washer.show
 			#	res = res.move(z:-@washer.height)
 			#end
-			res
+			res.color("DarkGray")
       Aggregation.new("din933s#{@size}#{option_string}", res)
 		end
 
@@ -49,10 +49,9 @@ module JennCad::Extras
 	  									16=> {head_side_to_side:24,head_length:10},
 										 }
 	    head_dia = chart[@size][:head_side_to_side].to_f + head_margin.to_f
-    	res = cylinder(d:(head_dia/Math.sqrt(3))*2,fn:6,h:chart[@size][:head_length]).move(z:-chart[@size][:head_length]).color("Gainsboro")
+    	res = cylinder(d:(head_dia/Math.sqrt(3))*2,fn:6,h:chart[@size][:head_length]).move(z:-chart[@size][:head_length])
       total_length = @length + additional_length
-      res+= cylinder(d:@size+addtional_diameter, h:total_length).color("DarkGray")
-
+      res+= cylinder(d:@size+addtional_diameter, h:total_length)
 	  end
 
 
