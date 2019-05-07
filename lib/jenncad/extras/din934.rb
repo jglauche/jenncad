@@ -18,7 +18,7 @@ module JennCad::Extras
       @options = args.dup
       @support = args[:support] ||= false
       @support_layer_height = args[:support_layer_height] ||= 0.2
-      @margin = args[:margin] ||= 0.3 # default output margin
+      @margin = args[:margin] ||= 0.2 # default output margin
 
       @slot = args[:slot] || nil
       @slot_margin = args[:slot_margin] || 0.5
