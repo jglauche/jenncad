@@ -39,7 +39,7 @@ module JennCad
 
   def +(args)
     return args if self == nil
-    if self.kind_of? UnionObject
+    if self.kind_of?(UnionObject) && self.transformations.size == 0
       self.add(args)
       return self
     else
@@ -48,7 +48,7 @@ module JennCad
   end
 
   def -(args)
-    if self.kind_of? SubtractObject
+    if self.kind_of?(SubtractObject) && self.transformations.size == 0
       self.add(args)
       return self
     else
@@ -57,7 +57,7 @@ module JennCad
   end
 
   def *(args)
-    if self.kind_of? IntersectionObject
+    if self.kind_of?(IntersectionObject) && self.transformations.size == 0
       self.add(args)
       return self
     else
@@ -66,7 +66,7 @@ module JennCad
   end
 
   def &(args)
-    if self.kind_of? HullObject
+    if self.kind_of?(HullObject) && self.transformations.size == 0
       self.add(args)
       return self
     else
