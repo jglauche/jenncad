@@ -1,5 +1,6 @@
 module JennCad::Extras
-	Data = {2 => {head_dia:3.8,head_length:2,thread_length:16},
+	class Din912 < Hardware
+		Data = {2 => {head_dia:3.8,head_length:2,thread_length:16},
 					2.5=> {head_dia:4.5,head_length:2.5,thread_length:17},
 					3 => {head_dia:5.5,head_length:3,thread_length:18},
 					4 => {head_dia:7.0,head_length:4,thread_length:20},
@@ -19,8 +20,7 @@ module JennCad::Extras
 				 }
 
 
-	class Din912 < Hardware
-		attr_accessor :height
+  	attr_accessor :height
 
 		def initialize(size,length,args={})
 			super(args)
