@@ -67,13 +67,16 @@ module JennCad
 			when JennCad::Primitives::Cube
 				cmd('cube', collect_params(part), nil)
 			else
-				if part.respond_to?(:parts) && part.parts != nil
+				if part.respond_to?(:parts) && part.parts != nil && !part.parts.empty?
 				res = ""
 				part.parts.each do |part|
 						res += parse(part)
 					end
 				return res
+				elsif part.respond_to?(:part)
+				  return parse(part.part)
 				end
+			  return ""
 			end
 		end
 
