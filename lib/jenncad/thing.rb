@@ -4,6 +4,7 @@ module JennCad
 		attr_accessor :parts
 		attr_accessor :transformations, :name
 		attr_accessor :calc_x, :calc_y, :calc_z, :calc_h
+    attr_accessor :shape
 
 		def initialize(args=nil)
 			@transformations = []
@@ -21,6 +22,37 @@ module JennCad
 			self
 		end
 
+    def center
+      return @center if @center
+      case shape.to_s
+        when "cube"
+          [@x/2.0,@y/2.0,@z/2.0]
+        when "cylinder"
+          [0,0,@z/2.0]
+      else
+        [0,0,0]
+      end
+    end
+
+    def radians(a)
+      a.to_f/180.0*PI
+    end
+
+    # experiment
+    def calculate_center_rotation(oldcenter, args)
+      x,y,z = oldcenter
+      v = Vector.point x,y,z
+      rot_x = Matrix.rotation_x(radians(args[:x] || 0))
+      rot_y = Matrix.rotation_y(radians(args[:y] || 0))
+      rot_z = Matrix.rotation_z(radians(args[:z] || 0))
+      v = rot_x*v
+      v = rot_y*v
+      v = rot_z*v
+
+      [v.x,v.y,v.z]
+    end
+
+    # todo: chec if that works
 		def rotate_around(point,args)
 			x,y,z= point.x, point.y, point.z
 			self.move(x:-x,y:-y,z:-z).rotate(args).move(x:x,y:y,z:z)
