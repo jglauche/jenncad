@@ -49,6 +49,9 @@ module JennCad
     Projection.new(self, args)
   end
 
+  def union(*args)
+    UnionObject.new(*args)
+  end
 
   def +(args)
     return args if self == nil
@@ -60,6 +63,10 @@ module JennCad
     end
   end
 
+  def subtraction(*args)
+    SubtractObject.new(*args)
+  end
+
   def -(args)
     if self.kind_of?(SubtractObject) && self.transformations.size == 0
       self.add(args)
@@ -69,6 +76,10 @@ module JennCad
     end
   end
 
+  def intersection(*args)
+    IntersectionObject.new(*args)
+  end
+
   def *(args)
     if self.kind_of?(IntersectionObject) && self.transformations.size == 0
       self.add(args)
@@ -76,6 +87,10 @@ module JennCad
     else
       IntersectionObject.new(self,args)
     end
+  end
+
+  def hull(*args)
+    HullObject.new(*args)
   end
 
   def &(args)

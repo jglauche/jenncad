@@ -69,12 +69,6 @@ module JennCad
 		end
 		alias :translate :move
 
-		def union(args)
-			@transformations ||= []
-			@transformations << Union.new(args)
-			self
-		end
-
 		def mirror(args)
 			@transformations ||= []
 			@transformations << Mirror.new(args)

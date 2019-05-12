@@ -1,8 +1,5 @@
 module JennCad::Primitives
   class SubtractObject < BooleanObject
-    def initialize(part1, part2)
-      super(part1,part2)
-    end
 
     def add(part)
       super(part)

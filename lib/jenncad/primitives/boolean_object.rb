@@ -1,8 +1,12 @@
 module JennCad::Primitives
   class BooleanObject < Primitive
-    def initialize(part1, part2)
+    def initialize(*parts)
       @transformations = []
-      @parts = [part1, part2]
+      if parts.first.kind_of? Array
+        @parts = parts.first
+      else
+        @parts = parts
+      end
     end
 
     def add(part)
