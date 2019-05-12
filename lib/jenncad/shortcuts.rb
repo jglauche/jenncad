@@ -37,6 +37,19 @@ module JennCad
     OpenScadImport.new(import, name, args)
   end
 
+  def extrude(args)
+    LinearExtrude.new(self, args)
+  end
+
+  def rotate_extrude(args={})
+    RotateExtrude.new(self, args)
+  end
+
+  def to_2d(args={})
+    Projection.new(self, args)
+  end
+
+
   def +(args)
     return args if self == nil
     if self.kind_of?(UnionObject) && self.transformations.size == 0

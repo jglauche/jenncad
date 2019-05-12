@@ -18,6 +18,11 @@ require "jenncad/primitives/union_object"
 require "jenncad/primitives/subtract_object"
 require "jenncad/primitives/hull_object"
 require "jenncad/primitives/intersection_object"
+require "jenncad/primitives/projection"
+require "jenncad/primitives/linear_extrude"
+require "jenncad/primitives/rotate_extrude"
+
+
 
 
 require "jenncad/transformation/transformation"

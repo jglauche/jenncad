@@ -5,6 +5,7 @@ module JennCad
 		attr_accessor :transformations, :name
 		attr_accessor :calc_x, :calc_y, :calc_z, :calc_h
     attr_accessor :shape
+    attr_accessor :angle, :cut, :fn
 
 		def initialize(args=nil)
 			@transformations = []
@@ -52,7 +53,7 @@ module JennCad
       [v.x,v.y,v.z]
     end
 
-    # todo: chec if that works
+    # todo: check if that works
 		def rotate_around(point,args)
 			x,y,z= point.x, point.y, point.z
 			self.move(x:-x,y:-y,z:-z).rotate(args).move(x:x,y:y,z:z)

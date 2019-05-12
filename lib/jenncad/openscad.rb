@@ -66,6 +66,12 @@ module JennCad
 				cmd('cylinder', collect_params(part), nil)
 			when JennCad::Primitives::Cube
 				cmd('cube', collect_params(part), nil)
+			when JennCad::Primitives::LinearExtrude
+			  cmd('linear_extrude', part.openscad_params, part.parts)
+			when JennCad::Primitives::RotateExtrude
+			  cmd('rotate_extrude', part.openscad_params, part.parts)
+	  	when JennCad::Primitives::Projection
+			  cmd('projection', collect_params(part), part.parts)
 			else
 				if part.respond_to?(:parts) && part.parts != nil && !part.parts.empty?
 				res = ""
@@ -105,7 +111,7 @@ module JennCad
 					if v == nil
 						next
 					end
-					if !v.kind_of?(Array) && v == v.to_i
+					if !v.kind_of?(Array) && !v.kind_of?(TrueClass) && !v.kind_of?(FalseClass) && v == v.to_i
 						v = v.to_i
 					end
 					res << "#{k}=#{v}"
