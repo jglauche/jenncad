@@ -2,6 +2,7 @@ require "geo3d"
 include Math
 include Geo3d
 
+
 require "jenncad/version"
 require "jenncad/thing"
 

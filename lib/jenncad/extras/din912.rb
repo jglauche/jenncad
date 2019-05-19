@@ -28,7 +28,10 @@ module JennCad::Extras
 			# options for output only:
 			@args[:additional_length] ||= 0
 			@args[:additional_diameter] ||= 0.2
-			@args[:head_margin] ||= 0.0
+			@args[:head_margin] ||= 0.3
+      @face = args[:face] || "bottom"
+      @flush = args[:flush] || nil
+
 #			if @args[:washer] == true
 #				@washer = Washer.new(size,{:material => @args[:material], :surface => @args[:surface]})
 #			end
@@ -39,7 +42,7 @@ module JennCad::Extras
 		end
 
 		def cut
-			Aggregation.new("din912c#{@size}l#{@length}#{option_string}", bolt_912(false, @args[:additional_length], @args[:additional_diameter], @args[:head_margin])
+			Aggregation.new("din912f#{@face}c#{@size}l#{@length}#{option_string}", bolt_912(false, @args[:additional_length], @args[:additional_diameter], @args[:head_margin])
 )
 		end
 
@@ -49,10 +52,10 @@ module JennCad::Extras
 #				res += @washer.show
 #				res = res.move(z:-@washer.height)
 #			end
-			res
-			Aggregation.new("din912s#{@size}l#{@length}#{option_string}", res)
+#			res
+			Aggregation.new("din912f#{@face}s#{@size}l#{@length}#{option_string}", res)
 		end
-		# DIN 912
+
 		def bolt_912(show, additional_length=0, addtional_diameter=0, head_margin=0)
 
 			res = cylinder(d:Data[@size][:head_dia]+head_margin,h:Data[@size][:head_length]).move(z:-Data[@size][:head_length])
@@ -69,6 +72,16 @@ module JennCad::Extras
 				end
 			else
 				res+= cylinder(d:@size+addtional_diameter, h:total_length)
+			end
+			if @flush
+        if @face == :top
+          @flush*=-1
+        end
+        res.move(z:Data[@size][:head_length] + @flush)
+			end
+			case @face
+			  when :top
+			    res = res.mirror(z:1)
 			end
 			res
 		end

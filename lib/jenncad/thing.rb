@@ -3,19 +3,26 @@ module JennCad
     attr_accessor :color, :fallback_color
     attr_accessor :parts
     attr_accessor :transformations, :name
+    attr_accessor :x, :y, :z, :diameter
     attr_accessor :calc_x, :calc_y, :calc_z, :calc_h
     attr_accessor :shape
     attr_accessor :angle, :cut, :fn
 
-    def initialize(args=nil)
+    def initialize(args={})
       @transformations = []
-      @name = args[:name] || ""
       # calculated origin; only works for move atm
       @calc_x = 0
       @calc_y = 0
       @calc_z = 0
       @calc_h = args[:h] || 0
     end
+
+# that hack doesn't work; It does not see the instance_variables of the other class at this point (not sure why)
+#    def self.inherited(other)
+#     puts "#{other.to_s}"
+#     puts other.new.instance_variables.map { |s| s[1..-1] }.inspect
+#     attr_accessor *other.new.instance_variables.map { |s| s[1..-1] }
+#    end
 
     def rotate(args)
       @transformations ||= []
