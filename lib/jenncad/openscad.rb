@@ -14,8 +14,8 @@ module JennCad
 				@export += val
 			end
 			@export += @main
-			puts "-----"
-			puts @export
+			#puts "-----"
+			#puts @export
 		end
 
 		def save(file)
@@ -39,8 +39,8 @@ module JennCad
 			arr = []
 			arr << parse(part) unless level == 0
 			if part.respond_to?(:parts)
-				part.parts.each do |part|
-					arr << print_tree(part,level+1)
+				part.parts.each do |p|
+					arr << print_tree(p,level+1)
 				end
 			end
 			arr
@@ -64,6 +64,8 @@ module JennCad
 				cmd('hull', nil, part.parts)
 			when JennCad::Primitives::Cylinder
 				cmd('cylinder', collect_params(part), nil)
+			when JennCad::Primitives::Sphere
+				cmd('sphere', collect_params(part), nil)
 			when JennCad::Primitives::Cube
 				cmd('cube', collect_params(part), nil)
 			when JennCad::Primitives::LinearExtrude
@@ -72,11 +74,13 @@ module JennCad
 			  cmd('rotate_extrude', part.openscad_params, part.parts)
 	  	when JennCad::Primitives::Projection
 			  cmd('projection', collect_params(part), part.parts)
+			when JennCad::Primitives::Polygon
+			  cmd('polygon', collect_params(part), nil)
 			else
 				if part.respond_to?(:parts) && part.parts != nil && !part.parts.empty?
 				res = ""
-				part.parts.each do |part|
-						res += parse(part)
+				part.parts.each do |p|
+						res += parse(p)
 					end
 				return res
 				elsif part.respond_to?(:part)
@@ -163,7 +167,6 @@ module JennCad
 	def handle_color(part)
 		if part && part.respond_to?(:color) && part.color
 			if part.respond_to?(:parts)
-				res = []
 				if part.children_list(JennCad::Aggregation).map{|l| l.color != nil && l.color != part.color}.include?(true)
 					part.children_list(JennCad::Aggregation).each do |child|
 						if child.color == nil && child.color != part.color && !child.kind_of?(BooleanObject)
@@ -208,7 +211,7 @@ module JennCad
 
 	def collect_params(part)
 		res = {}
-		[:d,:r,:h, :r1, :r2, :d1, :d2, :size, :m, :fn].each do |var|
+		[:d,:r,:h, :r1, :r2, :d1, :d2, :size, :m, :fn, :points].each do |var|
 			if part.respond_to? var
 				res[var] = part.send var
 			end
