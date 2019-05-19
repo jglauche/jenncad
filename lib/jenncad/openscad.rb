@@ -80,11 +80,11 @@ module JennCad
 				if part.respond_to?(:parts) && part.parts != nil && !part.parts.empty?
 				res = ""
 				part.parts.each do |p|
-						res += parse(p)
+						res += root(p)
 					end
 				return res
 				elsif part.respond_to?(:part)
-				  return parse(part.part)
+				  return root(part.part)
 				end
 			  return ""
 			end
