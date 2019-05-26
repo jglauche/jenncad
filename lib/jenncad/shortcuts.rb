@@ -110,7 +110,7 @@ module JennCad
     end
   end
 
-  def assemble(partlib=nil, z=0, &block)
-    block.yield.assemble(partlib, z)
+  def assemble(partlib=nil, z_skip = false, z=0, &block)
+    block.yield.assemble(partlib, z_skip, z)
   end
 end

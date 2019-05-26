@@ -1,10 +1,10 @@
 class Array
 	#	Assembles things on top of each other
-	def assemble(partlib=nil, z=0)
+	def assemble(partlib=nil, skip_z=false, z=0)
 		map do |part|
 			case part
 			when Array
-				res = part.assemble(partlib, 0)
+				res = part.assemble(partlib, true)
 			when String, Symbol
 				res = partlib[part].yield
 			when Proc
@@ -12,7 +12,7 @@ class Array
 			else
 				res = part
 			end
-			res, z = res.move(z:z), z + res.z.to_f
+			res, z = res.move(z:z), z + res.z.to_f unless skip_z
 			res
 		end
 		.union
