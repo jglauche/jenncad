@@ -7,10 +7,16 @@ module JennCad::Primitives
       else
         @parts = parts
       end
+      after_add
     end
 
     def add(part)
       @parts << part
+      after_add
+    end
+
+    def after_add
+      @parts.compact!
     end
   end
 end
