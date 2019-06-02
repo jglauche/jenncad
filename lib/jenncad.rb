@@ -1,6 +1,7 @@
 require "geo3d"
 include Math
 include Geo3d
+require "deep_merge"
 
 require "jenncad/patches/array"
 require "jenncad/version"

@@ -1,50 +1,64 @@
 module JennCad::Primitives
-	class Cube < Primitive
-		attr_accessor :x,:y,:z
+  class Cube < Primitive
+    attr_accessor :x,:y,:z
 
-		def initialize(args)
-			super(args)
-			if args.kind_of? Array
-				size = args
-			elsif args.kind_of? Hash
-				size = args[:size]
-			end
-			if size
-				@x,@y,@z = size.map{|l| l.to_f}
-			end
-			@h = @z.dup
-			@calc_h = @z.dup
-		end
+    def initialize(args)
+      if args.kind_of?(Array) && args[0].kind_of?(Hash)
+        args = args.first
+      end
+      if args.kind_of? Array
+        args = [:x, :y, :z].zip(args.flatten).to_h
+      end
+      @opts = {
+        x: 0,
+        y: 0,
+        z: 0,
+        margins: {
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        center: false,
+      }.deep_merge!(args)
 
-		# used for openscad export
-		def size
-			[@x, @y, @z]
-		end
+      @x = @opts[:x] + @opts[:margins][:x]
+      @y = @opts[:y] + @opts[:margins][:y]
+      @z = @opts[:z] + @opts[:margins][:z]
 
-		def center_xy
-			@transformations << Move.new({x:-@x/2,y:-@y/2})
-			self
-		end
+      super(args)
+      @h = @z.dup
+      @calc_h = @z.dup
+    end
 
-		def center_x
-			@transformations << Move.new({x:-@x/2})
-			self
-		end
+    # used for openscad export
+    def size
+      [@x, @y, @z]
+    end
 
-		def center_y
-			@transformations << Move.new({y:-@y/2})
-			self
-		end
+    def center_xy
+      @transformations << Move.new({x:-@x/2,y:-@y/2})
+      self
+    end
 
-		def center_z
-			@transformations << Move.new({z:-@z/2})
-			self
-		end
+    def center_x
+      @transformations << Move.new({x:-@x/2})
+      self
+    end
 
-#		 def center
-#			 @transformations << Move.new({x:-@x/2,y:-@y/2,z:-@z/2})
-#			 self
-#		 end
+    def center_y
+      @transformations << Move.new({y:-@y/2})
+      self
+    end
 
-	end
+    def center_z
+      @transformations << Move.new({z:-@z/2})
+      self
+    end
+
+#    def center
+#      @transformations << Move.new({x:-@x/2,y:-@y/2,z:-@z/2})
+#      self
+#    end
+
+  end
 end

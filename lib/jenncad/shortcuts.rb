@@ -19,18 +19,7 @@ module JennCad
     Slot.new(args)
   end
 
-  def cube(args={}, center=false)
-    if args.kind_of? Array
-      args = {size:args}
-    elsif args.kind_of? Hash
-      args[:x] ||= 0
-      args[:y] ||= 0
-      args[:z] ||= 0
-      args = {size:[args[:x],args[:y],args[:z]]}
-    end
-    if center
-      args[:center] = true
-    end
+  def cube(*args)
     Cube.new(args)
   end
 
