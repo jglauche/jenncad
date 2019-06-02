@@ -67,6 +67,10 @@ module JennCad
     end
 
     def move(args)
+      if args.kind_of? Array
+        x,y,z = args
+        return move(x:x, y:y, z:z)
+      end
       @transformations ||= []
       @transformations << Move.new(args)
       @calc_x += args[:x].to_f

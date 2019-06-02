@@ -1,4 +1,8 @@
 module JennCad
+  def circle(args)
+    Circle.new(args)
+  end
+
   def cylinder(args)
     Cylinder.new(args)
   end
@@ -12,17 +16,7 @@ module JennCad
   end
 
   def slot(args)
-    c1 = cylinder(d:args[:d],r:args[:r],h:args[:h])
-    c2 = cylinder(d:args[:d],r:args[:r],h:args[:h])
-
-    if args[:x]
-      c2.move(x:args[:x])
-    end
-    if args[:y]
-      c2.move(y:args[:y])
-    end
-
-    c1&c2
+    Slot.new(args)
   end
 
   def cube(args={}, center=false)

@@ -62,8 +62,12 @@ module JennCad
 				cmd('intersection', nil, part.parts)
 			when JennCad::HullObject
 				cmd('hull', nil, part.parts)
+			when JennCad::Primitives::Circle
+			  cmd('circle', collect_params(part), nil)
 			when JennCad::Primitives::Cylinder
 				cmd('cylinder', collect_params(part), nil)
+			when JennCad::Primitives::Slot
+			  root(part.to_openscad)
 			when JennCad::Primitives::Sphere
 				cmd('sphere', collect_params(part), nil)
 			when JennCad::Primitives::Cube
