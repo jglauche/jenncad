@@ -15,7 +15,7 @@ module JennCad
       @calc_y = 0
       @calc_z = 0
       @calc_h = args[:h] || 0
-      @opts = args
+      @opts ||= args
     end
 
     def option(key)
@@ -27,13 +27,6 @@ module JennCad
       @opts ||= {}
       @opts[key] = val
     end
-
-# that hack doesn't work; It does not see the instance_variables of the other class at this point (not sure why)
-#    def self.inherited(other)
-#     puts "#{other.to_s}"
-#     puts other.new.instance_variables.map { |s| s[1..-1] }.inspect
-#     attr_accessor *other.new.instance_variables.map { |s| s[1..-1] }
-#    end
 
     def rotate(args)
       @transformations ||= []
@@ -83,7 +76,11 @@ module JennCad
         return move(x:x, y:y, z:z)
       end
       @transformations ||= []
-      @transformations << Move.new(args)
+      if args[:prepend]
+        @transformations.prepend(Move.new(args))
+      else
+        @transformations << Move.new(args)
+      end
       @calc_x += args[:x].to_f
       @calc_y += args[:y].to_f
       @calc_z += args[:z].to_f

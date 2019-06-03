@@ -18,9 +18,12 @@ module JennCad::Primitives
           y: 0,
           z: 0,
         },
-        center: false,
+        center: true,
+        center_y: false,
+        center_x: false,
+        center_z: false,
       }.deep_merge!(args)
-
+      puts @opts.inspect
       @x = @opts[:x] + @opts[:margins][:x]
       @y = @opts[:y] + @opts[:margins][:y]
       @z = @opts[:z] + @opts[:margins][:z]
@@ -36,22 +39,22 @@ module JennCad::Primitives
     end
 
     def center_xy
-      @transformations << Move.new({x:-@x/2,y:-@y/2})
+      set_option :center, true
       self
     end
 
     def center_x
-      @transformations << Move.new({x:-@x/2})
+      set_option :center_x, true
       self
     end
 
     def center_y
-      @transformations << Move.new({y:-@y/2})
+      set_option :center_y, true
       self
     end
 
     def center_z
-      @transformations << Move.new({z:-@z/2})
+      set_option :center_z, true
       self
     end
 
