@@ -28,7 +28,6 @@ module JennCad::Primitives
         center_x: false,
         center_z: false,
       }.deep_merge!(args)
-      puts @opts.inspect
       @x = @opts[:x] + @opts[:margins][:x]
       @y = @opts[:y] + @opts[:margins][:y]
       @z = @opts[:z] + @opts[:margins][:z]
