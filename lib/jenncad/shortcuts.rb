@@ -3,7 +3,7 @@ module JennCad
     Circle.new(args)
   end
 
-  def cylinder(args)
+  def cylinder(*args)
     Cylinder.new(args)
   end
 
@@ -15,7 +15,7 @@ module JennCad
     Polygon.new(args)
   end
 
-  def slot(args)
+  def slot(*args)
     Slot.new(args)
   end
 

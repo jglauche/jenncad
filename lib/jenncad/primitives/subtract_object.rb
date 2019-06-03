@@ -48,9 +48,13 @@ module JennCad::Primitives
         #puts part.inspect
         #puts "#{part.calc_z+part.calc_h} ; #{compare_h}"
         if part.respond_to? :z
-          if part.referenced_z && part.z != 0.0 && !part.kind_of?(JennCad::BooleanObject)
-            part.z+=0.2
-            part.translate(z:-0.1)
+          if part.referenced_z && part.z != 0.0
+            case part
+            when JennCad::BooleanObject
+            else
+              part.z+=0.2
+              part.translate(z:-0.1)
+            end
           elsif part.z == compare_h
             puts "fixing possible z fighting: #{part.class} #{part.z}"
             part.z+=0.008

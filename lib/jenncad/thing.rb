@@ -149,6 +149,26 @@ module JennCad
       res
     end
 
+    def make_openscad_compatible
+      make_openscad_compatible!(self)
+    end
+
+    def make_openscad_compatible!(item)
+      if item.respond_to?(:parts) && item.parts != nil
+        item.parts.each_with_index do |part, i|
+          if part.respond_to? :to_openscad
+            item.parts[i] = part.to_openscad
+          else
+            make_openscad_compatible!(part)
+          end
+        end
+      end
+      if item.respond_to? :to_openscad
+        item = item.to_openscad
+      end
+      item
+    end
+
     def color(args=nil)
       return option(:color) if args == nil
       set_option :color, args
@@ -165,8 +185,9 @@ module JennCad
         if self.respond_to? :part
           @parts = [part]
         else
-          puts "[Error in openscad export] Could not find @parts or part for #{self}"
-          exit
+          # FIXME: -> move logic OpenScad
+          #puts "[Error in openscad export] Could not find @parts or part for #{self}"
+          #exit
         end
       end
 

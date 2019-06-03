@@ -4,6 +4,7 @@ module JennCad
     def initialize(part, fn=64)
       @imports = []
       @modules = {}
+      part = part.make_openscad_compatible
       @main = root(part, "$fn=#{fn};")
 
       @export = ""
@@ -74,8 +75,6 @@ module JennCad
         cmd('circle', collect_params(part), nil)
       when JennCad::Primitives::Cylinder
         cmd('cylinder', collect_params(part), nil)
-      when JennCad::Primitives::Slot
-        root(part.to_openscad)
       when JennCad::Primitives::Sphere
         cmd('sphere', collect_params(part), nil)
       when JennCad::Primitives::Cube
@@ -217,7 +216,7 @@ module JennCad
 
     def collect_params(part)
       res = {}
-      [:d,:r,:h, :r1, :r2, :d1, :d2, :size, :m, :fn, :points].each do |var|
+      [:d, :r, :h, :r1, :r2, :d1, :d2, :size, :m, :fn, :points].each do |var|
         if part.respond_to? var
           res[var] = part.send var
         end
