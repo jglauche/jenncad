@@ -7,7 +7,12 @@ module JennCad::Primitives
         args = args.first
       end
       if args.kind_of? Array
+        m = {}
+        if args.last.kind_of? Hash
+          m = args.last
+        end
         args = [:x, :y, :z].zip(args.flatten).to_h
+        args.deep_merge!(m)
       end
       @opts = {
         x: 0,
