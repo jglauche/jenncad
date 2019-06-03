@@ -23,7 +23,7 @@ module JennCad::Primitives
         c2.move(y:@len_y)
       end
       res = c1 & c2
-      if @a > 0.0
+      if @a != 0.0
         res = res.rotate(z:@a)
       end
       res

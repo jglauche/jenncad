@@ -1,6 +1,6 @@
 module JennCad
   class Thing
-    attr_accessor :color, :fallback_color
+    attr_accessor :opts
     attr_accessor :parts
     attr_accessor :transformations, :name
     attr_accessor :x, :y, :z, :diameter
@@ -15,6 +15,17 @@ module JennCad
       @calc_y = 0
       @calc_z = 0
       @calc_h = args[:h] || 0
+      @opts = args
+    end
+
+    def option(key)
+      @opts ||= {}
+      @opts[key]
+    end
+
+    def set_option(key, val)
+      @opts ||= {}
+      @opts[key] = val
     end
 
 # that hack doesn't work; It does not see the instance_variables of the other class at this point (not sure why)
@@ -142,14 +153,14 @@ module JennCad
     end
 
     def color(args=nil)
-      return @color if args == nil
-      @color = args
+      return option(:color) if args == nil
+      set_option :color, args
       self
     end
 
     def color_or_fallback
-      return @fallback_color if @color == nil
-      @color
+      return option(:fallback_color) if option(:color) == nil
+      option(:color)
     end
 
     def openscad(file)

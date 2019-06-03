@@ -174,7 +174,7 @@ module JennCad
 				if part.children_list(JennCad::Aggregation).map{|l| l.color != nil && l.color != part.color}.include?(true)
 					part.children_list(JennCad::Aggregation).each do |child|
 						if child.color == nil && child.color != part.color && !child.kind_of?(BooleanObject)
-							child.fallback_color = part.color
+							child.set_option :fallback_color, part.color
 						end
 					end
 					return ""
