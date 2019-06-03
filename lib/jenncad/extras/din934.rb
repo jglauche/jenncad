@@ -21,7 +21,7 @@ module JennCad::Extras
       @margin = args[:margin] ||= 0.2 # default output margin
 
       @slot = args[:slot] || nil
-      @slot_margin = args[:slot_margin] || 0.5
+      @slot_margin = args[:slot_margin] || 0.2
       @slot_direction = args[:slot_direction] || "z"
       @cylinder_length = args[:cylinder_length] || 0  # for slot only
 
