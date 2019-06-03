@@ -14,7 +14,7 @@ module JennCad
       @calc_x = 0
       @calc_y = 0
       @calc_z = 0
-      @calc_h = args[:h] || 0
+      @calc_h = args[:z] || 0
       @opts ||= args
     end
 
@@ -172,5 +172,27 @@ module JennCad
 
       OpenScad.new(self).save(file)
     end
+
+    def referenced_z
+     return false if @z.to_f != 0.0
+     return option(:zref) if option(:zref)
+     return false
+    end
+
+    def z
+      ref = referenced_z
+      if ref
+        return ref.z.to_f + ref.z_margin.to_f
+      end
+      @z
+    end
+
+    def z_margin
+      if option(:margins)
+        return option(:margins)[:z].to_f
+      end
+      0.0
+    end
+
   end
 end

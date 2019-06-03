@@ -17,6 +17,31 @@ module JennCad::Primitives
 
     def after_add
       @parts.compact!
+      inherit_zref
     end
+
+    def inherit_zref
+      return if @parts.first == nil
+      return if @parts.first.z.to_f == 0.0
+      get_primitives(@parts[1..-1]).flatten.each do |part|
+        if part.z.to_f == 0.0
+          part.set_option :zref, @parts.first
+        end
+      end
+    end
+
+    def get_primitives(obj)
+      res = []
+      if obj.kind_of? Array
+        obj.each do |part|
+          res << part.children_list
+        end
+      else
+        res << obj.children_list
+      end
+      res
+    end
+
+
   end
 end

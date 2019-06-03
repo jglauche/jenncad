@@ -1,22 +1,6 @@
 module JennCad::Primitives
   class SubtractObject < BooleanObject
 
-    def add(part)
-      super(part)
-    end
-
-    def get_primitives(obj)
-      res = []
-      if obj.kind_of? Array
-        obj.each do |part|
-          res << part.children_list
-        end
-      else
-        res << obj.children_list
-      end
-      res
-    end
-
     def get_heights(obj)
       res = []
       obj.each do |part|
@@ -63,18 +47,22 @@ module JennCad::Primitives
       others.each do |part|
         #puts part.inspect
         #puts "#{part.calc_z+part.calc_h} ; #{compare_h}"
-        if part.respond_to? :h
-          if part.h == compare_h
-            puts "fixing possible z fighting: #{part.class} #{part.h}"
-            part.h+=0.008
+        if part.respond_to? :z
+          if part.referenced_z
+            puts "referenced Z detected, adding decent margin"
+            part.z+=0.2
+            part.translate(z:-0.1)
+          elsif part.z == compare_h
+            puts "fixing possible z fighting: #{part.class} #{part.z}"
+            part.z+=0.008
             part.translate(z:-0.004)
           elsif part.calc_z == compare_z
             puts "z fighting at bottom: #{part.calc_z}"
-            part.h+=0.004
+            part.z+=0.004
             part.translate(z:-0.002)
-          elsif part.calc_z+part.calc_h == compare_h
+          elsif part.calc_z.to_f+part.calc_h.to_f == compare_h
             puts "z fighting at top: #{compare_h}"
-            part.h+=0.004
+            part.z+=0.004
             part.translate(z:0.002)
           end
         end
