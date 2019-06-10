@@ -159,9 +159,11 @@ module JennCad
           if part.respond_to? :to_openscad
             item.parts[i] = part.to_openscad
           else
-            make_openscad_compatible!(part)
+            item.parts[i] = part.make_openscad_compatible
           end
         end
+      elsif item.respond_to? :part
+        item = item.part.make_openscad_compatible
       end
       if item.respond_to? :to_openscad
         item = item.to_openscad

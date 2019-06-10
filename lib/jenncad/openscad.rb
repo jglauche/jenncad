@@ -95,6 +95,7 @@ module JennCad
         elsif part.respond_to?(:part)
           return root(part.part, "", tabindex)
         end
+        puts "no idea what to do with #{part.inspect}"
         return ""
       end
     end

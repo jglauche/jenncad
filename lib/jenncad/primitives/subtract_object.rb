@@ -29,7 +29,7 @@ module JennCad::Primitives
       first_z = get_z(first).uniq
       #puts first.inspect
       if first_h.size > 1
-        puts "first item has multiple heights: #{first_h.inspect}"
+#        puts "first item has multiple heights: #{first_h.inspect}"
         first_h.each do |h|
           compare_z(others, h, first_z.first)
         end
@@ -56,15 +56,15 @@ module JennCad::Primitives
               part.translate(z:-0.1)
             end
           elsif part.z == compare_h
-            puts "fixing possible z fighting: #{part.class} #{part.z}"
+#            puts "fixing possible z fighting: #{part.class} #{part.z}"
             part.z+=0.008
             part.translate(z:-0.004)
           elsif part.calc_z == compare_z
-            puts "z fighting at bottom: #{part.calc_z}"
+#            puts "z fighting at bottom: #{part.calc_z}"
             part.z+=0.004
             part.translate(z:-0.002)
           elsif part.calc_z.to_f+part.calc_h.to_f == compare_h
-            puts "z fighting at top: #{compare_h}"
+#            puts "z fighting at top: #{compare_h}"
             part.z+=0.004
             part.translate(z:0.002)
           end
