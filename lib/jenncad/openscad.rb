@@ -5,7 +5,7 @@ module JennCad
       @imports = []
       @modules = {}
       part = part.make_openscad_compatible
-      @main = root(part, "$fn=#{fn};")
+      @main = root(part, "$fn=#{fn};\n")
 
       @export = ""
       @imports.uniq.each do |val|
@@ -15,8 +15,6 @@ module JennCad
         @export += val
       end
       @export += @main
-      #puts "-----"
-      #puts @export
     end
 
     def save(file)
@@ -25,11 +23,11 @@ module JennCad
       end
     end
 
-    def root(part, head="")
+    def root(part, head="", tabindex=0)
       res = head
 
       res += transform(part) do
-        parse(part)
+        parse(part, tabindex)
       end
       res
     end
@@ -56,46 +54,46 @@ module JennCad
     end
 
 
-    def parse(part)
+    def parse(part, tabindex=0)
       case part
       when JennCad::OpenScadImport
         handle_import(part)
       when JennCad::Aggregation
         handle_aggregation(part)
       when JennCad::UnionObject
-        cmd('union', nil, part.parts)
+        cmd('union', nil, part.parts, tabindex)
       when JennCad::SubtractObject
         part.analyze_z_fighting
-        cmd('difference', nil, part.parts)
+        cmd('difference', nil, part.parts, tabindex)
       when JennCad::IntersectionObject
-        cmd('intersection', nil, part.parts)
+        cmd('intersection', nil, part.parts, tabindex)
       when JennCad::HullObject
-        cmd('hull', nil, part.parts)
+        cmd('hull', nil, part.parts, tabindex)
       when JennCad::Primitives::Circle
-        cmd('circle', collect_params(part), nil)
+        cmd('circle', collect_params(part), nil, tabindex)
       when JennCad::Primitives::Cylinder
-        cmd('cylinder', collect_params(part), nil)
+        cmd('cylinder', collect_params(part), nil, tabindex)
       when JennCad::Primitives::Sphere
-        cmd('sphere', collect_params(part), nil)
+        cmd('sphere', collect_params(part), nil, tabindex)
       when JennCad::Primitives::Cube
-        handle_cube(part)
+        handle_cube(part, tabindex)
       when JennCad::Primitives::LinearExtrude
-        cmd('linear_extrude', part.openscad_params, part.parts)
+        cmd('linear_extrude', part.openscad_params, part.parts, tabindex)
       when JennCad::Primitives::RotateExtrude
-        cmd('rotate_extrude', part.openscad_params, part.parts)
+        cmd('rotate_extrude', part.openscad_params, part.parts, tabindex)
       when JennCad::Primitives::Projection
-        cmd('projection', collect_params(part), part.parts)
+        cmd('projection', collect_params(part), part.parts, tabindex)
       when JennCad::Primitives::Polygon
-        cmd('polygon', collect_params(part), nil)
+        cmd('polygon', collect_params(part), nil, tabindex)
       else
         if part.respond_to?(:parts) && part.parts != nil && !part.parts.empty?
         res = ""
         part.parts.each do |p|
-            res += root(p)
+            res += root(p, "", tabindex)
           end
         return res
         elsif part.respond_to?(:part)
-          return root(part.part)
+          return root(part.part, "", tabindex)
         end
         return ""
       end
@@ -135,34 +133,44 @@ module JennCad
       end
     end
 
-    def cmd(name, args, items)
+    def cmd(name, args, items, tabindex = 0)
       items ||= []
       res = cmd_call(name,args)
       if items.size > 1
-        res << "{"
-      end
-      items.each do |item|
-        res << transform(item) do
-          parse(item)
+        res << "\n"
+        res << tabs(tabindex) { "{\n" }
+        items.each do |item|
+          res << tabs(tabindex+1) do
+            transform(item) do
+              parse(item, tabindex+1)
+            end
+          end
         end
-      end
-      if items.size > 1
-        res << "}"
-      end
-      if items.size <= 1
-        res << ";"
+        res << tabs(tabindex) { "}\n" }
+      elsif items.size == 1
+        item = items.first
+        res << transform(item) do
+          parse(item, tabindex)
+        end
+        res << ";\n"
+      else
+        res << ";\n"
       end
       return res
     end
 
-    def handle_import(part)
-      @imports << part.import
-      return "#{part.name}(#{fmt_params(part.args)});"
+    def tabs(i, &block)
+      "  " * i + block.yield
     end
 
-    def handle_aggregation(part)
+    def handle_import(part, tabindex=0)
+      @imports << part.import
+      return tabs(tabindex){ "#{part.name}(#{fmt_params(part.args)});\n" }
+    end
+
+    def handle_aggregation(part, tabindex=0)
       register_module(part) unless @modules[part.name]
-      use_module(part.name)
+      use_module(part.name, tabindex)
     end
 
     # check children for color values
@@ -200,13 +208,13 @@ module JennCad
 
     def register_module(part)
       # can only accept aggregation
-      @modules[part.name] = "module #{part.name}(){"
+      @modules[part.name] = "module #{part.name}(){\n"
       @modules[part.name] += root(part.part)
-      @modules[part.name] += "}"
+      @modules[part.name] += "}\n"
     end
 
-    def use_module(name)
-      return cmd_call(name, nil).to_s+";"
+    def use_module(name, tabindex)
+      tabs(tabindex){ cmd_call(name, nil).to_s+";" }
     end
 
     def cmd_call(name, args)
@@ -241,7 +249,8 @@ module JennCad
     end
 
     # cubes are now centered in xy by default in jenncad
-    def handle_cube(part)
+    # TODO: should this not be to_openscad in Cube?
+    def handle_cube(part, tabindex)
       res = ""
       if part.option(:center)
         res += transformation(Move.new(x: -part.x/2.0, y: -part.y/2.0))
