@@ -180,7 +180,6 @@ module JennCad
 
     def auto_color
       if option(:color) == nil
-        puts "mew"
         auto_color!
       end
     end
