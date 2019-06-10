@@ -16,6 +16,7 @@ require "jenncad/primitives/circle"
 require "jenncad/primitives/cylinder"
 require "jenncad/primitives/sphere"
 require "jenncad/primitives/cube"
+require "jenncad/primitives/rounded_cube"
 require "jenncad/primitives/polygon"
 require "jenncad/primitives/slot"
 

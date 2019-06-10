@@ -15,8 +15,6 @@ module JennCad::Primitives
         args.deep_merge!(m)
       end
 
-      args[:z] ||= args[:h]
-
       @opts = {
         d: 5,
         x: 0,
@@ -31,16 +29,13 @@ module JennCad::Primitives
           z: 0,
         },
       }.deep_merge!(args)
-
+      handle_margins
+      handle_diameter
       super(opts)
-
-      @d = @opts[:d]
-      @a = @opts[:a]
-      @h = @opts[:h]
-      @r = @opts[:r] # FIXME: not using r for now
     end
 
     def to_openscad
+      return cube(@opts) if @d == 0
       res = HullObject.new(
         cylinder(d:@d, h:@z).move(x: -@x/2.0 + @d/2.0, y: @y/2.0 - @d/2.0),
         cylinder(d:@d).move(x: @x/2.0 - @d/2.0, y: @y/2.0 - @d/2.0),

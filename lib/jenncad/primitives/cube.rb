@@ -28,9 +28,7 @@ module JennCad::Primitives
         center_x: false,
         center_z: false,
       }.deep_merge!(args)
-      @x = @opts[:x] + @opts[:margins][:x]
-      @y = @opts[:y] + @opts[:margins][:y]
-      @z = @opts[:z] + @opts[:margins][:z]
+      handle_margins
 
       super(args)
       @h = @z.dup

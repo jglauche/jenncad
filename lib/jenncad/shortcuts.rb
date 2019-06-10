@@ -23,6 +23,11 @@ module JennCad
     Cube.new(args)
   end
 
+  def rounded_cube(*args)
+    RoundedCube.new(args)
+  end
+  alias :rcube :rounded_cube
+
   # import/use OpenScad library
   def import(import,name,args)
     OpenScadImport.new(import, name, args)

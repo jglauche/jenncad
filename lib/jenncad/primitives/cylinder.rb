@@ -25,6 +25,7 @@ module JennCad::Primitives
           d: 0,
           z: 0,
         },
+        fn: nil,
       }.deep_merge!(args)
 
       # FIXME:
@@ -37,6 +38,9 @@ module JennCad::Primitives
       @z = args[:z] || args[:h]
       @r = args[:r]
       @fn = args[:fn]
+      if @fn == nil && @d > 16
+        @fn = (@d*4).ceil
+      end
       super(args)
     end
 
