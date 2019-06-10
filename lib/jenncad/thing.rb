@@ -171,8 +171,25 @@ module JennCad
 
     def color(args=nil)
       return option(:color) if args == nil
+      if args == :auto
+        return auto_color!
+      end
       set_option :color, args
       self
+    end
+
+    def auto_color
+      if option(:color) == nil
+        puts "mew"
+        auto_color!
+      end
+    end
+
+    def auto_color!
+      if $colors == nil || $colors.size == 0
+        $colors = Colors
+      end
+      color($colors.pop)
     end
 
     def color_or_fallback

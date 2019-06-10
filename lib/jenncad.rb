@@ -3,9 +3,24 @@ include Math
 include Geo3d
 require "deep_merge"
 
+
+Colors = %w(
+  Teal
+  DarkOliveGreen
+  Aquamarine
+  SteelBlue
+  LightCoral
+  OrangeRed
+  MediumVioletRed
+  DarkOrchid
+  HotPink
+)
+
+
 require "jenncad/patches/array"
 require "jenncad/version"
 require "jenncad/thing"
+require "jenncad/part"
 
 require "jenncad/primitives/primitive"
 require "jenncad/primitives/aggregation"
