@@ -6,7 +6,7 @@ module JennCad
     end
 
     def outputs
-      []
+      self.class.instance_methods(false) - [:config, :outputs, :output_dir]
     end
 
     def run(&block)
@@ -25,7 +25,8 @@ module JennCad
     end
 
     def run_exports
-      outputs.each do |part|
+      outputs.each do |name|
+        part = self.send(name)
         part.openscad([output_dir,part.class.to_s.downcase+".scad"].join("/"))
       end
     end
