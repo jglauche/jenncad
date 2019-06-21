@@ -1,0 +1,70 @@
+#!/usr/bin/env ruby
+
+require "rubygems"
+require "jenncad"
+require "observr"
+require "hanami/cli"
+
+# todo move to lib/
+module JennCad
+  module Commands
+    extend Hanami::CLI::Registry
+
+
+    class Run < Hanami::CLI::Command
+      argument :name, required: false
+
+      def guess_executable(dir=Dir.pwd)
+        dir.split("/").last.to_s + ".rb"
+      end
+
+      def check_executable(file)
+        return true if File.exists?(file)
+        # this is not too smart at the moment
+        puts "cannot find executable #{file}"
+        nil
+      end
+
+      def observe(exec)
+        execute(exec)
+        script = Observr::Script.new
+        Dir.glob("**/**.rb").each do |file|
+          script.watch(file) do
+            execute(exec)
+          end
+        end
+        contr = Observr::Controller.new(script, Observr.handler.new)
+        puts "JennCad running, refreshing on file changes. Press ctrl+c to exit"
+        contr.run
+      end
+
+      def execute(file)
+        system("./#{file}")
+      end
+
+      def call(name: nil, **)
+        unless name
+          name = guess_executable
+        end
+        if check_executable(name)
+          observe(name)
+        end
+      end
+    end
+
+    class NewProject < Hanami::CLI::Command
+      argument :name, required: true
+
+      def call(name:, **)
+        puts "creating new project #{name}"
+      end
+    end
+
+  end
+end
+
+JennCad::Commands.register "", JennCad::Commands::Run
+JennCad::Commands.register "run", JennCad::Commands::Run
+JennCad::Commands.register "new", JennCad::Commands::NewProject
+Hanami::CLI.new(JennCad::Commands).call
+
