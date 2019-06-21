@@ -13,13 +13,13 @@ Gem::Specification.new do |gem|
   gem.summary     = %q{TBD}
   gem.description = %q{TBD}
 
-	gem.license 		= 'GPL-3'
+  gem.license     = 'GPL-3'
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-	gem.required_ruby_version = ">= 2.5.0"
+  gem.required_ruby_version = ">= 2.5.0"
   gem.add_runtime_dependency "geo3d"
   gem.add_runtime_dependency "deep_merge"
   gem.add_runtime_dependency "hanami-cli"

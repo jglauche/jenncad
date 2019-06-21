@@ -21,6 +21,7 @@ require "jenncad/patches/array"
 require "jenncad/version"
 require "jenncad/thing"
 require "jenncad/part"
+require "jenncad/project"
 
 require "jenncad/primitives/primitive"
 require "jenncad/primitives/aggregation"

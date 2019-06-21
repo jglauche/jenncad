@@ -88,6 +88,19 @@ module JennCad
     end
     alias :translate :move
 
+    # move half
+    def moveh(args)
+      if args.kind_of? Array
+        x,y,z = args
+        args = {x: x, y: y, z: z}
+      end
+      args[:x] = args[:x] / 2.0 unless args[:x] == nil
+      args[:y] = args[:y] / 2.0 unless args[:y] == nil
+      args[:z] = args[:z] / 2.0 unless args[:z] == nil
+
+      move(args)
+    end
+
     def mirror(args)
       @transformations ||= []
       @transformations << Mirror.new(args)
@@ -132,6 +145,13 @@ module JennCad
       ])
     end
 
+    def top_of(other_object)
+      self.move(z:other_object.z)
+    end
+
+    def on_top_of(other_object)
+      self.top_of(other_object) + other_object
+    end
 
     def children_list(stop_at=nil)
       get_children(self, stop_at).flatten

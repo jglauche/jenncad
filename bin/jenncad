@@ -42,6 +42,43 @@ module JennCad
         system("./#{file}")
       end
 
+      def build
+        admesh_installed = system("admesh --version > /dev/null")
+        unless admesh_installed
+          puts "Warning: cannot find admesh, stl export will be in ASCII"
+        end
+
+        Dir.glob("output/**/*.scad").each do |file|
+          stl = file.gsub(".scad",".stl")
+          build_stl(file, stl)
+          convert_to_binary(stl) if admesh_installed
+        end
+      end
+
+      def build_stl(scad, stl)
+        puts "building #{stl}"
+        system("openscad #{scad} -o #{stl}")
+      end
+
+      def convert_to_binary(stl)
+        system("admesh #{stl}")
+      end
+
+    end
+
+    class Build < Run
+      def call(name: nil, **)
+        unless name
+          name = guess_executable
+        end
+        if check_executable(name)
+          execute(name)
+          build
+        end
+      end
+    end
+
+    class Observe < Run
       def call(name: nil, **)
         unless name
           name = guess_executable
@@ -57,14 +94,21 @@ module JennCad
 
       def call(name:, **)
         puts "creating new project #{name}"
+        #Dir.mkdir(name)
+
       end
     end
 
   end
 end
 
-JennCad::Commands.register "", JennCad::Commands::Run
-JennCad::Commands.register "run", JennCad::Commands::Run
+JennCad::Commands.register "", JennCad::Commands::Observe
+JennCad::Commands.register "run", JennCad::Commands::Observe
+JennCad::Commands.register "build", JennCad::Commands::Build
+
+
 JennCad::Commands.register "new", JennCad::Commands::NewProject
+
+
 Hanami::CLI.new(JennCad::Commands).call
 
