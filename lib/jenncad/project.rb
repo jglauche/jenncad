@@ -27,7 +27,7 @@ module JennCad
     def run_exports
       outputs.each do |name|
         part = self.send(name)
-        part.openscad([output_dir,part.class.to_s.downcase+".scad"].join("/"))
+        part.openscad([output_dir,"#{name}.scad"].join("/"))
       end
     end
 
