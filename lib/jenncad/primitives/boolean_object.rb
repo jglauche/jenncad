@@ -16,7 +16,8 @@ module JennCad::Primitives
     end
 
     def after_add
-      @parts.compact!
+     @parts.flatten!
+     @parts.compact!
       inherit_zref
     end
 

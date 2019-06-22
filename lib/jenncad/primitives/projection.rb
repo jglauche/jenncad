@@ -4,6 +4,6 @@ module JennCad::Primitives
       @transformations = []
       @cut = args[:cut]
       @parts = [part]
-   end
- end
+    end
+  end
 end
