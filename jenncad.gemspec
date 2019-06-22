@@ -13,7 +13,7 @@ Gem::Specification.new do |gem|
   gem.summary     = %q{TBD}
   gem.description = %q{TBD}
 
-  gem.license     = 'GPL-3'
+  gem.license     = 'LGPL-3'
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
@@ -25,4 +25,3 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "hanami-cli"
   gem.add_runtime_dependency "activesupport"
 end
-
