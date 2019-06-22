@@ -61,7 +61,7 @@ module JennCad
       end
 
       def convert_to_binary(stl)
-        system("admesh #{stl}")
+        system("admesh #{stl} -b #{stl}")
       end
 
     end
