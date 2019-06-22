@@ -9,7 +9,22 @@ module JennCad
       self.class.instance_methods(false) - [:config, :outputs, :output_dir]
     end
 
+    def profile_dir
+      File.expand_path(["~", ".config", "jenncad"].join("/"))
+    end
+
+    def profile_path
+      [profile_dir, "profile.rb"].join("/")
+    end
+
+    def load_profile
+      if File.exists?(profile_path)
+        require profile_path
+      end
+    end
+
     def run(&block)
+      load_profile
       # load all files in subdirectories
       Dir.glob("*/**/*.rb").each do |file|
         require "./#{file}"
