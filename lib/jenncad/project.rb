@@ -23,19 +23,13 @@ module JennCad
       end
     end
 
-    def run(&block)
+    def run
       load_profile
       # load all files in subdirectories
       Dir.glob("*/**/*.rb").each do |file|
         require "./#{file}"
       end
-      base_dir = Dir.pwd
-      # check if output directories exist
-      output_dir.split("/").each do |dir|
-        Dir.mkdir(dir) unless Dir.exists?(dir)
-        Dir.chdir(dir)
-      end
-      Dir.chdir(base_dir)
+      FileUtils.mkdir_p(output_dir)
       run_exports
     end
 

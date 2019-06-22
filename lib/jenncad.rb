@@ -2,7 +2,7 @@ require "geo3d"
 include Math
 include Geo3d
 require "deep_merge"
-
+require "fileutils"
 
 Colors = %w(
   Teal

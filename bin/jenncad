@@ -4,12 +4,12 @@ require "rubygems"
 require "jenncad"
 require "observr"
 require "hanami/cli"
+require "active_support"
 
 # todo move to lib/
 module JennCad
   module Commands
     extend Hanami::CLI::Registry
-
 
     class Run < Hanami::CLI::Command
       argument :name, required: false
@@ -89,13 +89,81 @@ module JennCad
       end
     end
 
+    class NewPart < Hanami::CLI::Command
+      include ActiveSupport::Inflector
+      desc "creates a new part in a project"
+      argument :name, required: true
+      def call(name:, **)
+        dir = Dir.pwd.split("/").last
+        executable = underscore(dir)+".rb"
+        executable_class = camelize(dir)
+        unless File.exists?(executable)
+          puts "Could not find #{executable}. Are you in a JennCad project directory?"
+          exit
+        end
+        FileUtils.mkdir_p("parts")
+        name = underscore(name)
+        classname = camelize(name)
+        filename = "parts/#{name}.rb"
+        if File.exists?(filename)
+          puts "File #{filename} already exists."
+          exit
+        end
+        File.open(filename, "w") do |f|
+          f.puts "class #{classname} < Part"
+          f.puts "  def initialize(opts={})"
+          f.puts "    @opts = {"
+          f.puts "      x: 10,"
+          f.puts "      y: 10,"
+          f.puts "      z: 5,"
+          f.puts "    }.merge(opts)"
+          f.puts "  end"
+          f.puts ""
+          f.puts "  def part"
+          f.puts "    cube(@opts)"
+          f.puts "  end"
+          f.puts "end"
+        end
+        puts "part #{filename} created. In your #{executable} add to class #{executable_class}:"
+        puts "def #{name}"
+        puts "  #{classname}.new(config)"
+        puts "end"
+
+      end
+
+    end
+
     class NewProject < Hanami::CLI::Command
+      include ActiveSupport::Inflector
+      desc "generates a new project"
       argument :name, required: true
 
       def call(name:, **)
-        puts "creating new project #{name}"
-        #Dir.mkdir(name)
+        name = underscore(name)
+        filename = name+".rb"
+        Dir.mkdir(name)
+        Dir.chdir(name)
+        classname = camelize(name)
+        File.open(filename, "w") do |f|
+          f.puts "#!/usr/bin/env ruby"
+          f.puts "require \"jenncad\""
+          f.puts "include JennCad"
+          f.puts ""
+          f.puts "class #{classname} < Project"
+          f.puts "  def config"
+          f.puts "    {}"
+          f.puts "  end"
+          f.puts ""
+          f.puts "  def #{name}"
+          f.puts "    cube(10,10,10)"
+          f.puts "  end"
+          f.puts "end"
+          f.puts ""
+          f.puts "#{classname}.new.run"
+        end
+        File.chmod(0755, filename)
 
+        puts "created new project #{name}"
       end
     end
 
@@ -106,8 +174,8 @@ JennCad::Commands.register "", JennCad::Commands::Observe
 JennCad::Commands.register "run", JennCad::Commands::Observe
 JennCad::Commands.register "build", JennCad::Commands::Build
 
-
-JennCad::Commands.register "new", JennCad::Commands::NewProject
+JennCad::Commands.register "new", JennCad::Commands::NewPart
+JennCad::Commands.register "create", JennCad::Commands::NewProject
 
 
 Hanami::CLI.new(JennCad::Commands).call
