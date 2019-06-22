@@ -2,11 +2,6 @@ module JennCad::Primitives
   class RoundedCube < Primitive
     attr_accessor :d, :r
 
-    Up = 1
-    Right = 2
-    Down = 4
-    Left = 8
-
     def initialize(args)
       if args.kind_of?(Array) && args[0].kind_of?(Hash)
         args = args.first
