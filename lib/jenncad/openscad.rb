@@ -225,7 +225,7 @@ module JennCad
 
     def collect_params(part)
       res = {}
-      [:d, :r, :h, :r1, :r2, :d1, :d2, :size, :m, :fn, :points].each do |var|
+      [:d, :r, :h, :r1, :r2, :d1, :d2, :size, :fn, :points].each do |var|
         if part.respond_to? var
           res[var] = part.send var
         end

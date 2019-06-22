@@ -33,6 +33,7 @@ module JennCad
       @transformations << Rotate.new(args)
       self
     end
+    alias :rt :rotate
 
     def center
       return @center if @center
@@ -55,6 +56,7 @@ module JennCad
 
       self.rotate(y:90).moveh(x: -ref.z, z: ref.x)
     end
+    alias :fx :flip_x
 
     def flip_y
       if self.kind_of?(BooleanObject)
@@ -65,6 +67,7 @@ module JennCad
 
       self.rotate(x:90).moveh(y: ref.z, z: ref.y)
     end
+    alias :fy :flip_y
 
     def radians(a)
       a.to_f/180.0*PI
@@ -107,6 +110,19 @@ module JennCad
       self
     end
     alias :translate :move
+    alias :m :move
+
+    def mx(v)
+      move(x:v)
+    end
+
+    def my(v)
+      move(y:v)
+    end
+
+    def mz(v)
+      move(z:v)
+    end
 
     # move half
     def moveh(args)
@@ -120,12 +136,26 @@ module JennCad
 
       move(args)
     end
+    alias :mh :moveh
+
+    def mhx(v)
+      moveh(x:v)
+    end
+
+    def mhy(v)
+      moveh(y:v)
+    end
+
+    def mhz(v)
+      moveh(z:v)
+    end
 
     def mirror(args)
       @transformations ||= []
       @transformations << Mirror.new(args)
       self
     end
+    alias :mi :mirror
 
     def scale(args)
       if args.kind_of? Numeric or args.kind_of? Array
@@ -135,6 +165,7 @@ module JennCad
       @transformations << Scale.new(args)
       self
     end
+    alias :sc :scale
 
     # copies the transformation of obj to self
     def transform(obj)
