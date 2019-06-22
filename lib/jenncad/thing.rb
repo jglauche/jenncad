@@ -46,6 +46,26 @@ module JennCad
       end
     end
 
+    def flip_x
+      if self.kind_of?(BooleanObject)
+        ref = self.parts.first
+      else
+        ref = self
+      end
+
+      self.rotate(y:90).moveh(x: -ref.z, z: ref.x)
+    end
+
+    def flip_y
+      if self.kind_of?(BooleanObject)
+        ref = self.parts.first
+      else
+        ref = self
+      end
+
+      self.rotate(x:90).moveh(y: ref.z, z: ref.y)
+    end
+
     def radians(a)
       a.to_f/180.0*PI
     end
