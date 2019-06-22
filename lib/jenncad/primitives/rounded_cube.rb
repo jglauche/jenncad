@@ -2,6 +2,11 @@ module JennCad::Primitives
   class RoundedCube < Primitive
     attr_accessor :d, :r
 
+    Up = 1
+    Right = 2
+    Down = 4
+    Left = 8
+
     def initialize(args)
       if args.kind_of?(Array) && args[0].kind_of?(Hash)
         args = args.first
@@ -21,6 +26,7 @@ module JennCad::Primitives
         y: 0,
         z: nil,
         r: nil,
+        flat_edges: nil,
         margins: {
           r: 0,
           d: 0,
@@ -37,12 +43,36 @@ module JennCad::Primitives
     def to_openscad
       return cube(@opts) if @d == 0
       res = HullObject.new(
-        cylinder(d:@d, h:@z).move(x: -@x/2.0 + @d/2.0, y: @y/2.0 - @d/2.0),
-        cylinder(d:@d).move(x: @x/2.0 - @d/2.0, y: @y/2.0 - @d/2.0),
-        cylinder(d:@d).move(x: -@x/2.0 + @d/2.0, y: -@y/2.0 + @d/2.0),
-        cylinder(d:@d).move(x: @x/2.0 - @d/2.0, y: -@y/2.0 + @d/2.0),
+        cylinder(d:@d, h:@z).moveh(x: -@x + @d, y: @y - @d),
+        cylinder(d:@d).moveh(x: @x - @d, y: @y - @d),
+        cylinder(d:@d).moveh(x: -@x + @d, y: -@y + @d),
+        cylinder(d:@d).moveh(x: @x - @d, y: -@y + @d),
       )
+
+      if @opts[:flat_edges]
+        if @opts[:flat_edges].kind_of?(Array)
+          @opts[:flat_edges].each do |e|
+            res += flat_edge(e)
+          end
+        else
+          res += flat_edge(@opts[:flat_edges])
+        end
+      end
+
       res
+    end
+
+    def flat_edge(edge)
+      case edge
+      when :up
+        cube(@x, @y/2.0, @z).moveh(y:@y/2.0)
+      when :down
+        cube(@x, @y/2.0, @z).moveh(y:-@y/2.0)
+      when :right
+        cube(@x/2.0, @y, @z).moveh(x:@x/2.0)
+      when :left
+        cube(@x/2.0, @y, @z).moveh(x:-@x/2.0)
+      end
     end
 
   end
