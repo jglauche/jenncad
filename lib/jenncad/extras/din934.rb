@@ -1,8 +1,8 @@
 module JennCad::Extras
   class Din934 < Hardware
     attr_accessor :height
-		attr_accessor :data
-	  Data =   {2.5=> {side_to_side:5,height:2, support_diameter:2.8},
+    attr_accessor :data
+    Data =   {2.5=> {side_to_side:5,height:2, support_diameter:2.8},
                     3 => {side_to_side:5.5,height:2.4, support_diameter:3.5},
                     4 => {side_to_side:7,height:3.2, support_diameter:4.4},
                     5 => {side_to_side:8,height:4, support_diameter:5.3},
