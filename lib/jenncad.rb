@@ -1,8 +1,12 @@
 require "geo3d"
-include Math
-include Geo3d
 require "deep_merge"
 require "fileutils"
+require "observr"
+require "hanami/cli"
+require "active_support"
+
+include Math
+include Geo3d
 
 Colors = %w(
   Teal
@@ -22,6 +26,7 @@ require "jenncad/version"
 require "jenncad/thing"
 require "jenncad/part"
 require "jenncad/project"
+require "jenncad/commands"
 
 require "jenncad/primitives/primitive"
 require "jenncad/primitives/aggregation"
@@ -66,9 +71,6 @@ require "jenncad/extras/din912"
 require "jenncad/extras/din933"
 require "jenncad/extras/din934"
 require "jenncad/extras/iso7380"
-
-
-
 
 
 
