@@ -34,9 +34,9 @@ module JennCad
         r = system("./#{file}")
         case r
         when true
-          $jenncad_profile.on_success
+          $jenncad_profile.on_success(file)
         when false
-          $jenncad_profile.on_error
+          $jenncad_profile.on_error(file)
         end
       end
 

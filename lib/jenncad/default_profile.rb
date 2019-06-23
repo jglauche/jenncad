@@ -24,12 +24,14 @@ module JennCad
     end
 
     # called by the command line interface when receiving normal exit status
-    def on_success
+    def on_success(file)
+      system("echo $'\033]30;#{file}: ok\007'")
       puts "ok"
     end
 
     # called by the command line interface when receiving error exit status
-    def on_error
+    def on_error(file)
+      system("echo $'\033]30;#{file}: error\007'")
       puts "error"
     end
 
