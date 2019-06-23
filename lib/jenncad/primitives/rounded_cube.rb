@@ -46,15 +46,7 @@ module JennCad::Primitives
         cylinder(d:@d).moveh(x: @x - @d, y: -@y + @d),
       )
 
-      if @opts[:flat_edges]
-        if @opts[:flat_edges].kind_of?(Array)
-          @opts[:flat_edges].each do |e|
-            res += flat_edge(e)
-          end
-        else
-          res += flat_edge(@opts[:flat_edges])
-        end
-      end
+      res += flat_edge(@opts[:flat_edges])
 
       res.transformations = @transformations
       res
@@ -62,6 +54,9 @@ module JennCad::Primitives
 
     def flat_edge(edge)
       case edge
+      when Array
+        #ruby2.7 test- edge.map(&self.:flat_edge)
+        edge.map{|x| flat_edge(x) }
       when :up
         cube(@x, @y/2.0, @z).moveh(y:@y/2.0)
       when :down
@@ -70,6 +65,8 @@ module JennCad::Primitives
         cube(@x/2.0, @y, @z).moveh(x:@x/2.0)
       when :left
         cube(@x/2.0, @y, @z).moveh(x:-@x/2.0)
+      else
+        nil
       end
     end
 
