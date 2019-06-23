@@ -197,7 +197,7 @@ module JennCad
     end
 
     def top_of(other_object)
-      self.move(z:other_object.z)
+      self.move(z:other_object.z+other_object.calc_z.to_f)
     end
 
     def on_top_of(other_object)

@@ -1,5 +1,13 @@
 module JennCad::Primitives
   class SubtractObject < BooleanObject
+    def inherit_z
+      @z = 0
+      @calc_z = parts.first.calc_z.to_f
+      only_additives_of(@parts).each do |p|
+        z = p.z.to_f
+        @z = z if z > @z
+      end
+    end
 
     def get_heights(obj)
       res = []

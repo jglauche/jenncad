@@ -87,11 +87,11 @@ module JennCad
         cmd('polygon', collect_params(part), nil, tabindex)
       else
         if part.respond_to?(:parts) && part.parts != nil && !part.parts.empty?
-        res = ""
-        part.parts.each do |p|
-            res += root(p, "", tabindex)
-          end
-        return res
+          res = ""
+          part.parts.each do |p|
+              res += root(p, "", tabindex)
+            end
+          return res
         elsif part.respond_to?(:part)
           return root(part.part, "", tabindex)
         end

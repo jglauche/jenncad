@@ -14,7 +14,6 @@ module JennCad
         HotPink
       )
 
-
     def colors
       @colors ||= []
       if @colors.empty?

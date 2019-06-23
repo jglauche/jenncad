@@ -23,12 +23,17 @@ module JennCad::Primitives
     end
 
     def inherit_z
-      @z = 0
-      @calc_z = parts.first.calc_z.to_f
-      @parts.each do |p|
-        if p.z.to_f > @z && @calc_z == p.calc_z.to_f
-          @z = p.z
+      heights = @parts.map{|l| l.calc_z.to_f}.uniq
+      if heights.size > 1
+        total_heights = []
+        @parts.each do |p|
+          total_heights << p.z.to_f + p.calc_z.to_f
         end
+        @z = total_heights.max
+        @calc_z = heights.min
+      else
+        @calc_z = heights.first.to_f
+        @z = @parts.map(&:z).compact.max
       end
     end
 
@@ -54,6 +59,18 @@ module JennCad::Primitives
       res
     end
 
+    def only_additives_of(obj)
+      res = []
+      case obj
+      when Array
+        res << obj.map{|l| only_additives_of(l)}
+      when SubtractObject
+      when IntersectionObject
+      else
+        res << obj
+      end
+      res.flatten
+    end
 
   end
 end

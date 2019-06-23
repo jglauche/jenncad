@@ -12,13 +12,14 @@
 - slot with square ends
 
 - de-centering a cube in one direction sucks, you have to add both center: false, center_x: true
- -> decenter ?
+	-> decenter ?
 
 - bolt library needs to get a rewrite,
 	- fetching dimensions from the imported Bolt library should be less awful
 
 - needs a documentation and showcase
 
+- on_top_of doesn't work with classes of Parts
 
 other awful things
 ===================
@@ -26,8 +27,6 @@ other awful things
 - command line interface isn't capable of adding parts to the output automatically
 
 - user profile file should be auto generated with examples
-- there should be a fallback to the user profile profile
 
-- observr has no good way for feedback on error atm, nor when error is cleared
 - switching back and forth from and to openscad for preview sucks (that being said, switching from vim to something else would be awful to me)
 
