@@ -24,4 +24,5 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "deep_merge"
   gem.add_runtime_dependency "hanami-cli"
   gem.add_runtime_dependency "activesupport"
+  gem.add_runtime_dependency "observr"
 end
