@@ -6,10 +6,13 @@ module JennCad
   def cylinder(*args)
     Cylinder.new(args)
   end
+  alias :cy :cylinder
+  alias :cyl :cylinder
 
   def sphere(args)
     Sphere.new(args)
   end
+  alias :sp :sphere
 
   def polygon(args)
     Polygon.new(args)
@@ -22,11 +25,13 @@ module JennCad
   def cube(*args)
     Cube.new(args)
   end
+  alias :cu :cube
 
   def rounded_cube(*args)
     RoundedCube.new(args)
   end
   alias :rcube :rounded_cube
+  alias :rc :rounded_cube
 
   # import/use OpenScad library
   def import(import,name,args)
