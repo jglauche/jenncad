@@ -18,8 +18,18 @@ module JennCad::Primitives
     def after_add
       @parts.flatten!
       @parts.compact!
-      @z = @parts.map(&:z).compact.max
+      inherit_z
       inherit_zref
+    end
+
+    def inherit_z
+      @z = 0
+      @calc_z = parts.first.calc_z.to_f
+      @parts.each do |p|
+        if p.z.to_f > @z && @calc_z == p.calc_z.to_f
+          @z = p.z
+        end
+      end
     end
 
     def inherit_zref
