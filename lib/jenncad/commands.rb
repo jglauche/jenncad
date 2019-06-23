@@ -30,7 +30,14 @@ module JennCad
       end
 
       def execute(file)
-        system("./#{file}")
+        print "refreshing..."
+        r = system("./#{file}")
+        case r
+        when true
+          $jenncad_profile.on_success
+        when false
+          $jenncad_profile.on_error
+        end
       end
 
       def build

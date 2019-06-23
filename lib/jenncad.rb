@@ -8,21 +8,13 @@ require "active_support"
 include Math
 include Geo3d
 
-Colors = %w(
-  Teal
-  DarkOliveGreen
-  Aquamarine
-  SteelBlue
-  LightCoral
-  OrangeRed
-  MediumVioletRed
-  DarkOrchid
-  HotPink
-)
+require "jenncad/version"
+require "jenncad/default_profile"
+require "jenncad/profile_loader"
+JennCad::ProfileLoader.new
 
 
 require "jenncad/patches/array"
-require "jenncad/version"
 require "jenncad/thing"
 require "jenncad/part"
 require "jenncad/project"

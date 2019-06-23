@@ -258,10 +258,7 @@ module JennCad
     end
 
     def auto_color!
-      if $colors == nil || $colors.size == 0
-        $colors = Colors
-      end
-      color($colors.pop)
+      color($jenncad_profile.colors.pop)
     end
 
     def color_or_fallback
