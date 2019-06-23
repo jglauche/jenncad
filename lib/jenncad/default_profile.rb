@@ -1,7 +1,8 @@
 module JennCad
   class DefaultProfile
     attr_accessor :colors
-    AutoColors =
+
+    def auto_colors
       %w(
         Teal
         DarkOliveGreen
@@ -13,11 +14,12 @@ module JennCad
         DarkOrchid
         HotPink
       )
+    end
 
     def colors
       @colors ||= []
       if @colors.empty?
-        @colors = AutoColors
+        @colors = auto_colors
       end
       @colors
     end

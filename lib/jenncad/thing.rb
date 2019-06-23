@@ -246,13 +246,16 @@ module JennCad
       return option(:color) if args == nil
       if args == :auto
         return auto_color!
+      elsif args == :none
+        set_option :no_auto_color, true
+        return self
       end
       set_option :color, args
       self
     end
 
     def auto_color
-      if option(:color) == nil
+      if option(:color) == nil && !option(:no_auto_color)
         auto_color!
       end
     end

@@ -8,8 +8,5 @@ module JennCad::Primitives
       @part = part
     end
 
-    def parts
-      [@part]
-    end
   end
 end

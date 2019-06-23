@@ -19,8 +19,6 @@
 
 - needs a documentation and showcase
 
-- on_top_of doesn't work with classes of Parts
-
 other awful things
 ===================
 

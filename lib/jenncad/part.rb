@@ -4,7 +4,10 @@ module JennCad
 
     def make_openscad_compatible
       auto_color
-      make_openscad_compatible!(self)
+      a = Aggregation.new(self.class.to_s, make_openscad_compatible!(self.part))
+      a.transformations = @transformations
+      a.color(color)
+      a
     end
 
   end
