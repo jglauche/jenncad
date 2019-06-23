@@ -11,7 +11,7 @@ module JennCad::Primitives
         if args.last.kind_of? Hash
           m = args.last
         end
-        args = [:x, :y, :z, :d].zip(args.flatten).to_h
+        args = [:x, :y, :z, :d].zip(args.flatten).to_h.compact
         args.deep_merge!(m)
       end
 
@@ -54,6 +54,7 @@ module JennCad::Primitives
         end
       end
 
+      res.transformations = @transformations
       res
     end
 
