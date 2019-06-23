@@ -8,8 +8,7 @@
 (upload? -> probably git pull request for now)
 - add external projects into one another (for example: make parts, show arrangement of a shelf in another project)
 
-- fix that rcube exceeds fed dimensions if you increase the corner radius too much
-- slot with square ends
+- slot with square ends -> rounded cube with one side = d + flat_edges does that. Should slot do that in reverse?
 
 - de-centering a cube in one direction sucks, you have to add both center: false, center_x: true
 	-> decenter ?
