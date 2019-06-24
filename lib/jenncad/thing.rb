@@ -35,25 +35,41 @@ module JennCad
     end
     alias :rt :rotate
 
-    def flip_x
-      if self.kind_of?(BooleanObject)
+    def rx(v)
+      rt(x:v)
+    end
+
+    def ry(v)
+      rt(y:v)
+    end
+
+    def rz(v)
+      rt(z:v)
+    end
+
+    def flip(direction)
+      case self
+      when BooleanObject
         ref = self.parts.first
       else
         ref = self
       end
 
-      self.rotate(y:90).moveh(x: -ref.z, z: ref.x)
+      case direction
+      when :x
+        self.ry(90).mh(x: -ref.z, z: ref.x)
+      when :y
+        self.rx(90).mh(y: ref.z, z: ref.y)
+      end
+    end
+
+    def flip_x
+      flip(:x)
     end
     alias :fx :flip_x
 
     def flip_y
-      if self.kind_of?(BooleanObject)
-        ref = self.parts.first
-      else
-        ref = self
-      end
-
-      self.rotate(x:90).moveh(y: ref.z, z: ref.y)
+      flip(:y)
     end
     alias :fy :flip_y
 
