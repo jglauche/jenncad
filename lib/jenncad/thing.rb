@@ -35,18 +35,6 @@ module JennCad
     end
     alias :rt :rotate
 
-    def center
-      return @center if @center
-      case shape.to_s
-      when "cube"
-        [@x/2.0,@y/2.0,@z/2.0]
-      when "cylinder"
-        [0,0,@z/2.0]
-      else
-        [0,0,0]
-      end
-    end
-
     def flip_x
       if self.kind_of?(BooleanObject)
         ref = self.parts.first
