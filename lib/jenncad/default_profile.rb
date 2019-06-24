@@ -17,8 +17,8 @@ module JennCad
     end
 
     def colors
-      @colors ||= []
-      if @colors.empty?
+      case @colors
+      when nil, []
         @colors = auto_colors
       end
       @colors

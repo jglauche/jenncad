@@ -38,10 +38,10 @@ module JennCad
     def center
       return @center if @center
       case shape.to_s
-        when "cube"
-          [@x/2.0,@y/2.0,@z/2.0]
-        when "cylinder"
-          [0,0,@z/2.0]
+      when "cube"
+        [@x/2.0,@y/2.0,@z/2.0]
+      when "cylinder"
+        [0,0,@z/2.0]
       else
         [0,0,0]
       end
@@ -243,14 +243,16 @@ module JennCad
     end
 
     def color(args=nil)
-      return option(:color) if args == nil
-      if args == :auto
+      case args
+      when nil
+        return option(:color)
+      when :auto
         return auto_color!
-      elsif args == :none
+      when :none
         set_option :no_auto_color, true
-        return self
+      else
+        set_option :color, args
       end
-      set_option :color, args
       self
     end
 
@@ -273,10 +275,6 @@ module JennCad
       if @parts == nil
         if self.respond_to? :part
           @parts = [part]
-        else
-          # FIXME: -> move logic OpenScad
-          #puts "[Error in openscad export] Could not find @parts or part for #{self}"
-          #exit
         end
       end
 
