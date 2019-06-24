@@ -10,6 +10,16 @@ module JennCad::Primitives
       after_add
     end
 
+    def add_or_new(part)
+      case @transformations
+      when nil, []
+        add(part)
+        self
+      else
+        self.class.new(self, part)
+      end
+    end
+
     def add(part)
       @parts << part
       after_add

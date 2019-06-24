@@ -54,56 +54,47 @@ module JennCad
     UnionObject.new(*args)
   end
 
-  def +(args)
-    return args if self == nil
-    if self.kind_of?(UnionObject) && self.transformations.size == 0
-      self.add(args)
-      return self
-    else
-      UnionObject.new(self,args)
-    end
-  end
-
   def subtraction(*args)
     SubtractObject.new(*args)
-  end
-
-  def -(args)
-    if self.kind_of?(SubtractObject) && self.transformations.size == 0
-      self.add(args)
-      return self
-    else
-      SubtractObject.new(self,args)
-    end
   end
 
   def intersection(*args)
     IntersectionObject.new(*args)
   end
 
-  def *(args)
-    if self.kind_of?(IntersectionObject) && self.transformations.size == 0
-      self.add(args)
-      return self
-    else
-      IntersectionObject.new(self,args)
-    end
-  end
-
   def hull(*args)
     HullObject.new(*args)
   end
 
-  def &(args)
-    if self.kind_of?(HullObject) && self.transformations.size == 0
-      self.add(args)
-      return self
-    else
-      HullObject.new(self,args)
-    end
+  def +(part)
+    boolean_operation(part, UnionObject)
+  end
+
+  def -(part)
+    boolean_operation(part, SubtractObject)
+  end
+
+  def *(part)
+    boolean_operation(part, IntersectionObject)
+  end
+
+  def &(part)
+    boolean_operation(part, HullObject)
   end
 
   def assemble(partlib=nil, z_skip = false, z=0, &block)
     block.yield.assemble(partlib, z_skip, z)
+  end
+
+  private
+  def boolean_operation(part, klass)
+    case self
+    when nil
+      part
+    when klass
+      add_or_new(part)
+    else
+      klass.new(self,part)
+    end
   end
 end
