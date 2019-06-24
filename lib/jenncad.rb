@@ -20,29 +20,7 @@ require "jenncad/part"
 require "jenncad/project"
 require "jenncad/commands"
 
-require "jenncad/primitives/primitive"
-require "jenncad/primitives/aggregation"
-require "jenncad/primitives/openscad_include"
-
-require "jenncad/primitives/circle"
-
-require "jenncad/primitives/cylinder"
-require "jenncad/primitives/sphere"
-require "jenncad/primitives/cube"
-require "jenncad/primitives/rounded_cube"
-require "jenncad/primitives/polygon"
-require "jenncad/primitives/slot"
-
-require "jenncad/primitives/boolean_object"
-require "jenncad/primitives/union_object"
-require "jenncad/primitives/subtract_object"
-require "jenncad/primitives/hull_object"
-require "jenncad/primitives/intersection_object"
-require "jenncad/primitives/projection"
-require "jenncad/primitives/linear_extrude"
-require "jenncad/primitives/rotate_extrude"
-
-
+require "jenncad/primitives"
 
 
 
@@ -55,9 +33,7 @@ require "jenncad/transformation/color"
 require "jenncad/transformation/multmatrix"
 
 
-
-
-
+# TODO: extras need be split from the package to external hardware lib
 require "jenncad/extras/hardware"
 require "jenncad/extras/din912"
 require "jenncad/extras/din933"
@@ -66,8 +42,6 @@ require "jenncad/extras/iso7380"
 
 
 
-
 require "jenncad/register"
 require "jenncad/shortcuts"
-require "jenncad/jenncad"
 require "jenncad/openscad"
