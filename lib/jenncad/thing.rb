@@ -292,18 +292,21 @@ module JennCad
     end
 
     def z
-      ref = referenced_z
-      if ref
-        return ref.z.to_f + ref.z_margin.to_f
+      case ref = referenced_z
+      when nil, false
+        @z
+      else
+        ref.z.to_f + ref.z_margin.to_f
       end
-      @z
     end
 
     def z_margin
-      if option(:margins)
-        return option(:margins)[:z].to_f
+      case m = option(:margins)
+      when nil, {}
+        0.0
+      else
+        m[:z].to_f
       end
-      0.0
     end
 
   end
