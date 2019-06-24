@@ -19,11 +19,27 @@ class Array
     .union
   end
 
-  def union(&block)
-    if block
-      UnionObject.new(block.yield)
-    else
-      UnionObject.new(self)
-    end
+  def union
+    UnionObject.new(self)
   end
+  alias u union
+
+  def subtraction
+    SubtractObject.new(self)
+  end
+  alias subtract subtraction
+  alias sub subtraction
+  alias s subtraction
+
+  def intersection
+    IntersectionObject.new(self)
+  end
+  alias intersect intersection
+  alias i intersection
+
+  def hull
+    HullObject.new(self)
+  end
+  alias h hull
+
 end
