@@ -140,6 +140,12 @@ module JennCad
       items ||= []
       res = cmd_call(name,args)
       case items.size
+      when 1
+        item = items.first
+        res << transform(item) do
+          parse(item, tabindex)
+        end
+        res << ";\n"
       when (1..)
         res << "\n"
         res << tabs(tabindex) { "{\n" }
@@ -151,12 +157,6 @@ module JennCad
           end
         end
         res << tabs(tabindex) { "}\n" }
-      when 1
-        item = items.first
-        res << transform(item) do
-          parse(item, tabindex)
-        end
-        res << ";\n"
       else
         res << ";\n"
       end
