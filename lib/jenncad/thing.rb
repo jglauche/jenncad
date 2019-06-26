@@ -256,8 +256,16 @@ module JennCad
         set_option :no_auto_color, true
       when :random
         set_option :color, Color.random
-      else
+      when Array
+        set_option :color, Color.parse(args)
+      when /(?<=#)(?<!^)(\h{6}|\h{3})/
         set_option :color, args
+      when /(?<!^)(\h{6}|\h{3})/
+        set_option :color, "##{args}"
+      when String
+        set_option :color, args
+      else
+        puts "meow"
       end
       self
     end

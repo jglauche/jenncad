@@ -198,16 +198,12 @@ module JennCad
     end
 
     def apply_color(part)
-      if part && part.respond_to?(:color_or_fallback)
-        color = part.color_or_fallback
-        return "" if color == nil
-        # Allowing color to be string, OpenScad compatible RGBA values of 0..1 or RGBA values of 0..255
-        if color.kind_of?(Array) && color.map{|l| l.to_f > 1.0 ? true : false}.include?(true)
-          color = color.map{|l| l.to_f/255.0}
-        end
-        return cmd_call("color", color)
+      case part
+      when Thing
+        cmd_call_unless_nil("color", part.color_or_fallback)
+      else
+        ""
       end
-      return ""
     end
 
     def register_module(part)
@@ -219,6 +215,10 @@ module JennCad
 
     def use_module(name, tabindex)
       tabs(tabindex){ cmd_call(name, nil).to_s+";" }
+    end
+
+    def cmd_call_unless_nil(name,args)
+      args.nil? ? "" : cmd_call(name, args)
     end
 
     def cmd_call(name, args)
