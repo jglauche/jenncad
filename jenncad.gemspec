@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.required_ruby_version = ">= 2.5.0"
+  gem.required_ruby_version = ">= 2.6.0"
   gem.add_runtime_dependency "geo3d"
   gem.add_runtime_dependency "deep_merge"
   gem.add_runtime_dependency "hanami-cli"
