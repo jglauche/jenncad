@@ -254,6 +254,8 @@ module JennCad
         return auto_color!
       when :none
         set_option :no_auto_color, true
+      when :random
+        set_option :color, Color.random
       else
         set_option :color, args
       end

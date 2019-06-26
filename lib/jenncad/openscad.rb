@@ -101,10 +101,10 @@ module JennCad
     end
 
     def fmt_params(args)
-      return "" if args == nil
-      if args.kind_of? String
+      case args
+      when String, Symbol
         return "\"#{args}\""
-      elsif args.kind_of? Array
+      when Array
         return args.map do |l|
           if l == nil
             0
@@ -116,7 +116,7 @@ module JennCad
             l.to_f
           end
         end
-      else
+      when Hash
         res = []
         args.each do |k,v|
           if k.to_s == "fn"
@@ -131,13 +131,16 @@ module JennCad
           res << "#{k}=#{v}"
         end
         res.join(",")
+      else
+        ""
       end
     end
 
     def cmd(name, args, items, tabindex = 0)
       items ||= []
       res = cmd_call(name,args)
-      if items.size > 1
+      case items.size
+      when (1..)
         res << "\n"
         res << tabs(tabindex) { "{\n" }
         items.each do |item|
@@ -148,7 +151,7 @@ module JennCad
           end
         end
         res << tabs(tabindex) { "}\n" }
-      elsif items.size == 1
+      when 1
         item = items.first
         res << transform(item) do
           parse(item, tabindex)
