@@ -292,7 +292,7 @@ module JennCad
         end
       end
 
-      OpenScad.new(self).save(file)
+      JennCad::Exporters::OpenScad.new(self).save(file)
     end
 
     def referenced_z

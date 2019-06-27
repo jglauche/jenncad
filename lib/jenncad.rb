@@ -44,4 +44,4 @@ require "jenncad/extras/iso7380"
 
 require "jenncad/register"
 require "jenncad/shortcuts"
-require "jenncad/openscad"
+require "jenncad/exporters/openscad"
