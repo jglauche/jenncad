@@ -97,10 +97,15 @@ module JennCad::Exporters
     include ActiveSupport::Inflector
     def initialize(part)
       @object_tree = OpenScadObject.new(:head, nil, parse(part))
+      @modules = {}
     end
 
     def save(file)
       File.open(file,"w") do |f|
+        puts @modules.inspect
+        @modules.each do |key, val|
+          f.puts val.to_s
+        end
         f.puts @object_tree.to_s
       end
     end
@@ -113,7 +118,7 @@ module JennCad::Exporters
       when JennCad::OpenScadImport
         # handle_import(part)
       when JennCad::Aggregation
-        # handle_aggregation(part)
+        handle_aggregation(part)
       when JennCad::UnionObject
         bool('union', part)
       when JennCad::SubtractObject
@@ -133,13 +138,13 @@ module JennCad::Exporters
         prim('cube', part)
         # FIXME handle_cube(part)
       when JennCad::Primitives::LinearExtrude
-      #  cmd('linear_extrude', part.openscad_params, part.parts)
+        OpenScadObject.new(:linear_extrude, part.openscad_params, part.parts)
       when JennCad::Primitives::RotateExtrude
-      #  cmd('rotate_extrude', part.openscad_params, part.parts)
+        OpenScadObject.new(:rotate_extrude, part.openscad_params, part.parts)
       when JennCad::Primitives::Projection
-      #  cmd('projection', collect_params(part), part.parts)
+        OpenScadObject.new(:projection, collect_params(part), part.parts)
       when JennCad::Primitives::Polygon
-      #  cmd('polygon', collect_params(part), nil)
+        OpenScadObject.new(:polygon, collect_params(part), part.parts)
       else
       end
     end
@@ -166,8 +171,6 @@ module JennCad::Exporters
       res
     end
 
-
-
     def transform(part, &block)
       case t = part.transformations.pop
       when nil, []
@@ -183,6 +186,17 @@ module JennCad::Exporters
       end
     end
 
+    def handle_aggregation(part, tabindex=0)
+      register_module(part) unless @modules[part.name]
+      OpenScadObject.new(part.name, nil)
+    end
+
+    # accept aggregation
+    def register_module(part)
+      @modules[part.name] = OpenScadObject.new(:module, nil, part.part)
+    end
+
+    # not used yet
     def make_openscad_compatible!(item)
       if item.respond_to?(:parts) && item.parts != nil
         item.parts.each_with_index do |part, i|
