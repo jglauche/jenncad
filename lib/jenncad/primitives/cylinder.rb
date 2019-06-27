@@ -18,6 +18,10 @@ module JennCad::Primitives
 
       @opts = {
         d: 0,
+        d1: nil,
+        d2: nil,
+        r1: nil,
+        r2: nil,
         z: nil,
         r: 0,
         margins: {
@@ -31,17 +35,41 @@ module JennCad::Primitives
       # FIXME:
       # - margins calculation needs to go to output
       # - assinging these variables has to stop
-      # - r/d need to be automatically calculated by each other
       # - r+z margin not implemented atm
       # - need to migrate classes to provide all possible outputs (and non-conflicting ones) to openscad exporter
-      @d = args[:d] + @opts[:margins][:d]
       @z = args[:z] || args[:h]
-      @r = args[:r]
-      @fn = args[:fn]
-      if @fn == nil && @d > 16
-        @fn = (@d*4).ceil
-      end
+      handle_radius_diameter
+      handle_fn
       super(args)
+    end
+
+    def handle_fn
+      case @opts[:fn]
+        when nil, 0
+          $fn = auto_fn!
+        else
+          @fn = @opts[:fn]
+      end
+    end
+
+    def auto_fn!
+      case @d
+        when (16..)
+          @fn = (@d*4).ceil
+        else
+          @fn = 64
+      end
+    end
+
+    def handle_radius_diameter
+      case @opts[:d]
+      when 0, nil
+        @r = @opts[:r].to_f + @opts[:margins][:r].to_f
+        @d = @r * 2.0
+      else
+        @d = @opts[:d].to_f + @opts[:margins][:d].to_f
+        @r = @d / 2.0
+      end
     end
 
     def h
