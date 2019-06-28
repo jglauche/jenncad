@@ -49,7 +49,7 @@ module JennCad::Primitives
 
     def inherit_zref
       return if @parts.first == nil
-      return if @parts.first.z.to_f == 0.0
+      #return if @parts.first.z.to_f == 0.0
       get_primitives(@parts[1..-1]).flatten.each do |part|
         if part.z.to_f == 0.0
           part.set_option :zref, @parts.first

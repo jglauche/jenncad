@@ -1,6 +1,5 @@
 module JennCad::Primitives
   class Cube < Primitive
-    attr_accessor :x,:y,:z
 
     def initialize(args)
       if args.kind_of?(Array) && args[0].kind_of?(Hash)
@@ -37,33 +36,41 @@ module JennCad::Primitives
 
     # used for openscad export
     def size
-      [@x, @y, @z]
+      [@x, @y, z+z_margin]
     end
 
-    def center_xy
-      set_option :center, true
-      self
+    def not_centered
+      @opts[:center] = false
+    end
+    alias :nc :not_centered
+
+    def cx
+      nc
+      @opts[:center_x] = true
     end
 
-    def center_x
-      set_option :center_x, true
-      self
+    def cy
+      nc
+      @opts[:center_y] = true
     end
 
-    def center_y
-      set_option :center_y, true
-      self
+    def cz
+      nc
+      @opts[:center_z] = true
     end
 
-    def center_z
-      set_option :center_z, true
-      self
+    def centered_axis
+      return [:x, :y] if @opts[:center]
+      a = []
+      a << :x if @opts[:center_x]
+      a << :y if @opts[:center_x]
+      a << :z if @opts[:center_x]
+      a
     end
 
-#    def center
-#      @transformations << Move.new({x:-@x/2,y:-@y/2,z:-@z/2})
-#      self
-#    end
+    def to_openscad
+      self.mh(centered_axis.to_h{|a| [a, -@opts[a]] }) # center cube
+    end
 
   end
 end

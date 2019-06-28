@@ -73,7 +73,7 @@ module JennCad::Primitives
     end
 
     def h
-      z
+      z + z_margin
     end
 
   end

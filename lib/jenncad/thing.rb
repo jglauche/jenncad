@@ -3,7 +3,7 @@ module JennCad
     attr_accessor :opts
     attr_accessor :parts
     attr_accessor :transformations, :name
-    attr_accessor :x, :y, :z, :diameter
+    attr_accessor :x, :y, :diameter
     attr_accessor :calc_x, :calc_y, :calc_z, :calc_h
     attr_accessor :shape
     attr_accessor :angle, :cut, :fn
@@ -301,10 +301,15 @@ module JennCad
      return false
     end
 
+    def z=(args)
+      set_option(:z, args)
+      @z = args
+    end
+
     def z
       case ref = referenced_z
       when nil, false
-        @z
+        @z + z_margin
       else
         ref.z.to_f + ref.z_margin.to_f
       end

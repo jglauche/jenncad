@@ -44,37 +44,40 @@ module JennCad::Primitives
       else
         compare_z(others, first_h.first, first_z.first)
       end
+      self
     end
 
-    # FIXME
-    # this won't work reliable with Aggregations at the moment;
-    # they don't have calc_z for comparing with the top
-    # and it will try to move the Aggregation which it should not do
-    # (it should move the calls to the Aggregation, not the Aggregation itself)
     def compare_z(others,compare_h,compare_z)
       others.each do |part|
         #puts part.inspect
         #puts "#{part.calc_z+part.calc_h} ; #{compare_h}"
         if part.respond_to? :z
+          part.opts[:margins] ||= {}
           if part.referenced_z && part.z != 0.0
             case part
             when JennCad::BooleanObject
             else
-              part.z+=0.2
-              part.translate(z:-0.1)
+              pp part if part.opts[:debug]
+              part.opts[:margins][:z] ||= 0.0
+              unless part.opts[:margins][:z] == 0.2
+                part.opts[:margins][:z] = 0.2
+                part.mz(-0.1)
+              end
             end
           elsif part.z == compare_h
 #            puts "fixing possible z fighting: #{part.class} #{part.z}"
-            part.z+=0.008
-            part.translate(z:-0.004)
+            part.opts[:margins][:z] += 0.008
+            part.mz(-0.004)
           elsif part.calc_z == compare_z
 #            puts "z fighting at bottom: #{part.calc_z}"
-            part.z+=0.004
-            part.translate(z:-0.002)
+            part.opts[:margins][:z] += 0.004
+           # part.z+=0.004
+            part.mz(-0.002)
           elsif part.calc_z.to_f+part.calc_h.to_f == compare_h
 #            puts "z fighting at top: #{compare_h}"
-            part.z+=0.004
-            part.translate(z:0.002)
+            #part.z+=0.004
+            part.opts[:margins][:z] += 0.004
+            part.mz(0.002)
           end
         end
       end

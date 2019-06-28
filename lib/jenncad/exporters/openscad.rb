@@ -17,16 +17,27 @@ module JennCad::Exporters
 
     def to_s
       case @command
+      when nil
+        ""
       when :head
         res = "$fn=64;"+nl
         @children.each do |c|
           res += c.to_s+nl
         end
         res
-      when String
+      when :module
+        handle_module
+      when String, Symbol
         handle_command
       else
       end
+    end
+
+    def handle_module
+      res = "module #{@args}(){"+nl
+      res += tabs(1, @children.map{|c| c.handle_command(2) })
+      res += "}"
+      res
     end
 
     def handle_command(i=1)
@@ -85,24 +96,23 @@ module JennCad::Exporters
           end
           res << "#{k}=#{v}"
         end
-        res.join(",")
+        res.join(",").gsub("size=","")
       else
         ""
       end
     end
-
   end
 
   class OpenScad
     include ActiveSupport::Inflector
     def initialize(part)
-      @object_tree = OpenScadObject.new(:head, nil, parse(part))
       @modules = {}
+      @global_fn = 64
+      @object_tree = OpenScadObject.new(:head, nil, parse(part))
     end
 
     def save(file)
       File.open(file,"w") do |f|
-        puts @modules.inspect
         @modules.each do |key, val|
           f.puts val.to_s
         end
@@ -110,19 +120,26 @@ module JennCad::Exporters
       end
     end
 
-
     def parse(part)
+      if part.respond_to? :to_openscad
+        part = part.to_openscad
+      end
+
+      if part.respond_to? :analyze_z_fighting
+        part = part.analyze_z_fighting
+      end
+
+
       case part
       when Array
         part.map{ |p| parse(p) }
       when JennCad::OpenScadImport
-        # handle_import(part)
+        # FIXME handle_import(part)
       when JennCad::Aggregation
         handle_aggregation(part)
       when JennCad::UnionObject
         bool('union', part)
       when JennCad::SubtractObject
-        part.analyze_z_fighting
         bool('difference', part)
       when JennCad::IntersectionObject
         bool('intersection', part)
@@ -136,29 +153,38 @@ module JennCad::Exporters
         prim('sphere', part)
       when JennCad::Primitives::Cube
         prim('cube', part)
-        # FIXME handle_cube(part)
       when JennCad::Primitives::LinearExtrude
-        OpenScadObject.new(:linear_extrude, part.openscad_params, part.parts)
+        new_obj(part, :linear_extrude, part.openscad_params, parse(part.parts))
       when JennCad::Primitives::RotateExtrude
-        OpenScadObject.new(:rotate_extrude, part.openscad_params, part.parts)
+        new_obj(part, :rotate_extrude, part.openscad_params, parse(part.parts))
       when JennCad::Primitives::Projection
-        OpenScadObject.new(:projection, collect_params(part), part.parts)
+        new_obj(part, :projection, collect_params(part), parse(part.parts))
       when JennCad::Primitives::Polygon
-        OpenScadObject.new(:polygon, collect_params(part), part.parts)
+        new_obj(part, :polygon, collect_params(part))
+      when JennCad::Part
+        parse(part.part)
+      when nil
+        new_obj(part, nil)
       else
+        puts "unknown part #{part.class}"
+        OpenScadObject.new(nil,nil)
+      end
+    end
+
+    def new_obj(part, cmd, args=nil, children=[])
+      transform(part) do
+        apply_color(part) do
+          OpenScadObject.new(cmd, args, children)
+        end
       end
     end
 
     def bool(type, part)
-      transform(part) do
-        OpenScadObject.new(type, nil, parse(part.parts))
-      end
+      new_obj(part, type, nil, parse(part.parts))
     end
 
     def prim(type, part)
-      transform(part) do
-        OpenScadObject.new(type, collect_params(part))
-      end
+      new_obj(part, type, collect_params(part))
     end
 
     def collect_params(part)
@@ -168,10 +194,23 @@ module JennCad::Exporters
           res[var] = part.send var
         end
       end
+      case res[:fn]
+      when @global_fn
+        res[:fn] = nil
+      else
+      end
       res
     end
 
+    def apply_color(part, &block)
+      return block.yield if part.nil? or part.color_or_fallback.nil?
+      OpenScadObject.new("color", part.color_or_fallback, block.yield)
+    end
+
+
     def transform(part, &block)
+      return block.yield if part.transformations.nil?
+
       case t = part.transformations.pop
       when nil, []
         block.yield
@@ -188,30 +227,14 @@ module JennCad::Exporters
 
     def handle_aggregation(part, tabindex=0)
       register_module(part) unless @modules[part.name]
-      OpenScadObject.new(part.name, nil)
+      transform(part) do
+        new_obj(part, part.name, nil)
+      end
     end
 
     # accept aggregation
     def register_module(part)
-      @modules[part.name] = OpenScadObject.new(:module, nil, part.part)
-    end
-
-    # not used yet
-    def make_openscad_compatible!(item)
-      if item.respond_to?(:parts) && item.parts != nil
-        item.parts.each_with_index do |part, i|
-          if part.respond_to? :to_openscaditem.parts[i] = part.to_openscad
-          else
-            item.parts[i] = part.make_openscad_compatible
-          end
-        end
-      elsif item.respond_to? :part
-        item = item.part.make_openscad_compatible
-      end
-      if item.respond_to? :to_openscad
-        item = item.to_openscad
-      end
-      item
+      @modules[part.name] = OpenScadObject.new(:module,part.name, parse(part.part))
     end
 
   end
