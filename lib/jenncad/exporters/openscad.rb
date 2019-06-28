@@ -106,6 +106,7 @@ module JennCad::Exporters
   class OpenScad
     include ActiveSupport::Inflector
     def initialize(part)
+      @imports = []
       @modules = {}
       @global_fn = 64
       @object_tree = OpenScadObject.new(:head, nil, parse(part))
@@ -113,6 +114,10 @@ module JennCad::Exporters
 
     def save(file)
       File.open(file,"w") do |f|
+        @imports.uniq.each do |val|
+          f.puts "use <#{val}.scad>\n"
+        end
+
         @modules.each do |key, val|
           f.puts val.to_s
         end
@@ -129,12 +134,11 @@ module JennCad::Exporters
         part = part.analyze_z_fighting
       end
 
-
       case part
       when Array
         part.map{ |p| parse(p) }
       when JennCad::OpenScadImport
-        # FIXME handle_import(part)
+        handle_import(part)
       when JennCad::Aggregation
         handle_aggregation(part)
       when JennCad::UnionObject
@@ -207,7 +211,6 @@ module JennCad::Exporters
       OpenScadObject.new("color", part.color_or_fallback, block.yield)
     end
 
-
     def transform(part, &block)
       return block.yield if part.transformations.nil?
 
@@ -237,5 +240,9 @@ module JennCad::Exporters
       @modules[part.name] = OpenScadObject.new(:module,part.name, parse(part.part))
     end
 
+    def handle_import(part)
+      @imports << part.import
+      new_obj(part, part.name, part.args)
+    end
   end
 end

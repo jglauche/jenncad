@@ -40,7 +40,7 @@ module JennCad::Primitives
       # make diameter not bigger than any side
       @d = [@d, @x, @y].min
       res = HullObject.new(
-        cylinder(d:@d, h:@z).moveh(x: -@x + @d, y: @y - @d),
+        cylinder(d:@d, h:@z+z_margin).moveh(x: -@x + @d, y: @y - @d),
         cylinder(d:@d).moveh(x: @x - @d, y: @y - @d),
         cylinder(d:@d).moveh(x: -@x + @d, y: -@y + @d),
         cylinder(d:@d).moveh(x: @x - @d, y: -@y + @d),

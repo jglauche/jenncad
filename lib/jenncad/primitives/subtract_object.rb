@@ -56,6 +56,7 @@ module JennCad::Primitives
           if part.referenced_z && part.z != 0.0
             case part
             when JennCad::BooleanObject
+            when JennCad::Aggregation
             else
               pp part if part.opts[:debug]
               part.opts[:margins][:z] ||= 0.0
