@@ -1,5 +1,4 @@
 require "jenncad/primitives/primitive"
-require "jenncad/primitives/openscad_include"
 require "jenncad/primitives/circle"
 require "jenncad/primitives/cylinder"
 require "jenncad/primitives/sphere"
