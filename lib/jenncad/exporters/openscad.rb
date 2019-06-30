@@ -221,6 +221,8 @@ module JennCad::Exporters
         OpenScadObject.new(:translate, t.coordinates, transform(part, &block))
       when JennCad::Rotate, JennCad::Mirror
         OpenScadObject.new(demodulize(t.class).downcase, t.coordinates, transform(part, &block))
+      when JennCad::Scale
+        OpenScadObject.new(:scale, t.scale, transform(part, &block))
       when JennCad::Multmatrix
         OpenScadObject.new(:multmatrix, t.m, transform(part, &block))
       else

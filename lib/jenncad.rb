@@ -21,7 +21,7 @@ require "jenncad/project"
 require "jenncad/commands"
 
 require "jenncad/primitives"
-
+require "jenncad/features"
 
 
 require "jenncad/transformation/transformation"

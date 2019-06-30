@@ -1,5 +1,5 @@
-module JennCad::Primitives
-  class Aggregation < Primitive
+module JennCad::Features
+  class Aggregation < Feature
     attr_accessor :part
 
     def initialize(name=nil, part=nil)

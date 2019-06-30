@@ -1,4 +1,4 @@
-module JennCad::Primitives
+module JennCad::Features
   class OpenScadImport < Aggregation
     attr_accessor :import, :args
 
