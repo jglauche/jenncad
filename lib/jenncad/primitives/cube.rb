@@ -1,5 +1,6 @@
 module JennCad::Primitives
   class Cube < Primitive
+    extend JennCad::Features::Cuttable
 
     def initialize(args)
       if args.kind_of?(Array) && args[0].kind_of?(Hash)

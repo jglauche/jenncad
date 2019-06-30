@@ -20,8 +20,8 @@ require "jenncad/part"
 require "jenncad/project"
 require "jenncad/commands"
 
-require "jenncad/primitives"
 require "jenncad/features"
+require "jenncad/primitives"
 
 
 require "jenncad/transformation/transformation"

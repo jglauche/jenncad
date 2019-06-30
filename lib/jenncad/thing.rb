@@ -6,7 +6,7 @@ module JennCad
     attr_accessor :x, :y, :diameter
     attr_accessor :calc_x, :calc_y, :calc_z, :calc_h
     attr_accessor :shape
-    attr_accessor :angle, :cut, :fn
+    attr_accessor :angle, :fn
 
     def initialize(args={})
       @transformations = []
@@ -49,17 +49,22 @@ module JennCad
 
     def flip(direction)
       case self
+      when UnionObject
+        ref = self.parts.first
+        rz = self.z.to_f + self.calc_h.to_f
       when BooleanObject
         ref = self.parts.first
+        rz = ref.calc_z + ref.calc_h
       else
         ref = self
+        rz = self.z + self.calc_h
       end
 
       case direction
       when :x
-        self.ry(90).mh(x: -ref.z, z: ref.x)
+        self.ry(90).mh(x: -rz, z: ref.x)
       when :y
-        self.rx(90).mh(y: ref.z, z: ref.y)
+        self.rx(90).mh(y: rz, z: ref.y)
       end
     end
 

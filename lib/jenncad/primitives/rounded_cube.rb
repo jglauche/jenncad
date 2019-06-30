@@ -1,6 +1,7 @@
 module JennCad::Primitives
   class RoundedCube < Primitive
     attr_accessor :d, :r
+    include JennCad::Features::Cuttable
 
     def initialize(args)
       if args.kind_of?(Array) && args[0].kind_of?(Hash)
