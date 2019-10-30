@@ -35,6 +35,7 @@ This will generate a dummy project which generates a dummy cube as  OpenSCAD out
 > translate([-5, -5, 0])cube([10, 10, 10.0]);
 
 **Automatically refresh OpenSCAD output while developing**
+
 Jenncad bundles the observr gem which will check if files were changed while developing. In the project directory run:
 
     $ jenncad
@@ -46,6 +47,7 @@ This should display something like:
 **Note:** This does not check for new files in the project. You will have to restart it when you create a new part in a new file
 
 **Create new part**
+
 In your project directory, run:
 
     $ jenncad new cat
