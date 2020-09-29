@@ -192,6 +192,9 @@ module JennCad::Exporters
     end
 
     def collect_params(part)
+      if part.respond_to? :openscad_params
+        return part.openscad_params
+      end
       res = {}
       [:d, :h, :d1, :d2, :size, :fn, :points].each do |var|
         if part.respond_to? var
