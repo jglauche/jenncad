@@ -1,28 +1,39 @@
-# -*- encoding: utf-8 -*-
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+# frozen_string_literal: true
 
-require "jenncad"
+require_relative "lib/jenncad/version"
 
-Gem::Specification.new do |gem|
-  gem.name        = "jenncad"
-  gem.version     = JennCad::VERSION
-  gem.authors     = ["Jennifer Glauche"]
-  gem.email       = ["=^.^=@jenncad.kittenme.ws"]
-  gem.homepage    = ""
-  gem.summary     = %q{TBD}
-  gem.description = %q{TBD}
+Gem::Specification.new do |spec|
+  spec.name    = "jenncad"
+  spec.version = JennCad::VERSION
+  spec.authors = ["Jennifer Glauche"]
+  spec.email   = ["=^.^=@jenncad.kittenme.ws"]
 
-  gem.license     = 'LGPL-3'
-  gem.files         = `git ls-files`.split($/)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
-  gem.require_paths = ["lib"]
+  spec.summary     = %q{TBD}
+  spec.description = %q{TBD}
+  spec.homepage    = "https://github.com/jglauche/jenncad"
+  spec.license     = "LGPL"
 
-  gem.required_ruby_version = ">= 2.6.0"
-  gem.add_runtime_dependency "geo3d"
-  gem.add_runtime_dependency "deep_merge"
-  gem.add_runtime_dependency "hanami-cli"
-  gem.add_runtime_dependency "activesupport"
-  gem.add_runtime_dependency "observr"
+  spec.required_ruby_version = ">= 2.6.0"
+
+  spec.metadata["homepage_uri"]    = spec.homepage
+  spec.metadata["source_code_uri"] = spec.homepage
+  spec.metadata["changelog_uri"]   = "https://github.com/jglauche/jenncad/CHANGELOG.md"
+
+  # Specify which files should be added to the gem when it is released.
+  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
+  spec.files = Dir.chdir(File.expand_path(__dir__)) do
+    `git ls-files -z`.split("\x0").reject do |f|
+      (f == __FILE__) || f.match(%r{\A(?:(?:test|spec|features)/|\.(?:git|travis|circleci)|appveyor)})
+    end
+  end
+
+  spec.bindir = "bin"
+  spec.executables = ["jenncad"]
+  spec.require_paths = ["lib"]
+
+  spec.add_dependency "geo3d"
+  spec.add_dependency "deep_merge"
+  spec.add_dependency "hanami-cli"
+  spec.add_dependency "activesupport"
+  spec.add_dependency "observer"
 end
