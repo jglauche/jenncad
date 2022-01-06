@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary     = %q{TBD}
   spec.description = %q{TBD}
   spec.homepage    = "https://github.com/jglauche/jenncad"
-  spec.license     = "LGPL"
+  spec.license     = "LGPLv3"
 
   spec.required_ruby_version = ">= 2.6.0"
 
@@ -35,5 +35,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "deep_merge"
   spec.add_dependency "hanami-cli"
   spec.add_dependency "activesupport"
-  spec.add_dependency "observer"
+  spec.add_dependency "observr"
 end

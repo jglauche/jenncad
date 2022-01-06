@@ -1,7 +1,7 @@
 require "geo3d"
 require "deep_merge"
 require "fileutils"
-require "observer"
+require "observr"
 require "hanami/cli"
 require "active_support"
 
