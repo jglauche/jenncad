@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in jenncad-fork.gemspec
+# Specify your gem's dependencies in jenncad.gemspec
 gemspec
 
 # gem "rake", "~> 13.0"
