@@ -1,5 +1,5 @@
 module JennCad::Primitives
-  attr_accessor :convexity
+  attr_accessor :cut, :convexity
   class RotateExtrude < JennCad::Thing
     def initialize(part, args)
       @transformations = []

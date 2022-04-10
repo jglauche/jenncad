@@ -94,7 +94,12 @@ module JennCad::Exporters
           if !v.kind_of?(Array) && !v.kind_of?(TrueClass) && !v.kind_of?(FalseClass) && v == v.to_i
             v = v.to_i
           end
-          res << "#{k}=#{v}"
+          if v.kind_of? String
+            q = "\""
+          else
+            q = ""
+          end
+          res << "#{k}=#{q}#{v}#{q}"
         end
         res.join(",").gsub("size=","")
       else
@@ -165,6 +170,8 @@ module JennCad::Exporters
         new_obj(part, :projection, collect_params(part), parse(part.parts))
       when JennCad::Primitives::Polygon
         new_obj(part, :polygon, collect_params(part))
+      when JennCad::StlImport
+        new_obj(part, :import, collect_params(part))
       when JennCad::Part
         parse(part.part)
       when nil
@@ -196,7 +203,7 @@ module JennCad::Exporters
         return part.openscad_params
       end
       res = {}
-      [:d, :h, :d1, :d2, :size, :fn, :points].each do |var|
+      [:d, :h, :d1, :d2, :size, :fn, :points, :file].each do |var|
         if part.respond_to? var
           res[var] = part.send var
         end

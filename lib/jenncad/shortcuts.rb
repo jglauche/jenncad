@@ -38,6 +38,10 @@ module JennCad
     OpenScadImport.new(import, name, args)
   end
 
+  def stl(file, args={})
+    StlImport.new(file, args)
+  end
+
   def extrude(args)
     LinearExtrude.new(self, args)
   end
