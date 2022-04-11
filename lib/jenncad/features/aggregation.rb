@@ -1,11 +1,15 @@
 module JennCad::Features
   class Aggregation < Feature
-    attr_accessor :part
+    attr_accessor :parts
 
     def initialize(name=nil, part=nil)
       super({})
       @name = name
-      @part = part
+      @parts = [part] # NOTE: single length arrayto make checking children easier
+    end
+
+    def part
+      @parts.first
     end
 
   end

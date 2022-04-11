@@ -249,7 +249,7 @@ module JennCad::Exporters
 
     # accept aggregation
     def register_module(part)
-      @modules[part.name] = OpenScadObject.new(:module,part.name, parse(part.part))
+      @modules[part.name] = OpenScadObject.new(:module, part.name, parse(part.part))
     end
 
     def handle_import(part)

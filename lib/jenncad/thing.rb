@@ -251,38 +251,109 @@ module JennCad
       item
     end
 
+    def has_explicit_color?
+      if option(:auto_color) == false
+        return true
+      end
+      return false
+    end
+
+    def only_color?(parts, lvl=0)
+      return true if parts == nil
+
+      parts.each do |part|
+#        puts "  " * lvl + "[only_color?] #{part}"
+        if part.has_explicit_color?
+#          puts "  " * lvl + "found explicit color here"
+          return false
+        end
+        if !only_color?(part.parts, lvl+1)
+          return false
+        end
+      end
+      true
+    end
+
+    def set_auto_color_for_children(col, parts, lvl=0)
+      return if parts == nil
+
+      parts.each do |part|
+        unless part.has_explicit_color?
+          if only_color?(part.parts, lvl+1)
+#            puts "  " * lvl + "children have no explicit color, setting it here"
+            part.set_auto_color(col)
+          else
+#            puts "  " * lvl + "[set_auto_color_for_children] #{part}"
+            set_auto_color_for_children(col, part.parts, lvl+1)
+          end
+        else
+#          puts "  " * lvl + "[set_auto_color_for_children] this part has a color, ignoring their children"
+        end
+
+      end
+    end
+
+    def set_auto_color(col)
+      set_option :color, col
+      set_option :auto_color, true
+    end
+
     def color(args=nil)
-      case args
-      when nil
+      if args == nil
         return option(:color)
-      when :auto
-        return auto_color!
+      end
+
+      if args == :auto
+        ac = auto_color
+        unless ac.nil?
+          #puts "auto color to #{ac}"
+          if only_color?(self.parts)
+            set_option :color, ac
+            set_option :auto_color, true
+          else
+            set_auto_color_for_children(ac, self.parts)
+          end
+
+        end
+        return self
+      end
+
+      c = color_parse(args)
+      unless c.nil?
+        set_option :color, c
+        set_option :auto_color, false
+      end
+
+      self
+    end
+
+    def color_parse(args=nil)
+      case args
       when :none
         set_option :no_auto_color, true
       when :random
-        set_option :color, Color.random
+        return Color.random
       when Array
-        set_option :color, Color.parse(args)
+        return Color.parse(args)
       when /(?<=#)(?<!^)(\h{6}|\h{3})/
-        set_option :color, args
+        return args
       when /(?<!^)(\h{6}|\h{3})/
-        set_option :color, "##{args}"
+        return "##{args}"
       when String
-        set_option :color, args
-      else
-        puts "meow"
+        return args
       end
-      self
+      nil
     end
 
     def auto_color
       if option(:color) == nil && !option(:no_auto_color)
-        auto_color!
+        return auto_color!
       end
+      nil
     end
 
     def auto_color!
-      color($jenncad_profile.colors.pop)
+      color_parse($jenncad_profile.colors.pop)
     end
 
     def color_or_fallback
