@@ -2,10 +2,8 @@ module JennCad::Primitives
   class Cube < Primitive
     extend JennCad::Features::Cuttable
 
-    def initialize(args)
-      if args.kind_of?(Array) && args[0].kind_of?(Hash)
-        args = args.first
-      end
+
+    def feed_opts(args)
       if args.kind_of? Array
         m = {}
         if args.last.kind_of? Hash
@@ -13,7 +11,13 @@ module JennCad::Primitives
         end
         args = [:x, :y, :z].zip(args.flatten).to_h
         args.deep_merge!(m)
+        @opts.deep_merge!(args)
+      else
+        @opts.deep_merge!(args)
       end
+    end
+
+    def initialize(args)
       @opts = {
         x: 0,
         y: 0,
@@ -27,10 +31,18 @@ module JennCad::Primitives
         center_y: false,
         center_x: false,
         center_z: false,
-      }.deep_merge!(args)
-      handle_margins
+      }
+      if args.kind_of? Array
+        args.each do |a|
+          feed_opts(a)
+        end
+      else
+        feed_opts(args)
+      end
 
-      super(args)
+
+      handle_margins
+      super(z: @opts[:z])
       @h = @z.dup
       @calc_h = @z.dup
     end
@@ -42,30 +54,34 @@ module JennCad::Primitives
 
     def not_centered
       @opts[:center] = false
+      self
     end
     alias :nc :not_centered
 
     def cx
       nc
       @opts[:center_x] = true
+      self
     end
 
     def cy
       nc
       @opts[:center_y] = true
+      self
     end
 
     def cz
       nc
       @opts[:center_z] = true
+      self
     end
 
     def centered_axis
       return [:x, :y] if @opts[:center]
       a = []
       a << :x if @opts[:center_x]
-      a << :y if @opts[:center_x]
-      a << :z if @opts[:center_x]
+      a << :y if @opts[:center_y]
+      a << :z if @opts[:center_z]
       a
     end
 
