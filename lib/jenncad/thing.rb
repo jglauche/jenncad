@@ -107,6 +107,24 @@ module JennCad
         x,y,z = args
         return move(x:x, y:y, z:z)
       end
+      if args[:xy]
+        args[:x] = args[:xy]
+        args[:y] = args[:xy]
+      end
+      if args[:xyz]
+        args[:x] = args[:xyz]
+        args[:y] = args[:xyz]
+        args[:z] = args[:xyz]
+      end
+      if args[:xz]
+        args[:x] = args[:xz]
+        args[:z] = args[:xz]
+      end
+      if args[:yz]
+        args[:y] = args[:yz]
+        args[:z] = args[:yz]
+      end
+
       @transformations ||= []
       if args[:prepend]
         @transformations.prepend(Move.new(args))
@@ -139,9 +157,9 @@ module JennCad
         x,y,z = args
         args = {x: x, y: y, z: z}
       end
-      args[:x] = args[:x] / 2.0 unless args[:x] == nil
-      args[:y] = args[:y] / 2.0 unless args[:y] == nil
-      args[:z] = args[:z] / 2.0 unless args[:z] == nil
+      [:x, :y, :z, :xy, :xyz, :xz, :yz].each do |key|
+        args[key] = args[key] / 2.0 unless args[key] == nil
+      end
 
       move(args)
     end
