@@ -96,17 +96,12 @@ module JennCad
       [v.x,v.y,v.z]
     end
 
-    # todo: check if that works
     def rotate_around(point,args)
-      x,y,z= point.x, point.y, point.z
+      x,y,z= point[:x], point[:y], point[:z]
       self.move(x:-x,y:-y,z:-z).rotate(args).move(x:x,y:y,z:z)
     end
 
-    def move(args)
-      if args.kind_of? Array
-        x,y,z = args
-        return move(x:x, y:y, z:z)
-      end
+    def parse_xyz_shortcuts(args)
       [:x, :y, :z].each do |key|
         args[key] ||= 0.0
       end
@@ -128,8 +123,15 @@ module JennCad
         args[:y] += args[:yz]
         args[:z] += args[:yz]
       end
+      return args
+    end
 
-
+    def move(args)
+      if args.kind_of? Array
+        x,y,z = args
+        return move(x:x, y:y, z:z)
+      end
+      args = parse_xyz_shortcuts(args)
 
       @transformations ||= []
       if args[:prepend]

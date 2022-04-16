@@ -34,10 +34,10 @@ module JennCad::Primitives
       }
       if args.kind_of? Array
         args.each do |a|
-          feed_opts(a)
+          feed_opts(parse_xyz_shortcuts(a))
         end
       else
-        feed_opts(args)
+        feed_opts(parse_xyz_shortcuts(args))
       end
 
 
