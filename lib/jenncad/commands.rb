@@ -1,6 +1,7 @@
 module JennCad
   module Commands
     extend Hanami::CLI::Registry
+    MAGIC = "jenncad-append-project-magic"
 
     class Run < Hanami::CLI::Command
       argument :name, required: false
@@ -122,10 +123,34 @@ module JennCad
           f.puts "  end"
           f.puts "end"
         end
-        puts "part #{filename} created. In your #{executable} add to class #{executable_class}:"
-        puts "  def #{name}"
-        puts "    #{classname}.new(config)"
-        puts "  end"
+
+        lines  = File.readlines(executable)
+        magic_line = nil;
+        lines.each_with_index do |l, i|
+          if l.rindex(MAGIC)
+            magic_line = i
+          end
+        end
+        puts "part #{filename} created."
+        if !magic_line
+          puts "In your #{executable} add to class #{executable_class}:"
+          puts "  def #{name}"
+          puts "    #{classname}.new(config)"
+          puts "  end"
+          puts ""
+          puts "For jenncad to insert this line automatically, add this line to your project file before the \"end\"-statement of your class:"
+          puts "##{MAGIC}"
+        else
+          data  = "\n"
+          data += "  def #{name}\n"
+          data += "    #{classname}.new(config)\n"
+          data += "  end\n"
+          lines.insert(magic_line, data)
+          f = File.open(executable, "w")
+          f.write(lines.join)
+          f.close
+        end
+
 
       end
 
@@ -155,6 +180,7 @@ module JennCad
           f.puts "  def #{name}"
           f.puts "    cube(10,10,10)"
           f.puts "  end"
+          f.puts "  # #{MAGIC}"
           f.puts "end"
           f.puts ""
           f.puts "#{classname}.new.run"
