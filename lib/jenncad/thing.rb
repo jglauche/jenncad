@@ -107,23 +107,29 @@ module JennCad
         x,y,z = args
         return move(x:x, y:y, z:z)
       end
+      [:x, :y, :z].each do |key|
+        args[key] ||= 0.0
+      end
+
       if args[:xy]
-        args[:x] = args[:xy]
-        args[:y] = args[:xy]
+        args[:x] += args[:xy]
+        args[:y] += args[:xy]
       end
       if args[:xyz]
-        args[:x] = args[:xyz]
-        args[:y] = args[:xyz]
-        args[:z] = args[:xyz]
+        args[:x] += args[:xyz]
+        args[:y] += args[:xyz]
+        args[:z] += args[:xyz]
       end
       if args[:xz]
-        args[:x] = args[:xz]
-        args[:z] = args[:xz]
+        args[:x] += args[:xz]
+        args[:z] += args[:xz]
       end
       if args[:yz]
-        args[:y] = args[:yz]
-        args[:z] = args[:yz]
+        args[:y] += args[:yz]
+        args[:z] += args[:yz]
       end
+
+
 
       @transformations ||= []
       if args[:prepend]
