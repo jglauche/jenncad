@@ -1,9 +1,9 @@
 module JennCad
   module Commands
-    extend Hanami::CLI::Registry
+    extend Dry::CLI::Registry
     MAGIC = "jenncad-append-project-magic"
 
-    class Run < Hanami::CLI::Command
+    class Run < Dry::CLI::Command
       argument :name, required: false
 
       def guess_executable(dir=Dir.pwd)
@@ -88,7 +88,7 @@ module JennCad
       end
     end
 
-    class NewPart < Hanami::CLI::Command
+    class NewPart < Dry::CLI::Command
       include ActiveSupport::Inflector
       desc "creates a new part in a project"
       argument :name, required: true
@@ -156,7 +156,7 @@ module JennCad
 
     end
 
-    class NewProject < Hanami::CLI::Command
+    class NewProject < Dry::CLI::Command
       include ActiveSupport::Inflector
       desc "generates a new project"
       argument :name, required: true

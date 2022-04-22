@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = ">= 2.6.0"
   gem.add_runtime_dependency "geo3d"
   gem.add_runtime_dependency "deep_merge"
-  gem.add_runtime_dependency "hanami-cli", "0.3.1"
+  gem.add_runtime_dependency "dry-cli"
   gem.add_runtime_dependency "activesupport"
   gem.add_runtime_dependency "observr"
 end

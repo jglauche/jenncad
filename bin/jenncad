@@ -7,4 +7,4 @@ JennCad::Commands.register "build", JennCad::Commands::Build
 JennCad::Commands.register "new", JennCad::Commands::NewPart
 JennCad::Commands.register "create", JennCad::Commands::NewProject
 
-Hanami::CLI.new(JennCad::Commands).call
+Dry::CLI.new(JennCad::Commands).call
