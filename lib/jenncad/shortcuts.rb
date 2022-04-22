@@ -42,7 +42,7 @@ module JennCad
     StlImport.new(file, args)
   end
 
-  def extrude(args)
+  def extrude(args={})
     LinearExtrude.new(self, args)
   end
 

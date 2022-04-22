@@ -4,6 +4,7 @@ module JennCad::Primitives
 
 
     def feed_opts(args)
+      # FIXME: this doesn't seem to work
       if args.kind_of? Array
         m = {}
         if args.last.kind_of? Hash

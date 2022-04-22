@@ -1,5 +1,5 @@
 module JennCad::Primitives
-  class RoundedCube < Primitive
+  class RoundedCube < Cube
     attr_accessor :d, :r
     include JennCad::Features::Cuttable
 
@@ -23,6 +23,10 @@ module JennCad::Primitives
         z: nil,
         r: nil,
         flat_edges: nil,
+        center: true,
+        center_y: false,
+        center_x: false,
+        center_z: false,
         margins: {
           r: 0,
           d: 0,
@@ -41,16 +45,16 @@ module JennCad::Primitives
       # make diameter not bigger than any side
       @d = [@d, @x, @y].min
       res = HullObject.new(
-        cylinder(d:@d, h:z+z_margin).moveh(x: -@x + @d, y: @y - @d),
-        cylinder(d:@d).moveh(x: @x - @d, y: @y - @d),
-        cylinder(d:@d).moveh(x: -@x + @d, y: -@y + @d),
-        cylinder(d:@d).moveh(x: @x - @d, y: -@y + @d),
-      )
+        cylinder(d:@d, h:z+z_margin),
+        cylinder(d:@d).move(x: @x - @d, y: 0),
+        cylinder(d:@d).move(x: 0, y: @y - @d),
+        cylinder(d:@d).move(x: @x - @d, y: @y - @d),
+      ).moveh(xy: @d)
 
       res += flat_edge(@opts[:flat_edges])
 
       res.transformations = @transformations
-      res
+      res.moveh(centered_axis.to_h{|a| [a, -@opts[a]] })
     end
 
     def flat_edge(edge)

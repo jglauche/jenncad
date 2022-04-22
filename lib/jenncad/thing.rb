@@ -7,6 +7,7 @@ module JennCad
     attr_accessor :calc_x, :calc_y, :calc_z, :calc_h
     attr_accessor :shape
     attr_accessor :angle, :fn
+    attr_accessor :anchor
 
     def initialize(args={})
       @transformations = []
@@ -26,6 +27,41 @@ module JennCad
     def set_option(key, val)
       @opts ||= {}
       @opts[key] = val
+    end
+
+    def set_anchor(args)
+      self.anchor ||= {}
+      args.each do |key, val|
+        self.anchor[key] = val
+      end
+    end
+
+    def movea(key)
+      a = self.anchor[key]
+      unless a
+        puts "Error: Anchor #{key} not found"
+        puts "Available anchor: #{self.anchor}"
+        return self
+      else
+        self.movei(a)
+      end
+    end
+
+    def movei(args)
+      to = {}
+      [:x, :y, :z].each do |key|
+        if args[key]
+          to[key] = args[key]*-1
+        end
+      end
+      move(to)
+    end
+
+
+    def auto_extrude
+      ret = self.extrude
+      ret.set_option(:auto_extrude, true)
+      ret
     end
 
     def rotate(args)
@@ -254,8 +290,7 @@ module JennCad
       end
       res
     end
-
-    def make_openscad_compatible
+=begin    def make_openscad_compatible
       make_openscad_compatible!(self)
     end
 
@@ -276,6 +311,7 @@ module JennCad
       end
       item
     end
+=end
 
     def has_explicit_color?
       if option(:auto_color) == false
@@ -333,11 +369,11 @@ module JennCad
         ac = auto_color
         unless ac.nil?
           #puts "auto color to #{ac}"
-          if only_color?(self.parts)
+          if only_color?(get_contents)
             set_option :color, ac
             set_option :auto_color, true
           else
-            set_auto_color_for_children(ac, self.parts)
+            set_auto_color_for_children(ac, get_contents)
           end
 
         end
@@ -387,12 +423,44 @@ module JennCad
       option(:color)
     end
 
-    def openscad(file)
-      if @parts == nil
-        if self.respond_to? :part
-          @parts = [part]
-        end
+    def get_contents
+      return @parts unless @parts.nil?
+      if self.respond_to? :part
+        return [part]
       end
+    end
+
+    def calculated_h
+      return @z unless @z.nil? || @z == 0
+      return @h unless @h.nil? || @h == 0
+      return @calc_h unless @calc_h.nil? || @calc_h == 0
+      return @calc_z unless @calc_z.nil? || @calc_z == 0
+    end
+
+    def find_calculated_h(parts)
+      return if parts == nil
+      parts.each do |part|
+        if z = calculated_h
+          return z
+        end
+        get_calculated_h(part.get_contents)
+      end
+    end
+
+    def set_heights_for_auto_extrude(parts, parent=nil)
+      return if parts.nil?
+      parts.each do |part|
+        if part.option(:auto_extrude)
+          part.z = parent.calculated_h
+        end
+        set_heights_for_auto_extrude(part.get_contents, part)
+      end
+    end
+
+    def openscad(file)
+      set_heights_for_auto_extrude(get_contents)
+
+      @parts = get_contents
 
       JennCad::Exporters::OpenScad.new(self).save(file)
     end

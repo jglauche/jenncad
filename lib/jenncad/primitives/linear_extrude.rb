@@ -1,15 +1,19 @@
 module JennCad::Primitives
-  attr_accessor :center_bool, :convexity, :twist, :slices, :height
+  attr_accessor :center_bool, :convexity, :twist, :slices
   class LinearExtrude < JennCad::Thing
-    def initialize(part, args)
+    def initialize(part, args={})
       @transformations = []
       @parts = [part]
-      @height = args[:h] || args[:height]
+      @z = args[:h] || args[:height]
       @center_bool = args[:center]
       @convexity = args[:convexity]
       @twist = args[:twist]
       @slices = args[:slices]
       @fn = args[:fn]
+    end
+
+    def height
+      @z
     end
 
     def openscad_params

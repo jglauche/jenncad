@@ -55,6 +55,7 @@ module JennCad::Primitives
           part.opts[:margins] ||= {}
           if part.referenced_z && part.z != 0.0
             case part
+            when JennCad::Circle
             when JennCad::BooleanObject
             when JennCad::Aggregation
             else
