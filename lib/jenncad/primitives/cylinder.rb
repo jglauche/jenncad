@@ -57,6 +57,13 @@ module JennCad::Primitives
       res
     end
 
+    # Centers the cylinder around it's center point by height
+    # This will transform the cylinder around the center point.
+    def cz
+      @transformations << Move.new(z: -@z / 2.0)
+      self
+    end
+
     def handle_fn
       case @opts[:fn]
         when nil, 0
