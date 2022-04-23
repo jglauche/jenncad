@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require "jenncad"
-
 JennCad::Commands.register "", JennCad::Commands::Observe
 JennCad::Commands.register "run", JennCad::Commands::Observe
 JennCad::Commands.register "build", JennCad::Commands::Build

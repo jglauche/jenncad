@@ -1,3 +1,4 @@
+require "dry/cli"
 module JennCad
   module Commands
     extend Dry::CLI::Registry
