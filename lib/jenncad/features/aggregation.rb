@@ -6,6 +6,7 @@ module JennCad::Features
       super({})
       @name = name
       @parts = [part] # NOTE: single length arrayto make checking children easier
+      @z = part.z
     end
 
     def part
