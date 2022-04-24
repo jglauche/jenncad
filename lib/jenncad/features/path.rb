@@ -57,8 +57,13 @@ module JennCad
     end
 
     def positions
-      l = thing.yield.d + @id
-      l2 = thing.yield.d / 2.0 + @id / 2.0
+      td = thing.yield.d || thing.yield.y
+      unless td
+        puts "ERROR: cannot find diameter or y of thing #{thing.yield.inspect}"
+        return
+      end
+      l = td + @id
+      l2 = td / 2.0 + @id / 2.0
       r = 0
       ox = 0
       oy = 0
