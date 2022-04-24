@@ -43,18 +43,19 @@ module JennCad::Primitives
     def to_openscad
       return cube(@opts) if @d == 0
       # make diameter not bigger than any side
-      @d = [@d, @x, @y].min
+      d = [@d, @x, @y].min
       res = HullObject.new(
-        cylinder(d:@d, h:z+z_margin),
-        cylinder(d:@d).move(x: @x - @d, y: 0),
-        cylinder(d:@d).move(x: 0, y: @y - @d),
-        cylinder(d:@d).move(x: @x - @d, y: @y - @d),
-      ).moveh(xy: @d)
+        cylinder(d:d, h:z+z_margin),
+        cylinder(d:d).move(x: @x - d, y: 0),
+        cylinder(d:d).move(x: 0, y: @y - d),
+        cylinder(d:d).move(x: @x - d, y: @y - d),
+      ).moveh(xy: d)
 
       res += flat_edge(@opts[:flat_edges])
 
       res.transformations = @transformations
       res.moveh(centered_axis.to_h{|a| [a, -@opts[a]] })
+      res
     end
 
     def flat_edge(edge)
