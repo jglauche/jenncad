@@ -47,7 +47,7 @@ module JennCad
       end
     end
 
-    def movei(args)
+    def movei(args={})
       to = {}
       [:x, :y, :z].each do |key|
         if args[key]
@@ -162,7 +162,7 @@ module JennCad
       return args
     end
 
-    def move(args)
+    def move(args={})
       if args.kind_of? Array
         x,y,z = args
         return move(x:x, y:y, z:z)
@@ -183,20 +183,20 @@ module JennCad
     alias :translate :move
     alias :m :move
 
-    def mx(v)
+    def mx(v=0)
       move(x:v)
     end
 
-    def my(v)
+    def my(v=0)
       move(y:v)
     end
 
-    def mz(v)
+    def mz(v=0)
       move(z:v)
     end
 
     # move half
-    def moveh(args)
+    def moveh(args={})
       if args.kind_of? Array
         x,y,z = args
         args = {x: x, y: y, z: z}
@@ -209,26 +209,26 @@ module JennCad
     end
     alias :mh :moveh
 
-    def mhx(v)
+    def mhx(v=0)
       moveh(x:v)
     end
 
-    def mhy(v)
+    def mhy(v=0)
       moveh(y:v)
     end
 
-    def mhz(v)
+    def mhz(v=0)
       moveh(z:v)
     end
 
-    def mirror(args)
+    def mirror(args={})
       @transformations ||= []
       @transformations << Mirror.new(args)
       self
     end
     alias :mi :mirror
 
-    def scale(args)
+    def scale(args={})
       if args.kind_of? Numeric or args.kind_of? Array
           args = {v:args}
       end
