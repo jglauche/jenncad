@@ -5,7 +5,7 @@ module JennCad
     MAGIC = "jenncad-append-project-magic"
 
     class Run < Dry::CLI::Command
-      argument :name, required: false
+      argument :name, required: false, desc: "project file, defaults to dirname.rb by default"
 
       def guess_executable(dir=Dir.pwd)
         dir.split("/").last.to_s + ".rb"
@@ -42,16 +42,23 @@ module JennCad
         end
       end
 
-      def build
-        admesh_installed = system("admesh --version > /dev/null")
-        unless admesh_installed
-          puts "Warning: cannot find admesh, stl export will be in ASCII"
+    end
+
+    class Build < Run
+      option :binary, type: :boolean, default: false, desc: "run through admesh to create a binary stl"
+
+      def build(options)
+        if options[:binary]
+          admesh_installed = system("admesh --version > /dev/null")
+          unless admesh_installed
+            puts "Warning: cannot find admesh, stl export will be in ASCII"
+          end
         end
 
         Dir.glob("output/**/*.scad").each do |file|
           stl = file.gsub(".scad",".stl")
           build_stl(file, stl)
-          convert_to_binary(stl) if admesh_installed
+          convert_to_binary(stl) if options[:binary] && admesh_installed
         end
       end
 
@@ -64,16 +71,15 @@ module JennCad
         system("admesh #{stl} -b #{stl}")
       end
 
-    end
 
-    class Build < Run
-      def call(name: nil, **)
+      def call(options)
+        name = options[:name]
         unless name
           name = guess_executable
         end
         if check_executable(name)
           execute(name)
-          build
+          build(options)
         end
       end
     end
