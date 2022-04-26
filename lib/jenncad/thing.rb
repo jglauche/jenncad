@@ -228,6 +228,19 @@ module JennCad
     end
     alias :mi :mirror
 
+    def miz
+      mirror(z:1)
+    end
+
+    def miy
+      mirror(y:1)
+    end
+
+    def miz
+      mirror(z:1)
+    end
+
+
     def scale(args={})
       if args.kind_of? Numeric or args.kind_of? Array
           args = {v:args}
