@@ -52,21 +52,30 @@ module JennCad::Primitives
 
     def set_anchors
       @anchors = {} # this resets anchors
+
       if @opts[:center] || @opts[:center_x]
-        set_anchor :left, x: -@opts[:x] / 2.0
-        set_anchor :right, x: @opts[:x] / 2.0
+        left = -@opts[:x] / 2.0
+        right = @opts[:x] / 2.0
       else
-        set_anchor :left, x: 0
-        set_anchor :right, x: @opts[:x]
+        left = 0
+        right =  @opts[:x]
       end
       if @opts[:center] || @opts[:center_y]
-        set_anchor :bottom, y: -@opts[:y] / 2.0
-        set_anchor :top, y: @opts[:y] / 2.0
+        bottom = -@opts[:y] / 2.0
+        top = @opts[:y] / 2.0
       else
-        set_anchor :bottom, y: 0
-        set_anchor :top, y: @opts[:y]
+        bottom = 0
+        top = @opts[:y]
       end
 
+      set_anchor :left, x: left
+      set_anchor :right, x: right
+      set_anchor :top, y: top
+      set_anchor :bottom, y: bottom
+      set_anchor :top_left, x: left, y: top
+      set_anchor :top_right, x: right, y: top
+      set_anchor :bottom_left, x: left, y: bottom
+      set_anchor :bottom_right, x: right, y: bottom
     end
 
     # used for openscad export
