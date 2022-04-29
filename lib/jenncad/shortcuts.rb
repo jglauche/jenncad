@@ -1,34 +1,34 @@
 module JennCad
   def circle(args)
-    Circle.new(args)
+    Circle.new(args).set_parent(self)
   end
 
   def cylinder(*args)
-    Cylinder.new(args)
+    Cylinder.new(args).set_parent(self)
   end
   alias :cy :cylinder
   alias :cyl :cylinder
 
   def sphere(args)
-    Sphere.new(args)
+    Sphere.new(args).set_parent(self)
   end
   alias :sp :sphere
 
   def polygon(args)
-    Polygon.new(args)
+    Polygon.new(args).set_parent(self)
   end
 
   def slot(*args)
-    Slot.new(args)
+    Slot.new(args).set_parent(self)
   end
 
   def cube(*args)
-    Cube.new(args)
+    Cube.new(args).set_parent(self)
   end
   alias :cu :cube
 
   def rounded_cube(*args)
-    RoundedCube.new(args)
+    RoundedCube.new(args).set_parent(self)
   end
   alias :rcube :rounded_cube
   alias :rc :rounded_cube

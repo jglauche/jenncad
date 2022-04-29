@@ -7,6 +7,8 @@ module JennCad::Primitives
       else
         @parts = parts
       end
+      @parent = @parts.first.parent
+
       after_add
     end
 

@@ -45,17 +45,20 @@ module JennCad::Primitives
       # make diameter not bigger than any side
       d = [@d, @x, @y].min
       res = HullObject.new(
-        cylinder(d:d, h:z+z_margin),
-        cylinder(d:d).move(x: @x - d, y: 0),
-        cylinder(d:d).move(x: 0, y: @y - d),
-        cylinder(d:d).move(x: @x - d, y: @y - d),
-      ).moveh(xy: d)
+        cylinder(d: d, h:z+z_margin),
+        cylinder(d: d).move(x: @x - d, y: 0),
+        cylinder(d: d).move(x: 0, y: @y - d),
+        cylinder(d: d).move(x: @x - d, y: @y - d),
+      )
+      res = res.move(xy: d/2.0)
 
       @opts[:flat_edges].each do |edge|
         res += apply_flat_edge(edge)
       end
 
+      res = union(res) # put everything we have in a parent union that we can apply the transformations of this object of
       res.transformations = @transformations
+
       res.moveh(centered_axis.to_h{|a| [a, -@opts[a]] })
       res.inherit_color(self)
       res

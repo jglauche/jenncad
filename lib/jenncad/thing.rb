@@ -8,6 +8,7 @@ module JennCad
     attr_accessor :shape
     attr_accessor :angle, :fn
     attr_accessor :anchors
+    attr_accessor :parent
 
     def initialize(args={})
       @transformations = []
@@ -16,6 +17,11 @@ module JennCad
       @calc_y = 0
       @calc_z = 0
       @calc_h = args[:z] || 0
+      @anchors = {}
+      @parent = args[:parent]
+      if @parent
+        log.info "Parent: #{@parent}"
+      end
       @opts ||= args
     end
 
@@ -29,37 +35,27 @@ module JennCad
       @opts[key] = val
     end
 
-    def anchor(name)
-      self.anchors[name]
-    end
-
-    def set_anchor(name, args={})
-      self.anchors ||= {}
-      self.anchors[name] = args
+    def set_parent(parent)
+      @parent = parent
       self
     end
 
-    def movea(key)
-      a = self.anchors[key]
-      unless a
-        $log.error "Error: Anchor #{key} not found"
-        $log.error "Available anchor: #{self.anchors}"
-        return self
-      else
-        self.movei(a)
+    def anchor(name)
+      @anchors ||= {}
+      if anch = @anchors[name]
+        return anch
+      elsif @parent
+        return @parent.anchor(name)
       end
     end
+    alias :a :anchor
 
-    def movei(args={})
-      to = {}
-      [:x, :y, :z].each do |key|
-        if args[key]
-          to[key] = args[key]*-1
-        end
-      end
-      move(to)
+    def set_anchor(name, args={})
+      @anchors ||= {}
+      @anchors[name] = args
+      self
     end
-
+    alias :sa :set_anchor
 
     def auto_extrude
       ret = self.extrude
@@ -149,6 +145,10 @@ module JennCad
         args[key] ||= 0.0
       end
 
+      if args[:debug]
+        $log.debug "Args: #{args}"
+      end
+
       if args[:xy]
         args[:x] += args[:xy]
         args[:y] += args[:xy]
@@ -166,7 +166,11 @@ module JennCad
         args[:y] += args[:yz]
         args[:z] += args[:yz]
       end
-      return args
+      if args[:debug]
+        $log.debug "After xyz shortcuts #{args}"
+      end
+
+     return args
     end
 
     def move(args={})
@@ -202,6 +206,31 @@ module JennCad
       move(z:v)
     end
 
+    # move to anchor
+    def movea(key)
+      an = anchor(key)
+      unless an
+        $log.error "Error: Anchor #{key} not found"
+        $log.error "Available anchors: #{@anchors}"
+        return self
+      else
+        self.move(an.dup)
+      end
+    end
+
+    # move to anchor - inverted
+    def moveai(key)
+      an = anchor(key)
+      unless an
+        $log.error "Error: Anchor #{key} not found"
+        $log.error "Available anchors: #{@anchors}"
+        return self
+      else
+        self.movei(an.dup)
+      end
+    end
+
+
     # move half
     def moveh(args={})
       if args.kind_of? Array
@@ -226,6 +255,16 @@ module JennCad
 
     def mhz(v=0)
       moveh(z:v)
+    end
+
+    def movei(args={})
+      to = {}
+      [:x, :y, :z, :xy, :xz, :yz, :xyz].each do |key|
+        if args[key]
+          to[key] = args[key]*-1
+        end
+      end
+      move(to)
     end
 
     def mirror(args={})
