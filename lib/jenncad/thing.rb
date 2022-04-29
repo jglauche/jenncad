@@ -40,7 +40,10 @@ module JennCad
       self
     end
 
-    def anchor(name)
+    def anchor(name, thing=nil)
+      if thing
+        return thing.anchor(name)
+      end
       @anchors ||= {}
       if anch = @anchors[name]
         return anch
@@ -207,8 +210,8 @@ module JennCad
     end
 
     # move to anchor
-    def movea(key)
-      an = anchor(key)
+    def movea(key, thing=nil)
+      an = anchor(key, thing)
       unless an
         $log.error "Error: Anchor #{key} not found"
         $log.error "Available anchors: #{@anchors}"
@@ -219,8 +222,8 @@ module JennCad
     end
 
     # move to anchor - inverted
-    def moveai(key)
-      an = anchor(key)
+    def moveai(key, thing=nil)
+      an = anchor(key, thing)
       unless an
         $log.error "Error: Anchor #{key} not found"
         $log.error "Available anchors: #{@anchors}"

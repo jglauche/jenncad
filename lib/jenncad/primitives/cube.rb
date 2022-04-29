@@ -46,6 +46,27 @@ module JennCad::Primitives
       super(z: @opts[:z])
       @h = @z.dup
       @calc_h = @z.dup
+
+      set_anchors
+    end
+
+    def set_anchors
+      @anchors = {} # this resets anchors
+      if @opts[:center] || @opts[:center_x]
+        set_anchor :left, x: -@opts[:x] / 2.0
+        set_anchor :right, x: @opts[:x] / 2.0
+      else
+        set_anchor :left, x: 0
+        set_anchor :right, x: @opts[:x]
+      end
+      if @opts[:center] || @opts[:center_y]
+        set_anchor :bottom, y: -@opts[:y] / 2.0
+        set_anchor :top, y: @opts[:y] / 2.0
+      else
+        set_anchor :bottom, y: 0
+        set_anchor :top, y: @opts[:y]
+      end
+
     end
 
     # used for openscad export
@@ -55,6 +76,7 @@ module JennCad::Primitives
 
     def not_centered
       @opts[:center] = false
+      set_anchors
       self
     end
     alias :nc :not_centered
@@ -62,6 +84,7 @@ module JennCad::Primitives
     def cx
       nc
       @opts[:center_x] = true
+      set_anchors
       self
     end
     alias :center_x :cx
@@ -69,6 +92,7 @@ module JennCad::Primitives
     def cy
       nc
       @opts[:center_y] = true
+      set_anchors
       self
     end
     alias :center_y :cy
@@ -77,10 +101,10 @@ module JennCad::Primitives
     def cz
       nc
       @opts[:center_z] = true
+      set_anchors
       self
     end
     alias :center_z :cz
-
 
     def centered_axis
       return [:x, :y] if @opts[:center]
