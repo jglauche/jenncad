@@ -22,7 +22,7 @@ module JennCad::Primitives
         y: 0,
         z: nil,
         r: nil,
-        flat_edges: nil,
+        flat_edges: [],
         center: true,
         center_y: false,
         center_x: false,
@@ -51,26 +51,33 @@ module JennCad::Primitives
         cylinder(d:d).move(x: @x - d, y: @y - d),
       ).moveh(xy: d)
 
-      res += flat_edge(@opts[:flat_edges])
+      @opts[:flat_edges].each do |edge|
+        res += apply_flat_edge(edge)
+      end
 
       res.transformations = @transformations
       res.moveh(centered_axis.to_h{|a| [a, -@opts[a]] })
+      res.inherit_color(self)
       res
     end
 
-    def flat_edge(edge)
+    def flat(edge)
+      @opts[:flat_edges] ||= []
+      @opts[:flat_edges] << edge
+      self
+    end
+
+    private
+    def apply_flat_edge(edge)
       case edge
-      when Array
-        #ruby2.7 test- edge.map(&self.:flat_edge)
-        edge.map{|x| flat_edge(x) }
       when :up
-        cube(@x, @y/2.0, @z).moveh(y:@y/2.0)
+        cube(x: @x, y: @y/2.0, z: @z).nc.moveh(y:@y)
       when :down
-        cube(@x, @y/2.0, @z).moveh(y:-@y/2.0)
+        cube(x: @x, y: @y/2.0, z: @z).nc
       when :right
-        cube(@x/2.0, @y, @z).moveh(x:@x/2.0)
+        cube(x: @x/2.0, y: @y, z: @z).nc.moveh(x:@x)
       when :left
-        cube(@x/2.0, @y, @z).moveh(x:-@x/2.0)
+        cube(x: @x/2.0, y: @y, z: @z).nc
       else
         nil
       end

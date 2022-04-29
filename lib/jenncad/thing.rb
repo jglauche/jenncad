@@ -7,7 +7,7 @@ module JennCad
     attr_accessor :calc_x, :calc_y, :calc_z, :calc_h
     attr_accessor :shape
     attr_accessor :angle, :fn
-    attr_accessor :anchor
+    attr_accessor :anchors
 
     def initialize(args={})
       @transformations = []
@@ -29,18 +29,21 @@ module JennCad
       @opts[key] = val
     end
 
-    def set_anchor(args)
-      self.anchor ||= {}
-      args.each do |key, val|
-        self.anchor[key] = val
-      end
+    def anchor(name)
+      self.anchors[name]
+    end
+
+    def set_anchor(name, args={})
+      self.anchors ||= {}
+      self.anchors[name] = args
+      self
     end
 
     def movea(key)
-      a = self.anchor[key]
+      a = self.anchors[key]
       unless a
-        puts "Error: Anchor #{key} not found"
-        puts "Available anchor: #{self.anchor}"
+        $log.error "Error: Anchor #{key} not found"
+        $log.error "Available anchor: #{self.anchors}"
         return self
       else
         self.movei(a)
@@ -138,6 +141,10 @@ module JennCad
     end
 
     def parse_xyz_shortcuts(args)
+      unless args.kind_of? Hash
+        $log.warn "parse_xyz_shortcuts called for type #{args.class} #{args.inspect}"
+        return args
+      end
       [:x, :y, :z].each do |key|
         args[key] ||= 0.0
       end
@@ -325,6 +332,11 @@ module JennCad
       item
     end
 =end
+
+    def inherit_color(other)
+      self.set_option(:color, other.option(:color))
+      self.set_option(:auto_color, other.option(:auto_color))
+    end
 
     def has_explicit_color?
       if option(:auto_color) == false

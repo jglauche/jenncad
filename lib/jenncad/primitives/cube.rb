@@ -64,18 +64,23 @@ module JennCad::Primitives
       @opts[:center_x] = true
       self
     end
+    alias :center_x :cx
 
     def cy
       nc
       @opts[:center_y] = true
       self
     end
+    alias :center_y :cy
+
 
     def cz
       nc
       @opts[:center_z] = true
       self
     end
+    alias :center_z :cz
+
 
     def centered_axis
       return [:x, :y] if @opts[:center]
