@@ -25,4 +25,5 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "dry-cli"
   gem.add_runtime_dependency "activesupport"
   gem.add_runtime_dependency "observr"
+  gem.add_runtime_dependency "logger"
 end

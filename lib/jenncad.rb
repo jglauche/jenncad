@@ -1,3 +1,6 @@
+require "logger"
+$log = Logger.new(STDOUT)
+
 require "geo3d"
 require "deep_merge"
 require "fileutils"
