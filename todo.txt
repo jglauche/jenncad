@@ -1,6 +1,53 @@
 1.0 required features
 ===================
 
+- slot with square ends -> rounded cube with one side = d + flat_edges does that. Should slot do that in reverse?
+
+- bolt library needs to get a rewrite,
+	- fetching dimensions from the imported Bolt library should be less awful
+
+- needs a documentation and showcase
+
+Features wanted
+===================
+28.4.22:
+- Parts often come with 4 holes around a center, and I often do something like:
+
+[-1, 1].each do |i|
+	[-1, 1].each do |j|
+		res += @bolt.cut.move(x: @hole_center*i, y: @hole_center*j)
+	end
+end
+
+there should be a shorter way to do this.
+
+
+- instead of moving Bolts output, make it the default to make their positions an anchor
+
+- Bolt size data should be in a constant instead of one "Data" constant i.e.
+	M2_5.head_dia
+	M2_5.head_h
+	M2_5_hole
+
+- Bolt sizes should follow user configuration that can change margins
+- Bolts should have an easier way to align than mirror them, maybe from :top
+	 - but also, when you have a part that can be mounted in any top/bottom direction, 	you always end up having the bolts facing the wrong direction..
+- Bolts should be able to also make thread inserts
+
+
+
+
+other awful things
+===================
+
+- cli needs to use templates and user defined templates, profile loader needs to have this.
+
+- user profile file should be auto generated with examples
+
+
+Future plans
+==================
+
 - cli needs to be a package manager for existing parts from a public library (i.e. bolts, motors go here), able to
 -- query
 -- download
@@ -8,22 +55,5 @@
 (upload? -> probably git pull request for now)
 - add external projects into one another (for example: make parts, show arrangement of a shelf in another project)
 
-- slot with square ends -> rounded cube with one side = d + flat_edges does that. Should slot do that in reverse?
 
-- de-centering a cube in one direction sucks, you have to add both center: false, center_x: true
-	-> decenter ?
-
-- bolt library needs to get a rewrite,
-	- fetching dimensions from the imported Bolt library should be less awful
-
-- needs a documentation and showcase
-
-other awful things
-===================
-
-- command line interface isn't capable of adding parts to the output automatically
-
-- user profile file should be auto generated with examples
-
-- switching back and forth from and to openscad for preview sucks (that being said, switching from vim to something else would be awful to me)
 
