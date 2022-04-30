@@ -19,9 +19,6 @@ module JennCad
       @calc_h = args[:z] || 0
       @anchors = {}
       @parent = args[:parent]
-      if @parent
-        log.info "Parent: #{@parent}"
-      end
       @opts ||= args
     end
 

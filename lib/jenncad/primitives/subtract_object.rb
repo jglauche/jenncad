@@ -3,10 +3,16 @@ module JennCad::Primitives
     def inherit_z
       @z = 0
       @calc_z = parts.first.calc_z.to_f
+
       only_additives_of(@parts).each do |p|
+        if option(:debug)
+          $log.debug "inherit_z checks for: #{p}"
+        end
         z = p.z.to_f
         @z = z if z > @z
       end
+      $log.debug "inherit_z called, biggest z found: #{@z}" if option(:debug)
+
     end
 
     def get_heights(obj)
@@ -58,7 +64,7 @@ module JennCad::Primitives
             when JennCad::Circle
             when JennCad::BooleanObject
             else
-              pp part if part.opts[:debug]
+              $log.debug part if part.opts[:debug]
               part.opts[:margins][:z] ||= 0.0
               unless part.opts[:margins][:z] == 0.2
                 part.opts[:margins][:z] = 0.2
@@ -66,7 +72,7 @@ module JennCad::Primitives
               end
             end
           elsif part.z == compare_h
-#            puts "fixing possible z fighting: #{part.class} #{part.z}"
+            $log.debug "fixing possible z fighting: #{part.class} #{part.z}" if part.opts[:debug]
             part.opts[:margins][:z] += 0.008
             part.mz(-0.004)
           elsif part.calc_z == compare_z
