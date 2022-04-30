@@ -1,8 +1,10 @@
 module JennCad::Exporters
   class OpenScadObject
-    def initialize(cmd, args, children=[])
+    def initialize(cmd, args, children=[], modifier=nil)
       @command = cmd
       @args = args
+      @modifier = modifier || ""
+
       case children
       when Array
         @children = children
@@ -43,11 +45,11 @@ module JennCad::Exporters
     def handle_command(i=1)
       case @children.size
       when 0
-        "#{@command}(#{handle_args});"
+        "#{@modifier}#{@command}(#{handle_args});"
       when 1
-        "#{@command}(#{handle_args})#{@children.first.handle_command(i+1)}"
+        "#{@modifier}#{@command}(#{handle_args})#{@children.first.handle_command(i+1)}"
       when (1..)
-        res = "#{@command}(#{handle_args}){"
+        res = "#{@modifier}#{@command}(#{handle_args}){"
         res += nl
         inner = @children.map do |c|
           next if c == nil
@@ -185,7 +187,8 @@ module JennCad::Exporters
     def new_obj(part, cmd, args=nil, children=[])
       transform(part) do
         apply_color(part) do
-          OpenScadObject.new(cmd, args, children)
+          modifier = part.openscad_modifier || nil
+          OpenScadObject.new(cmd, args, children, modifier)
         end
       end
     end

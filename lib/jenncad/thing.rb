@@ -529,6 +529,37 @@ module JennCad
       JennCad::Exporters::OpenScad.new(self).save(file)
     end
 
+    def ghost
+      set_option :ghost, true
+      set_option :no_auto_color, true
+      set_option :color, nil
+      set_option :auto_color, false
+      self
+    end
+
+    def hide
+      set_option :hide, true
+      self
+    end
+
+    def only
+      set_option :only, true
+      self
+    end
+
+    def hl
+      set_option :highlight, true
+      self
+    end
+
+    def openscad_modifier
+      return "%" if option(:ghost)
+      return "#" if option(:highlight)
+      return "!" if option(:only)
+      return "*" if option(:hide)
+      nil
+    end
+
     def referenced_z
      return false if @z.to_f != 0.0
      return option(:zref) if option(:zref)

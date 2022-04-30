@@ -39,7 +39,7 @@ module JennCad
   end
 
   def stl(file, args={})
-    StlImport.new(file, args)
+    StlImport.new(file, args).set_parent(self)
   end
 
   def extrude(args={})
