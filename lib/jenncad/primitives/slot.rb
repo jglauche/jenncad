@@ -36,10 +36,24 @@ module JennCad::Primitives
       @d = @opts[:d]
       @a = @opts[:a]
       @h = @opts[:h]
-      @r = @opts[:r]
+      @r = @opts[:r] || nil
+      if @r
+        @d = @r * 2
+      end
       @fn = @opts[:fn]
       @len_x = @opts[:x]
       @len_y = @opts[:y]
+      tx = @opts[:tx] || @opts[:total_x] || nil
+      ty = @opts[:ty] || @opts[:total_y] || nil
+      if tx
+        @len_x = tx - @d
+      end
+      if ty
+        @len_y = ty - @d
+      end
+
+      # TODO: this needs anchors like cube
+
     end
 
     def to_openscad
