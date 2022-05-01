@@ -5,7 +5,7 @@ module JennCad::Features
     def initialize(name=nil, part=nil)
       super({})
       @name = name.gsub(".","_")
-      @parts = [part] # NOTE: single length arrayto make checking children easier
+      @parts = [part]
     end
 
     def z

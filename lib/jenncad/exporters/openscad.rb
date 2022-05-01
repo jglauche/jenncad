@@ -245,7 +245,8 @@ module JennCad::Exporters
 
     def handle_aggregation(part, tabindex=0)
       register_module(part) unless @modules[part.name]
-      transform(part) do
+      $log.debug "aggregation #{part.name} transformations: #{part.transformations.inspect}" if part && part.option(:debug)
+      transform(part.clone) do
         new_obj(part, part.name, nil)
       end
     end

@@ -92,6 +92,14 @@ module JennCad
 
   private
   def boolean_operation(part, klass)
+
+    if part.respond_to? :transformations
+      np = part.clone
+      np.transformations = []
+      np.transformations = part.transformations.map{|l| l.clone }
+      part = np
+    end
+
     case self
     when nil
       part

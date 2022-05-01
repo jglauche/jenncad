@@ -40,13 +40,19 @@ module JennCad
 
     def anchor(name, thing=nil)
       if thing
-        return thing.anchor(name)
+        res = thing.anchor(name)
+        return res unless res.nil?
       end
       @anchors ||= {}
       if anch = @anchors[name]
         return anch
       elsif @parent
         return @parent.anchor(name)
+      elsif self.respond_to? :get_contents
+        con = get_contents
+        if con.respond_to? :anchor
+          con.anchor(name)
+        end
       end
     end
     alias :a :anchor
@@ -210,6 +216,7 @@ module JennCad
     # move to anchor
     def movea(key, thing=nil)
       an = anchor(key, thing)
+
       unless an
         $log.error "Error: Anchor #{key} not found"
         $log.error "Available anchors: #{@anchors}"

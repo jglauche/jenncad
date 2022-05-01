@@ -7,7 +7,9 @@ module JennCad::Primitives
       else
         @parts = parts
       end
+
       @parent = @parts.first.parent
+
       after_add
     end
 
@@ -22,6 +24,7 @@ module JennCad::Primitives
     end
 
     def add(part)
+      return if part.nil?
       @parts << part
       after_add
     end
