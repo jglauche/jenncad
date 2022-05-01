@@ -53,6 +53,7 @@ module JennCad::Primitives
       end
 
       # TODO: this needs anchors like cube
+      # TODO: color on this needs to apply to hull, not on the cylinders.
 
     end
 

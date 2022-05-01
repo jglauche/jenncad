@@ -3,7 +3,7 @@ module JennCad
   class Part < Thing
 
     def to_openscad
-      a = Aggregation.new(self.class.to_s, self.part)
+      a = Aggregation.new(self.class.to_s, self.get_contents)
       a.transformations = @transformations
       a.color(:auto)
       a

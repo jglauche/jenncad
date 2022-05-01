@@ -20,6 +20,7 @@ module JennCad
       @anchors = {}
       @parent = args[:parent]
       @opts ||= args
+      @cache = nil
     end
 
     def option(key)
@@ -341,36 +342,14 @@ module JennCad
     def get_children(item, stop_at)
       res = [item]
       if item.respond_to?(:parts) && item.parts != nil
-        item.parts.each do |part|
-          unless stop_at != nil && part.kind_of?(stop_at)
-            res << get_children(part, stop_at)
+        item.parts.each do |pa|
+          unless stop_at != nil && pa.kind_of?(stop_at)
+            res << get_children(pa, stop_at)
           end
         end
       end
       res
     end
-=begin    def make_openscad_compatible
-      make_openscad_compatible!(self)
-    end
-
-    def make_openscad_compatible!(item)
-      if item.respond_to?(:parts) && item.parts != nil
-        item.parts.each_with_index do |part, i|
-          if part.respond_to? :to_openscad
-            item.parts[i] = part.to_openscad
-          else
-            item.parts[i] = part.make_openscad_compatible
-          end
-        end
-      elsif item.respond_to? :part
-        item = item.part.make_openscad_compatible
-      end
-      if item.respond_to? :to_openscad
-        item = item.to_openscad
-      end
-      item
-    end
-=end
 
     def inherit_color(other)
       self.set_option(:color, other.option(:color))
@@ -386,6 +365,9 @@ module JennCad
 
     def only_color?(parts, lvl=0)
       return true if parts == nil
+      unless parts.kind_of? Array
+        parts = [parts]
+      end
 
       parts.each do |part|
 #        puts "  " * lvl + "[only_color?] #{part}"
@@ -489,8 +471,15 @@ module JennCad
 
     def get_contents
       return @parts unless @parts.nil?
+
+      if @cache
+        return @cache
+      end
+
       if self.respond_to? :part
-        return [part]
+        # cache things to prevent calling the code in #part multiple times
+        @cache = part
+        return @cache
       end
     end
 
@@ -503,6 +492,9 @@ module JennCad
 
     def find_calculated_h(parts)
       return if parts == nil
+      unless parts.kind_of? Array
+        parts = [parts]
+      end
       parts.each do |part|
         if z = calculated_h
           return z
@@ -513,6 +505,10 @@ module JennCad
 
     def set_heights_for_auto_extrude(parts, parent=nil)
       return if parts.nil?
+      unless parts.kind_of? Array
+        parts = [parts]
+      end
+
       parts.each do |part|
         if part.option(:auto_extrude)
           part.z = parent.calculated_h
