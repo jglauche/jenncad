@@ -92,12 +92,9 @@ module JennCad
 
   private
   def boolean_operation(part, klass)
-
     if part.respond_to? :transformations
-      np = part.clone
-      np.transformations = []
-      np.transformations = part.transformations.map{|l| l.clone }
-      part = np
+      # Since ruby doesn't provide a way to make a deep clone, this seems to be the simplest solution that will effectively do that:
+      part = Marshal.load(Marshal.dump(part))
     end
 
     case self

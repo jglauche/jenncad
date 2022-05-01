@@ -377,9 +377,9 @@ module JennCad
       end
 
       parts.each do |part|
-#        puts "  " * lvl + "[only_color?] #{part}"
+        #puts "  " * lvl + "[only_color?] #{part}"
         if part.has_explicit_color?
-#          puts "  " * lvl + "found explicit color here"
+          #puts "  " * lvl + "found explicit color here: #{part.color}"
           return false
         end
         if !only_color?(part.parts, lvl+1)
@@ -395,14 +395,14 @@ module JennCad
       parts.each do |part|
         unless part.has_explicit_color?
           if only_color?(part.parts, lvl+1)
-#            puts "  " * lvl + "children have no explicit color, setting it here"
+            #puts "  " * lvl + "children have no explicit color, setting it here"
             part.set_auto_color(col)
           else
-#            puts "  " * lvl + "[set_auto_color_for_children] #{part}"
+            #puts "  " * lvl + "[set_auto_color_for_children] #{part}"
             set_auto_color_for_children(col, part.parts, lvl+1)
           end
         else
-#          puts "  " * lvl + "[set_auto_color_for_children] this part has a color, ignoring their children"
+          #puts "  " * lvl + "[set_auto_color_for_children] this part has a color #{part.color}, ignoring their children"
         end
 
       end
