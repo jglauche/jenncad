@@ -197,7 +197,21 @@ module JennCad
       if args[:prepend]
         @transformations.prepend(Move.new(args))
       else
-        @transformations << Move.new(args)
+        lt = @transformations.last
+
+        chain = if args[:chain]
+          args[:chain]
+        else
+          $jenncad_profile.chain_moves
+        end
+
+        if lt && lt.class == Move && chain == false
+          lt.x += args[:x].to_f
+          lt.y += args[:y].to_f
+          lt.z += args[:z].to_f
+        else
+          @transformations << Move.new(args)
+        end
       end
       @calc_x += args[:x].to_f
       @calc_y += args[:y].to_f
@@ -220,7 +234,12 @@ module JennCad
     end
 
     # move to anchor
-    def movea(key, thing=nil)
+    def movea(key, thing=nil, args={})
+      if thing.kind_of? Hash # if you leave out thing, args may be interpreted as thing
+        args = thing
+        thing = nil
+      end
+
       an = anchor(key, thing)
 
       unless an
@@ -228,20 +247,26 @@ module JennCad
         $log.error "Available anchors: #{@anchors}"
         return self
       else
-        self.move(an.dup)
+        m = an.dup
+        if args[:chain]
+          m[:chain] = args[:chain]
+        end
+        if args[:inverted]
+          self.movei(m)
+        else
+          self.move(m)
+        end
       end
     end
 
     # move to anchor - inverted
-    def moveai(key, thing=nil)
-      an = anchor(key, thing)
-      unless an
-        $log.error "Error: Anchor #{key} not found"
-        $log.error "Available anchors: #{@anchors}"
-        return self
-      else
-        self.movei(an.dup)
+    def moveai(key, thing=nil, args={})
+      if thing.kind_of? Hash # if you leave out thing, args may be interpreted as thing
+        args = thing
+        thing = nil
       end
+      args[:inverted] = true
+      movea(key, thing, args)
     end
 
 
@@ -278,6 +303,7 @@ module JennCad
           to[key] = args[key]*-1
         end
       end
+      to[:chain] = args[:chain]
       move(to)
     end
 

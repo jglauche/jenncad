@@ -16,6 +16,18 @@ module JennCad
       )
     end
 
+    # By default, jenncad will add coordinates of subsequent moves in the output
+    # i.e.
+    #   .move(x: 10, y: 20).move(x: 10) would result depending on the value of this option:
+    #
+    #   true = translate([10,20, 0])translate([10, 0, 0])
+    #   false = translate([20, 20, 0])
+    #
+    # defaults to false
+    def chain_moves
+      false
+    end
+
     def colors
       case @colors
       when nil, []
