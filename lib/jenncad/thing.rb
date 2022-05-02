@@ -181,11 +181,17 @@ module JennCad
     end
 
     def move(args={})
+      return self if args.nil? or args.empty?
+
       if args.kind_of? Array
         x,y,z = args
         return move(x:x, y:y, z:z)
       end
       args = parse_xyz_shortcuts(args)
+
+      if args[:x].to_f == 0.0 && args[:y].to_f == 0.0 && args[:z].to_f == 0.0
+        return self
+      end
 
       @transformations ||= []
       if args[:prepend]
