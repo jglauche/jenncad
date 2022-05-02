@@ -16,12 +16,12 @@ module JennCad::Features
 
     def prepare_cut(l, r, &block)
       part = block.call
-      if part.z.to_f > 0.0
+      if part.z.to_d > 0.0
         part.opts[:margins][:z] = 0.2
         if l == 0.0
           part.mz(r+0.1)
         else
-          part.mz(l+part.z.to_f-0.2)
+          part.mz(l+part.z.to_d-0.2)
         end
       else
         part.opts[:margins][:z] = 0.2

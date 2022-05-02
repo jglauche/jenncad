@@ -79,16 +79,16 @@ module JennCad::Primitives
     end
 
     def end_vector
-      if @a.to_f == 0.0
+      if @a.to_d == 0.0
         return [@len_x, 0] if @len_x
         return [0, @len_y] if @len_y
       end
       if @len_x
-        x = cos(PI*@a/180.0)*@len_x.to_f
-        y = sin(PI*@a/180.0)*@len_x.to_f
+        x = cos(PI*@a/180.0)*@len_x.to_d
+        y = sin(PI*@a/180.0)*@len_x.to_d
       else
-        x = -1* sin(PI*@a/180.0)*@len_y.to_f
-        y = cos(PI*@a/180.0)*@len_y.to_f
+        x = -1* sin(PI*@a/180.0)*@len_y.to_d
+        y = cos(PI*@a/180.0)*@len_y.to_d
       end
       [x,y]
     end

@@ -44,25 +44,25 @@ module JennCad::Primitives
     end
 
     def inherit_z
-      heights = @parts.map{|l| l.calc_z.to_f}.uniq
+      heights = @parts.map{|l| l.calc_z.to_d}.uniq
       if heights.size > 1
         total_heights = []
         @parts.each do |p|
-          total_heights << p.z.to_f + p.calc_z.to_f
+          total_heights << p.z.to_d + p.calc_z.to_d
         end
         @z = total_heights.max
         @calc_z = heights.min
       else
-        @calc_z = heights.first.to_f
+        @calc_z = heights.first.to_d
         @z = @parts.map(&:z).compact.max
       end
     end
 
     def inherit_zref
       return if @parts.first == nil
-      #return if @parts.first.z.to_f == 0.0
+      #return if @parts.first.z.to_d == 0.0
       get_primitives(@parts[1..-1]).flatten.each do |part|
-        if part.z.to_f == 0.0
+        if part.z.to_d == 0.0
           part.set_option :zref, @parts.first
         end
       end

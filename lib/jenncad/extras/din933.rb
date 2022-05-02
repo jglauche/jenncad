@@ -48,7 +48,7 @@ module JennCad::Extras
                       14=> {head_side_to_side:22,head_length:9},
                       16=> {head_side_to_side:24,head_length:10},
                      }
-      head_dia = chart[@size][:head_side_to_side].to_f + head_margin.to_f
+      head_dia = chart[@size][:head_side_to_side].to_d + head_margin.to_d
       res = cylinder(d:(head_dia/Math.sqrt(3))*2,fn:6,h:chart[@size][:head_length]).move(z:-chart[@size][:head_length])
       total_length = @length + additional_length
       res+= cylinder(d:@size+addtional_diameter, h:total_length)

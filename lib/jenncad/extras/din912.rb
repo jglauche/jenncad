@@ -64,7 +64,7 @@ module JennCad::Extras
       if show
         res.color("Gainsboro")
         thread_length=Data[@size][:thread_length]
-        if total_length.to_f <= thread_length
+        if total_length.to_d <= thread_length
           res+= cylinder(d:@size+addtional_diameter, h:total_length).color("DarkGray")
         else
           res+= cylinder(d:@size+addtional_diameter, h:total_length-thread_length)

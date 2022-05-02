@@ -93,7 +93,7 @@ module JennCad
       case self
       when UnionObject
         ref = self.parts.first
-        rz = self.z.to_f + self.calc_h.to_f
+        rz = self.z.to_d + self.calc_h.to_d
       when BooleanObject
         ref = self.parts.first
         rz = ref.calc_z + ref.calc_h
@@ -121,7 +121,7 @@ module JennCad
     alias :fy :flip_y
 
     def radians(a)
-      a.to_f/180.0*PI
+      a.to_d/180.0*PI
     end
 
     # experiment
@@ -189,7 +189,7 @@ module JennCad
       end
       args = parse_xyz_shortcuts(args)
 
-      if args[:x].to_f == 0.0 && args[:y].to_f == 0.0 && args[:z].to_f == 0.0
+      if args[:x].to_d == 0.0 && args[:y].to_d == 0.0 && args[:z].to_d == 0.0
         return self
       end
 
@@ -206,16 +206,16 @@ module JennCad
         end
 
         if lt && lt.class == Move && chain == false
-          lt.x += args[:x].to_f
-          lt.y += args[:y].to_f
-          lt.z += args[:z].to_f
+          lt.x += args[:x].to_d
+          lt.y += args[:y].to_d
+          lt.z += args[:z].to_d
         else
           @transformations << Move.new(args)
         end
       end
-      @calc_x += args[:x].to_f
-      @calc_y += args[:y].to_f
-      @calc_z += args[:z].to_f
+      @calc_x += args[:x].to_d
+      @calc_y += args[:y].to_d
+      @calc_z += args[:z].to_d
       self
     end
     alias :translate :move
@@ -367,7 +367,7 @@ module JennCad
     end
 
     def top_of(other_object)
-      self.move(z:other_object.z+other_object.calc_z.to_f)
+      self.move(z:other_object.z+other_object.calc_z.to_d)
     end
 
     def on_top_of(other_object)
@@ -596,7 +596,7 @@ module JennCad
     end
 
     def referenced_z
-     return false if @z.to_f != 0.0
+     return false if @z.to_d != 0.0
      return option(:zref) if option(:zref)
      return false
     end
@@ -611,7 +611,7 @@ module JennCad
       when nil, false
         @z + z_margin
       else
-        ref.z.to_f + ref.z_margin.to_f
+        ref.z.to_d + ref.z_margin.to_d
       end
     end
 
@@ -620,7 +620,7 @@ module JennCad
       when nil, {}
         0.0
       else
-        m[:z].to_f
+        m[:z].to_d
       end
     end
 

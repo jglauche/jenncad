@@ -2,13 +2,13 @@ module JennCad::Primitives
   class SubtractObject < BooleanObject
     def inherit_z
       @z = 0
-      @calc_z = parts.first.calc_z.to_f
+      @calc_z = parts.first.calc_z.to_d
 
       only_additives_of(@parts).each do |p|
         if option(:debug)
           $log.debug "inherit_z checks for: #{p}"
         end
-        z = p.z.to_f
+        z = p.z.to_d
         @z = z if z > @z
       end
       $log.debug "inherit_z called, biggest z found: #{@z}" if option(:debug)
@@ -80,7 +80,7 @@ module JennCad::Primitives
             part.opts[:margins][:z] += 0.004
            # part.z+=0.004
             part.mz(-0.002)
-          elsif part.calc_z.to_f+part.calc_h.to_f == compare_h
+          elsif part.calc_z.to_d+part.calc_h.to_d == compare_h
 #            puts "z fighting at top: #{compare_h}"
             #part.z+=0.004
             part.opts[:margins][:z] += 0.004

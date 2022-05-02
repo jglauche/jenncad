@@ -5,14 +5,14 @@ module JennCad::Primitives
     end
 
     def handle_margins
-      @x = @opts[:x] + @opts[:margins][:x]
-      @y = @opts[:y] + @opts[:margins][:y]
-      @z = @opts[:z] + @opts[:margins][:z]
+      @x = @opts[:x].to_d + @opts[:margins][:x].to_d
+      @y = @opts[:y].to_d + @opts[:margins][:y].to_d
+      @z = @opts[:z].to_d + @opts[:margins][:z].to_d
     end
 
     def handle_diameter
-      @d = opts[:d]
-      @r = opts[:r]
+      @d = opts[:d].to_d
+      @r = opts[:r].to_d
       if @d
         @r = @d/2.0
       elsif @r

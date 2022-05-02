@@ -36,7 +36,7 @@ module JennCad::Extras
 
     # ISO 7380
   	def bolt_7380(additional_length=0, addtional_diameter=0, head_margin=0)
-	    if head_margin.to_f != 0
+	    if head_margin.to_d != 0
 				puts "[warning] :head_margin is not implemented for 7380 bolts"
 			end
 			chart_iso7380 = {

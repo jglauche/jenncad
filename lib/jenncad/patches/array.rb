@@ -12,7 +12,7 @@ class Array
       else
         res = part
       end
-      res, z = res.mz(z), z + res.z.to_f unless skip_z
+      res, z = res.mz(z), z + res.z.to_d unless skip_z
       res
     end
     .union

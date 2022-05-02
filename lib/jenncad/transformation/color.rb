@@ -16,7 +16,7 @@ module JennCad
 
     def self.check_color_array(a)
       if a.max > 1.0
-        a.map{|l| l.to_f/255.0}
+        a.map{|l| l.to_d/255.0}
       else
         a
       end

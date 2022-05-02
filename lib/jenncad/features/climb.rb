@@ -31,7 +31,7 @@ module JennCad::Features
         steps = @opts[:steps]
         (z  / steps).floor
       else
-        step.to_f
+        step.to_d
       end
     end
 
@@ -62,8 +62,8 @@ module JennCad::Features
 
       offset = get_offset(ref_z)
 
-      lo = (ref_z-offset*2).to_f % step.to_f
-      unless lo.to_f == 0.0
+      lo = (ref_z-offset*2).to_d % step.to_d
+      unless lo.to_d == 0.0
         puts "[Warning]: climb has leftover offset #{lo}"
       end
 

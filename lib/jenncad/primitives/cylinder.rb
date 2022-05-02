@@ -67,13 +67,13 @@ module JennCad::Primitives
     def handle_fn
       case @opts[:fn]
         when nil, 0
-          $fn = auto_fn!
+          $fn = auto_dn!
         else
           @fn = @opts[:fn]
       end
     end
 
-    def auto_fn!
+    def auto_dn!
       case @d
         when (16..)
           @fn = (@d*4).ceil
@@ -85,25 +85,25 @@ module JennCad::Primitives
     def handle_radius_diameter
       case @opts[:d]
       when 0, nil
-        @r = @opts[:r].to_f + @opts[:margins][:r].to_f
+        @r = @opts[:r].to_d + @opts[:margins][:r].to_d
         @d = @r * 2.0
       else
-        @d = @opts[:d].to_f + @opts[:margins][:d].to_f
+        @d = @opts[:d].to_d + @opts[:margins][:d].to_d
         @r = @d / 2.0
       end
 
       case @opts[:d1]
       when 0, nil
       else
-        @d1 = @opts[:d1].to_f + @opts[:margins][:d].to_f
-        @d2 = @opts[:d2].to_f + @opts[:margins][:d].to_f
+        @d1 = @opts[:d1].to_d + @opts[:margins][:d].to_d
+        @d2 = @opts[:d2].to_d + @opts[:margins][:d].to_d
       end
 
       case @opts[:r1]
       when 0, nil
       else
-        @d1 = 2 * @opts[:r1].to_f + @opts[:margins][:d].to_f
-        @d2 = 2 * @opts[:r2].to_f + @opts[:margins][:d].to_f
+        @d1 = 2 * @opts[:r1].to_d + @opts[:margins][:d].to_d
+        @d2 = 2 * @opts[:r2].to_d + @opts[:margins][:d].to_d
       end
     end
 

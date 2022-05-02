@@ -45,11 +45,11 @@ module JennCad::Exporters
     def handle_command(i=1)
       case @children.size
       when 0
-        "#{@modifier}#{@command}(#{handle_args});"
+        "#{@modifier}#{@command}(#{handle_args(@args)});"
       when 1
-        "#{@modifier}#{@command}(#{handle_args})#{@children.first.handle_command(i+1)}"
+        "#{@modifier}#{@command}(#{handle_args(@args)})#{@children.first.handle_command(i+1)}"
       when (1..)
-        res = "#{@modifier}#{@command}(#{handle_args}){"
+        res = "#{@modifier}#{@command}(#{handle_args(@args)}){"
         res += nl
         inner = @children.map do |c|
           next if c == nil
@@ -68,17 +68,19 @@ module JennCad::Exporters
       }.join(nl)
     end
 
-    def handle_args
-      case @args
+    def handle_args(args)
+      case args
       when String, Symbol
-        return "\"#{@args}\""
+        return "\"#{args}\""
       when Array
-        return @args.map do |l|
+        return args.map do |l|
           if l == nil
             0
           elsif l.kind_of? Array
             l # skipping check of 2-dmin Arrays for now (used in multmatrix)
-          elsif l.to_i == l.to_f
+          elsif l == 0
+            0
+          elsif l == l.to_i
             l.to_i
           else
             l.to_f
@@ -86,15 +88,19 @@ module JennCad::Exporters
         end
       when Hash
         res = []
-        @args.each do |k,v|
+        args.each do |k,v|
           if k.to_s == "fn"
             k = "$fn"
           end
           if v == nil
             next
           end
-          if !v.kind_of?(Array) && !v.kind_of?(TrueClass) && !v.kind_of?(FalseClass) && v == v.to_i
+          if v.kind_of?(Array)
+            v = handle_args(v)
+          elsif !v.kind_of?(TrueClass) && !v.kind_of?(FalseClass) && v == v.to_i
             v = v.to_i
+          elsif v.kind_of? BigDecimal
+            v = v.to_f
           end
           if v.kind_of? String
             q = "\""
