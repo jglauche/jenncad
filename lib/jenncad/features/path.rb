@@ -1,7 +1,7 @@
 module JennCad
   class RoundCorner
     attr_accessor :start_point, :end_point, :input_a, :output_a, :a, :l, :od, :id, :thing, :angle, :current_angle, :direction, :from, :ccw
-    def initialize(args, &thing)
+    def initialize(args)
       @start_point = args[:start_point]
       @end_point = args[:end_point]
       @a = args[:a]
@@ -11,7 +11,13 @@ module JennCad
       @id = args[:id]
       @input_a = args[:input_a] || 0
       @output_a = args[:output_a] || 0
-      @thing = thing
+      thing = Marshal.load(args[:thing])
+
+      @thing_dia = thing.d || thing.y
+      unless @thing_dia
+        $log.error "ERROR: cannot find diameter or y of thing #{thing.inspect}"
+        return
+      end
       @angle = args[:angle]
       @current_angle = args[:current_angle]
       @direction = args[:direction]
@@ -57,11 +63,7 @@ module JennCad
     end
 
     def positions
-      td = thing.yield.d || thing.yield.y
-      unless td
-        puts "ERROR: cannot find diameter or y of thing #{thing.yield.inspect}"
-        return
-      end
+      td = @thing_dia
       l = td + @id
       l2 = td / 2.0 + @id / 2.0
       r = 0
@@ -101,7 +103,7 @@ module JennCad
     end
 
     def part
-      d = thing.yield.d
+      d = @thing_dia
       len = d * 2 + @id
       x = Math::sin((@a/180.0)*Math::PI)*len
       y = Math::cos((@a/180.0)*Math::PI)*len
@@ -134,15 +136,15 @@ module JennCad
   end
 
   class Line
-    attr_accessor :start_point, :end_point, :l, :thing, :angle, :current_angle, :direction
-    def initialize(args, &thing)
+    attr_accessor :start_point, :end_point, :l, :angle, :current_angle, :direction
+    def initialize(args)
       @start_point = args[:start_point]
       @end_point = args[:end_point]
       @angle = args[:angle]
       @current_angle = args[:current_angle]
       @direction = args[:direction]
       @l = args[:l]
-      @thing = thing
+      @thing = args[:thing]
     end
 
     def sp_margin(margin)
@@ -181,8 +183,8 @@ module JennCad
 
     def part
       hull(
-        @thing.yield.move(x: @start_point[:x], y: @start_point[:y]),
-        @thing.yield.move(x: @end_point[:x], y: @end_point[:y])
+        Marshal.load(@thing).move(x: @start_point[:x], y: @start_point[:y]),
+        Marshal.load(@thing).move(x: @end_point[:x], y: @end_point[:y])
       )
     end
   end
@@ -191,7 +193,7 @@ module JennCad
 
     attr_accessor :elements, :lpos, :thing, :angle, :current_angle, :direction
     def initialize(args)
-      @thing = args[:part] #// cylinder(d: @d, z: @z)
+      @thing = store_thing_from(args[:part])
       @part = new_thing
       @angle = args[:a] || 0
       @current_angle = args[:a] || 0
@@ -207,10 +209,14 @@ module JennCad
       super(args)
     end
 
-    def new_thing
-      r = @thing.clone
+    def store_thing_from(thing)
+      r = Marshal.load(Marshal.dump(thing)) # make sure we don't edit the object in memory
       r.transformations = []
-      r
+      Marshal.dump(r)
+    end
+
+    def new_thing
+      Marshal.load(@thing)
     end
 
     def corner(args)
@@ -232,8 +238,9 @@ module JennCad
         from: args[:from],
         to: args[:to],
         a: args[:a],
-        direction: @direction
-      ){ new_thing }
+        direction: @direction,
+        thing: thing,
+      )
 
       _, ox, oy, x, y = rc.positions
       @lpos[:x] += x + ox
@@ -292,7 +299,7 @@ module JennCad
         return
       end
 
-      @steps << Line.new(start_point: { x: @lpos[:x], y: @lpos[:y] }, end_point: { x: @lpos[:x] + x, y: @lpos[:y] + y  }, angle: @angle, current_angle: @current_angle, direction: @direction, l: l){ new_thing }
+      @steps << Line.new(start_point: { x: @lpos[:x], y: @lpos[:y] }, end_point: { x: @lpos[:x] + x, y: @lpos[:y] + y  }, angle: @angle, current_angle: @current_angle, direction: @direction, l: l, thing: thing)
 
       add_lpos({x: x, y: y})
     end
