@@ -93,8 +93,8 @@ module JennCad
   private
   def boolean_operation(part, klass)
     if part.respond_to? :transformations
-      # Since ruby doesn't provide a way to make a deep clone, this seems to be the simplest solution that will effectively do that:
-      part = Marshal.load(Marshal.dump(part))
+      # Clone the part in place
+      part = part.fix
     end
 
     case self
@@ -103,7 +103,12 @@ module JennCad
     when klass
       add_or_new(part)
     else
-      klass.new(self,part)
+      own_part = if self.respond_to? :transformations
+        self.fix # clone self
+      else
+        self
+      end
+      klass.new(own_part,part)
     end
   end
 end

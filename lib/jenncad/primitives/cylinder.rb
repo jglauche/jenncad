@@ -1,6 +1,6 @@
 module JennCad::Primitives
   class Cylinder < Primitive
-    attr_accessor :d, :d1, :d2, :r, :fn
+    attr_accessor :d, :d1, :d2, :r, :fn, :anchors
     def initialize(args)
       if args.kind_of?(Array) && args[0].kind_of?(Hash)
         args = args.first
@@ -24,6 +24,7 @@ module JennCad::Primitives
         r2: nil,
         z: nil,
         r: 0,
+        cz: false,
         margins: {
           r: 0,
           d: 0,
@@ -41,6 +42,35 @@ module JennCad::Primitives
       handle_radius_diameter
       handle_fn
       super(args)
+      set_anchors
+    end
+
+    def set_anchors
+      @anchors = {} # reset anchors
+      if @opts[:d]
+        rad = @opts[:d] / 2.0
+      else
+        rad = @opts[:r]
+      end
+
+      # Similar to cube
+      set_anchor :left, x: -rad
+      set_anchor :right, x: rad
+      set_anchor :top, y: rad
+      set_anchor :bottom, y: -rad
+
+      # TODO: figure out if we also want to have "corners"
+      # - possibly move it like a cube
+      # - points at 45 ° angles might not be that useful unless you can get the point on the circle at a given angle
+      # - inner/outer points could be useful for small $fn values
+
+      if @opts[:cz]
+        set_anchor :bottom_face, z: -@z/2.0
+        set_anchor :top_face, z: @z/2.0
+      else
+        set_anchor :bottom_face, z: 0
+        set_anchor :top_face, z: @z
+      end
     end
 
     def openscad_params
@@ -60,7 +90,9 @@ module JennCad::Primitives
     # Centers the cylinder around it's center point by height
     # This will transform the cylinder around the center point.
     def cz
+      @opts[:cz] = true
       @transformations << Move.new(z: -@z / 2.0)
+      set_anchors
       self
     end
 

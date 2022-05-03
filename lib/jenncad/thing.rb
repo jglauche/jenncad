@@ -33,6 +33,23 @@ module JennCad
       @opts[key] = val
     end
 
+    def set_flag(key)
+      set_option(key, true)
+    end
+
+    def unset_flag(key)
+      set_option(key, false)
+    end
+
+    def debug?
+      option(:debug) || false
+    end
+
+    def fixate
+      Marshal.load(Marshal.dump(self))
+    end
+    alias :fix :fixate
+
     def set_parent(parent)
       @parent = parent
       self
@@ -206,10 +223,12 @@ module JennCad
         end
 
         if lt && lt.class == Move && chain == false
+          $log.debug "#{self} at move: Adding to previous move #{lt.inspect} , args: #{args}" if self.debug?
           lt.x += args[:x].to_d
           lt.y += args[:y].to_d
           lt.z += args[:z].to_d
         else
+          $log.debug "#{self} at move: Adding move of #{args} to transformations" if self.debug?
           @transformations << Move.new(args)
         end
       end
@@ -488,6 +507,8 @@ module JennCad
         return "##{args}"
       when String
         return args
+      when Symbol
+        return args.to_s
       end
       nil
     end

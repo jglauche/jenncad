@@ -7,6 +7,9 @@ module JennCad::Primitives
       else
         @parts = parts
       end
+      if parts.first && parts.first.respond_to?(:debug?) && parts.first.debug?
+        $log.debug("Creating new #{self.class} for part #{parts}")
+      end
 
       @parent = @parts.first.parent
 
@@ -16,9 +19,11 @@ module JennCad::Primitives
     def add_or_new(part)
       case @transformations
       when nil, []
+        $log.debug("adding new part to existing boolean object") if part && part.debug?
         add(part)
         self
       else
+        $log.debug("add_or_new: creating new boolean object") if part.debug?
         self.class.new(self, part)
       end
     end
