@@ -1,7 +1,7 @@
 module JennCad::Features
   class Climb < Feature
     def initialize(opts, block)
-      $log.warn "DEPRECATED feature: climb"
+      $log.warn "DEPRECATED feature: climb. Please use x.of (multiples_of example)"
 
       @opts = {
         offset: :auto,
