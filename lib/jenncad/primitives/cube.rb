@@ -82,6 +82,13 @@ module JennCad::Primitives
       set_anchor :top_right, x: right, y: top
       set_anchor :bottom_left, x: left, y: bottom
       set_anchor :bottom_right, x: right, y: bottom
+      if @opts[:center_z]
+        set_anchor :bottom_face, z: -@z/2.0
+        set_anchor :top_face, z: @z/2.0
+      else
+        set_anchor :bottom_face, z: 0
+        set_anchor :top_face, z: @z
+      end
 
       # we need to re-do the inner ones, if they were defined
       if @inner_anchor_defs && @inner_anchor_defs.size > 0
