@@ -81,6 +81,22 @@ module JennCad
     end
     alias :sa :set_anchor
 
+    def set_anchor_from(name, new_name, args={})
+      a = anchor(name).dup
+      if !a
+        log.error "set_anchor_from couldn't find anchor #{name}"
+        return
+      end
+
+      [:x, :y, :z, :xy, :xz, :xyz, :yz].each do |key|
+        a[key] ||= 0.to_d
+        args[key] ||= 0.to_d
+        a[key] += args[key]
+      end
+      set_anchor new_name, a
+    end
+    alias :saf :set_anchor_from
+
     def auto_extrude
       ret = self.extrude
       ret.set_option(:auto_extrude, true)
