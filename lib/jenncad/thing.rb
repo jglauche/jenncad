@@ -82,7 +82,7 @@ module JennCad
     alias :sa :set_anchor
 
     def set_anchor_from(name, new_name, args={})
-      a = anchor(name).dup
+      a = anchor(name, args[:from])
       if !a
         log.error "set_anchor_from couldn't find anchor #{name}"
         return
@@ -293,6 +293,7 @@ module JennCad
         end
       end
     end
+    alias :ma :movea
 
     # move to anchor - inverted
     def moveai(key, thing=nil, args={})
@@ -303,7 +304,7 @@ module JennCad
       args[:inverted] = true
       movea(key, thing, args)
     end
-
+    alias :mai :moveai
 
     # move half
     def moveh(args={})
