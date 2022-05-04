@@ -55,20 +55,22 @@ module JennCad
       self
     end
 
-    def anchor(name, thing=nil)
+    def anchor(name, thing=nil, args={})
       if thing
-        res = thing.anchor(name)
+        res = thing.anchor(name, nil, args)
         return res unless res.nil?
       end
       @anchors ||= {}
       if anch = @anchors[name]
         return anch
+      elsif args[:fail_quick] && args[:fail_quick] == true
+        return
       elsif @parent
         return @parent.anchor(name)
       elsif self.respond_to? :get_contents
         con = get_contents
         if con.respond_to? :anchor
-          con.anchor(name)
+          con.anchor(name, nil, fail_quick: true)
         end
       end
     end
@@ -82,9 +84,19 @@ module JennCad
     alias :sa :set_anchor
 
     def set_anchor_from(name, new_name, args={})
+      unless name.kind_of? Symbol or name.kind_of? String
+        $log.error "set_anchor_from: name must be a string or symbol. Supplied: #{name}"
+        return
+      end
+      unless new_name.kind_of? Symbol or new_name.kind_of? String
+        $log.error "set_anchor_from: new_name must be a string or symbol. Supplied: #{new_name}"
+        return
+      end
+
+
       a = anchor(name, args[:from]).dup
       if !a
-        log.error "set_anchor_from couldn't find anchor #{name}"
+        $log.error "set_anchor_from couldn't find anchor #{name}"
         return
       end
 
@@ -275,7 +287,7 @@ module JennCad
         thing = nil
       end
 
-      an = anchor(key, thing)
+      an = anchor(key, thing, args)
 
       unless an
         $log.error "Error: Anchor #{key} not found"
