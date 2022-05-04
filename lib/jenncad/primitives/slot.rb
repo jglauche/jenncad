@@ -14,16 +14,21 @@ module JennCad::Primitives
         args = [:d, :z].zip(args.flatten).to_h
         args.deep_merge!(m)
       end
-
-      args[:z] ||= args[:h]
+      args = parse_xyz_shortcuts(args)
+      if args[:z].to_d > 0
+        args[:h] = args[:z]
+      else
+        args[:z] = nil
+      end
 
       @opts = {
         d: 0,
         a: 0,
-        z: nil,
         r: nil,
         x: 0,
         y: 0,
+        z: nil,
+        cz: false,
         margins: {
           r: 0,
           d: 0,
@@ -33,9 +38,13 @@ module JennCad::Primitives
 
       super(opts)
 
-      @d = @opts[:d]
-      @a = @opts[:a]
-      @h = @opts[:h]
+      @d = @opts[:d].to_d
+      @a = @opts[:a].to_d
+      @h = @opts[:h].to_d
+      @z = @h
+      @x = @opts[:x].to_d
+      @y = @opts[:y].to_d
+
       @r = @opts[:r] || nil
       if @r
         @d = @r * 2
@@ -54,7 +63,61 @@ module JennCad::Primitives
 
       # TODO: this needs anchors like cube
       # TODO: color on this needs to apply to hull, not on the cylinders.
+      set_anchors
+    end
 
+    def cz
+      @opts[:cz] = true
+      @transformations << Move.new(z: -@z / 2.0)
+      set_anchors
+      self
+    end
+
+
+    def set_anchors
+      @anchors = {} # reset anchors
+      if @opts[:d]
+        rad = @opts[:d] / 2.0
+      else
+        rad = @opts[:r]
+      end
+
+      if @x > 0
+        set_anchor :left, x: - rad
+        set_anchor :right, x: @x + rad
+      elsif @x < 0
+        set_anchor :left, x: @x - rad
+        set_anchor :right, x: rad
+      else
+        set_anchor :left, x: -rad
+        set_anchor :right, x: rad
+      end
+      if @y > 0
+        set_anchor :bottom, y: - rad
+        set_anchor :top, y: @y + rad
+      elsif @y < 0
+        set_anchor :bottom, y: @y - rad
+        set_anchor :top, y: rad
+      else
+        set_anchor :bottom, y: -rad
+        set_anchor :top, y: rad
+      end
+
+      set_anchor :center1, xy: 0
+      set_anchor :center2, x: @x, y: @y
+
+      # TODO: figure out if we also want to have "corners"
+      # - possibly move it like a cube
+      # - points at 45 ° angles might not be that useful unless you can get the point on the circle at a given angle
+      # - inner/outer points could be useful for small $fn values
+
+      if @opts[:cz]
+        set_anchor :bottom_face, z: -@z/2.0
+        set_anchor :top_face, z: @z/2.0
+      else
+        set_anchor :bottom_face, z: 0
+        set_anchor :top_face, z: @z
+      end
     end
 
     def to_openscad
