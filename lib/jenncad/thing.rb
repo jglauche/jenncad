@@ -82,7 +82,7 @@ module JennCad
     alias :sa :set_anchor
 
     def set_anchor_from(name, new_name, args={})
-      a = anchor(name, args[:from])
+      a = anchor(name, args[:from]).dup
       if !a
         log.error "set_anchor_from couldn't find anchor #{name}"
         return
