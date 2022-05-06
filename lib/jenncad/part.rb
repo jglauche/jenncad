@@ -3,7 +3,8 @@ module JennCad
   class Part < Thing
 
     def to_openscad
-      a = Aggregation.new(self.class.to_s, self.get_contents)
+      name = @name || self.class.to_s
+      a = Aggregation.new(name, self.get_contents)
       a.transformations = @transformations
       if self.has_explicit_color?
         a.color(self.color)

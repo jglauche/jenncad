@@ -4,7 +4,7 @@ module JennCad::Primitives
     def initialize(part, args={})
       @transformations = []
       @parts = [part]
-      @z = args[:h] || args[:height]
+      @z = args[:h] || args[:height] || args[:z]
       @center_bool = args[:center]
       @convexity = args[:convexity]
       @twist = args[:twist]

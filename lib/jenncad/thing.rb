@@ -35,11 +35,69 @@ module JennCad
 
     def set_flag(key)
       set_option(key, true)
+      self
     end
 
     def unset_flag(key)
       set_option(key, false)
+      self
     end
+
+
+    def cut_to(face, part=nil, args={})
+      an = anchor(face, part)
+      unless an
+        $log.error "Cannot find anchor to cut_to"
+        return self
+      end
+      if an[:z].to_d == 0.0
+        $log.error "cut_to only supports cuts to an anchor with Z set. This anchor: #{an}"
+        return self
+      end
+      modify_values(self, z: an[:z].to_d)
+      self.name="#{self.class}_cut_to_#{an[:z].to_f}"
+      self
+    end
+
+    def modify_values(parts, value, opts = {})
+      case parts
+       when Array
+          parts.each do |pa|
+            modify_values(pa, value, opts)
+          end
+        else
+          if parts.kind_of?(BooleanObject)
+            modify_values(parts.only_additives_of(parts), value, opts)
+          elsif parts.kind_of?(Part)
+            modify_values(parts.part, value, opts)
+            modify_values(parts.get_contents, value, opts)
+            parts.modify_values!(value, opts)
+          elsif parts.kind_of?(Primitive)
+            parts.modify_values!(value, opts)
+          end
+      end
+    end
+
+    def modify_values!(values, opts)
+      $log.info "Modify value! #{self.class} #{values}" if self.debug?
+      values.each do |key, val|
+        if @opts
+          case opts[:mode]
+            when :add
+              @opts[key] = @opts[key].to_d + val.to_d
+            when :sub
+              @opts[key] = @opts[key].to_d - val.to_d
+            else
+              @opts[key] = val
+          end
+        end
+        if self.respond_to? key
+          self.send("#{key}=", @opts[key])
+        end
+      end
+      $log.info "Modified value now: #{self.inspect}" if self.debug?
+    end
+
 
     def debug?
       option(:debug) || false
@@ -224,6 +282,27 @@ module JennCad
 
      return args
     end
+
+    # reset last move
+    def reset_last_move
+      lt = @transformations.last
+      unless lt.class == Move
+        $log.error "Tried to call rst_move but last object is a #{lt.class}"
+        return self
+      end
+      @transformations.delete_at(-1)
+
+      self
+    end
+    alias :rstlm :reset_last_move
+
+    # resets all transformations
+    def reset
+      @transformations = []
+      self
+    end
+    alias :rst :reset
+
 
     def move(args={})
       return self if args.nil? or args.empty?
@@ -562,7 +641,7 @@ module JennCad
       return @parts unless @parts.nil?
 
       if @cache
-        return @cache
+        return @cache unless option(:no_cache) == true
       end
 
       if self.respond_to? :part

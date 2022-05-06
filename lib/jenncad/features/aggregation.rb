@@ -6,6 +6,7 @@ module JennCad::Features
       super({})
       @name = name.gsub(".","_")
       @parts = [part]
+      @zref = part
     end
 
     def z

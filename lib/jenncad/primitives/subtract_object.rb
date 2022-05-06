@@ -57,6 +57,7 @@ module JennCad::Primitives
       others.each do |part|
         #puts part.inspect
         #puts "#{part.calc_z+part.calc_h} ; #{compare_h}"
+        add_z = nil
         if part.respond_to? :z
           part.opts[:margins] ||= {}
           if part.referenced_z && part.z != 0.0
@@ -73,19 +74,30 @@ module JennCad::Primitives
             end
           elsif part.z == compare_h
             $log.debug "fixing possible z fighting: #{part.class} #{part.z}" if part.opts[:debug]
-            part.opts[:margins][:z] += 0.008
-            part.mz(-0.004)
+            add_z = 0.008
+            move_z = -0.004
           elsif part.calc_z == compare_z
 #            puts "z fighting at bottom: #{part.calc_z}"
-            part.opts[:margins][:z] += 0.004
+            add_z = 0.004
            # part.z+=0.004
-            part.mz(-0.002)
+            move_z = -0.002
           elsif part.calc_z.to_d+part.calc_h.to_d == compare_h
 #            puts "z fighting at top: #{compare_h}"
             #part.z+=0.004
-            part.opts[:margins][:z] += 0.004
-            part.mz(0.002)
+            add_z = 0.004
+            move_z = 0.002
           end
+
+          if add_z
+            if part.kind_of? Part
+              part.modify_values(part, {z: add_z}, {mode: :add})
+            end
+            part.opts[:margins][:z] += add_z
+            part.mz(move_z)
+          end
+
+
+
         end
       end
     end

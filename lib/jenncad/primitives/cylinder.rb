@@ -139,6 +139,14 @@ module JennCad::Primitives
       end
     end
 
+    def z=(val)
+      @z = val
+      @h = val
+      opts[:h] = val
+      opts[:z] = val
+      set_anchors
+    end
+
     def h
       z + z_margin
     end
