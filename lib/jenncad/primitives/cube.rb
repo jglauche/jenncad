@@ -101,6 +101,11 @@ module JennCad::Primitives
     end
 
     def inner_anchors(dist, prefix=:inner_, recreate=false)
+      if dist.nil?
+        $log.error "Distance of nil passed to inner anchors. Please check the variable name you passed along"
+        return self
+      end
+
       @inner_anchor_defs ||= []
       @inner_anchor_defs << { "dist": dist, "prefix": prefix } unless recreate
 
