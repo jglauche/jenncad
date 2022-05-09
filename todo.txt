@@ -11,16 +11,6 @@
 Features wanted
 ===================
 28.4.22:
-- Parts often come with 4 holes around a center, and I often do something like:
-
-[-1, 1].each do |i|
-	[-1, 1].each do |j|
-		res += @bolt.cut.move(x: @hole_center*i, y: @hole_center*j)
-	end
-end
-
-there should be a shorter way to do this.
-
 
 - instead of moving Bolts output, make it the default to make their positions an anchor
 
@@ -33,6 +23,12 @@ there should be a shorter way to do this.
 - Bolts should have an easier way to align than mirror them, maybe from :top
 	 - but also, when you have a part that can be mounted in any top/bottom direction, 	you always end up having the bolts facing the wrong direction..
 - Bolts should be able to also make thread inserts
+
+8.5.22:
+- need an easy way to switch between faces on an object to work efficiently in a 2.5D way
+	i.e. I worked on a part stacking a few things, added a cube along and now wanted to use inner_anchors for the y face for screws. it was easier to make anchors manually for the prototype
+
+
 
 
 
