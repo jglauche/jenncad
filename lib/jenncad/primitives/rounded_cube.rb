@@ -64,18 +64,20 @@ module JennCad::Primitives
       res
     end
 
-    def flat(edge)
+    def flat(*edges)
       @opts[:flat_edges] ||= []
-      @opts[:flat_edges] << edge
+      edges.each do |edge|
+        @opts[:flat_edges] << edge
+      end
       self
     end
 
     private
     def apply_flat_edge(edge)
       case edge
-      when :up
+      when :up, :top
         cube(x: @x, y: @y/2.0, z: @z).nc.moveh(y:@y)
-      when :down
+      when :down, :bottom
         cube(x: @x, y: @y/2.0, z: @z).nc
       when :right
         cube(x: @x/2.0, y: @y, z: @z).nc.moveh(x:@x)
