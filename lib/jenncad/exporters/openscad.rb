@@ -178,6 +178,8 @@ module JennCad::Exporters
         new_obj(part, :projection, collect_params(part), parse(part.parts))
       when JennCad::Primitives::Polygon
         new_obj(part, :polygon, collect_params(part))
+      when JennCad::Primitives::Polyhedron
+        new_obj(part, :polyhedron, collect_params(part))
       when JennCad::StlImport
         new_obj(part, :import, collect_params(part))
       when JennCad::Part
@@ -212,7 +214,7 @@ module JennCad::Exporters
         return part.openscad_params
       end
       res = {}
-      [:d, :h, :d1, :d2, :size, :fn, :points, :file].each do |var|
+      [:d, :h, :d1, :d2, :size, :fn, :points, :paths, :faces, :convexity, :file].each do |var|
         if part.respond_to? var
           res[var] = part.send var
         end

@@ -18,6 +18,10 @@ module JennCad
     Polygon.new(args).set_parent(self)
   end
 
+  def polyhedron(args)
+    Polyhedron.new(args).set_parent(self)
+  end
+
   def slot(*args)
     Slot.new(args).set_parent(self)
   end
