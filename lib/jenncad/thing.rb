@@ -753,5 +753,12 @@ module JennCad
       end
     end
 
+
+    def to_mod(name)
+      a = Aggregation.new(name, self)
+      a.transformations = @transformations
+      a
+    end
+
   end
 end
