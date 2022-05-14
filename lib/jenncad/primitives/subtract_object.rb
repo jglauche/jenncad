@@ -65,9 +65,10 @@ module JennCad::Primitives
             when JennCad::Circle
             when JennCad::BooleanObject
             else
-              $log.debug part if part.opts[:debug]
+              # $log.debug part if part.opts[:debug]
               part.opts[:margins][:z] ||= 0.0
               unless part.opts[:margins][:z] == 0.2
+                $log.debug "fixing possible z fighting for referenced object: #{part.class} #{part.z} 0.1 down" if part.opts[:debug]
                 part.opts[:margins][:z] = 0.2
                 part.mz(-0.1)
               end
