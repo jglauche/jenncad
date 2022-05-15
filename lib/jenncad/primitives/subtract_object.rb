@@ -60,9 +60,8 @@ module JennCad::Primitives
         add_z = nil
         if part.respond_to? :z
           part.opts[:margins] ||= {}
-          if part.referenced_z && part.z != 0.0
+          if part.referenced_z && part.z != 0.0 && part.is_3d?
             case part
-            when JennCad::Circle
             when JennCad::BooleanObject
             else
               # $log.debug part if part.opts[:debug]
@@ -89,7 +88,7 @@ module JennCad::Primitives
             move_z = 0.002
           end
 
-          if add_z
+          if add_z && part.is_3d?
             if part.kind_of? Part
               part.modify_values(part, {z: add_z}, {mode: :add})
             end

@@ -5,6 +5,7 @@ module JennCad::Primitives
       @points = args[:points]
       @paths = args[:paths]
       @convexity = args[:convexity] || 10
+      @dimensions = [:x, :y]
       super
     end
   end

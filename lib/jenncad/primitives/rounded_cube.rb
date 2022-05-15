@@ -4,6 +4,7 @@ module JennCad::Primitives
     include JennCad::Features::Cuttable
 
     def initialize(args)
+
       if args.kind_of?(Array) && args[0].kind_of?(Hash)
         args = args.first
       end
@@ -35,9 +36,24 @@ module JennCad::Primitives
           z: 0,
         },
       }.deep_merge!(args)
+      if args.kind_of? Array
+        args.each do |a|
+          feed_opts(parse_xyz_shortcuts(a))
+        end
+      else
+        feed_opts(parse_xyz_shortcuts(args))
+      end
+      init(args)
+
+
       handle_margins
       handle_diameter
-      super(opts)
+      if @opts[:z] && opts[:z].to_d > 0
+        @dimensions = [:x, :y, :z]
+      else
+        @dimensions = [:x, :y]
+      end
+
     end
 
     def to_openscad
@@ -45,15 +61,19 @@ module JennCad::Primitives
       # make diameter not bigger than any side
       d = [@d, @x, @y].min
       res = HullObject.new(
-        cylinder(d: d, h:z+z_margin),
-        cylinder(d: d).move(x: @x - d, y: 0),
-        cylinder(d: d).move(x: 0, y: @y - d),
-        cylinder(d: d).move(x: @x - d, y: @y - d),
+        circle(d: d),
+        circle(d: d).move(x: @x - d, y: 0),
+        circle(d: d).move(x: 0, y: @y - d),
+        circle(d: d).move(x: @x - d, y: @y - d),
       )
       res = res.move(xy: d/2.0)
 
       @opts[:flat_edges].each do |edge|
         res += apply_flat_edge(edge)
+      end
+
+      if @z.to_d > 0
+        res = res.extrude(z: @z + z_margin)
       end
 
       res = union(res) # put everything we have in a parent union that we can apply the transformations of this object of
@@ -76,13 +96,13 @@ module JennCad::Primitives
     def apply_flat_edge(edge)
       case edge
       when :up, :top
-        cube(x: @x, y: @y/2.0, z: @z).nc.moveh(y:@y)
+        square(x: @x, y: @y/2.0).nc.moveh(y:@y)
       when :down, :bottom
-        cube(x: @x, y: @y/2.0, z: @z).nc
+        square(x: @x, y: @y/2.0).nc
       when :right
-        cube(x: @x/2.0, y: @y, z: @z).nc.moveh(x:@x)
+        square(x: @x/2.0, y: @y).nc.moveh(x:@x)
       when :left
-        cube(x: @x/2.0, y: @y, z: @z).nc
+        square(x: @x/2.0, y: @y).nc
       else
         nil
       end

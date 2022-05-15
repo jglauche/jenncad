@@ -162,14 +162,16 @@ module JennCad::Exporters
         bool('intersection', part)
       when JennCad::HullObject
         bool('hull', part)
-      when JennCad::Primitives::Circle
-        prim('circle', part)
       when JennCad::Primitives::Cylinder
         prim('cylinder', part)
       when JennCad::Primitives::Sphere
         prim('sphere', part)
       when JennCad::Primitives::Cube
         prim('cube', part)
+       when JennCad::Primitives::Circle
+        prim('circle', part)
+      when JennCad::Primitives::Square
+        prim('square', part)
       when JennCad::Primitives::LinearExtrude
         new_obj(part, :linear_extrude, part.openscad_params, parse(part.parts))
       when JennCad::Primitives::RotateExtrude

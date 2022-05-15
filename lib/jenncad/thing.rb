@@ -11,6 +11,10 @@ module JennCad
     attr_accessor :parent
 
     def initialize(args={})
+      init(args)
+    end
+
+    def init(args={})
       @transformations = []
       # calculated origin; only works for move atm
       @calc_x = 0
@@ -18,7 +22,7 @@ module JennCad
       @calc_z = 0
       @calc_h = args[:z] || 0
       @anchors = {}
-      @parent = args[:parent]
+      @parent = args[:parent] || nil
       @opts ||= args
       @cache = nil
     end
@@ -753,11 +757,24 @@ module JennCad
       end
     end
 
-
     def to_mod(name)
       a = Aggregation.new(name, self)
       a.transformations = @transformations
       a
+    end
+
+    def is_2d?
+      !is_3d?
+    end
+
+    def is_3d?
+      if self.respond_to?(:dimensions) && self.dimensions
+        return true if self.dimensions && self.dimensions.include?(:z)
+      else
+        # assume true if not set
+        return true
+      end
+      false
     end
 
   end

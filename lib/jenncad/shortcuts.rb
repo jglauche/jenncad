@@ -3,6 +3,11 @@ module JennCad
     Circle.new(args).set_parent(self)
   end
 
+  def square(args)
+    Square.new(args).set_parent(self)
+  end
+  alias :sq :square
+
   def cylinder(*args)
     Cylinder.new(args).set_parent(self)
   end
@@ -36,6 +41,7 @@ module JennCad
   end
   alias :rcube :rounded_cube
   alias :rc :rounded_cube
+  alias :rsq :rounded_cube
 
   # import/use OpenScad library
   def import(import,name,args)

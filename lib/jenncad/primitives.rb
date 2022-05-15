@@ -1,5 +1,6 @@
 require "jenncad/primitives/primitive"
 require "jenncad/primitives/circle"
+require "jenncad/primitives/square"
 require "jenncad/primitives/cylinder"
 require "jenncad/primitives/sphere"
 require "jenncad/primitives/cube"
