@@ -45,7 +45,6 @@ module JennCad::Primitives
       end
       init(args)
 
-
       handle_margins
       handle_diameter
       if @opts[:z] && opts[:z].to_d > 0
@@ -53,7 +52,7 @@ module JennCad::Primitives
       else
         @dimensions = [:x, :y]
       end
-
+      set_anchors
     end
 
     def to_openscad
