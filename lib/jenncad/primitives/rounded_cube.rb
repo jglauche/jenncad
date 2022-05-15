@@ -57,7 +57,15 @@ module JennCad::Primitives
     end
 
     def to_openscad
-      return cube(@opts) if @d == 0
+      # FIXME: this check needs to be done on object creation
+      #        otherwise it fails to position it
+      if @d == 0
+        if @z.to_d > 0
+          return cube(@opts)
+        else
+          return square(@opts)
+        end
+      end
       # make diameter not bigger than any side
       d = [@d, @x, @y].min
       res = HullObject.new(
