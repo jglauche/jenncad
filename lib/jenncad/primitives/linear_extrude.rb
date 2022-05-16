@@ -10,10 +10,15 @@ module JennCad::Primitives
       @twist = args[:twist]
       @slices = args[:slices]
       @fn = args[:fn]
+      @opts = {
+        margins: {
+          z: 0,
+        }
+      }.deep_merge(args)
     end
 
     def height
-      @z
+      @z.to_d + @opts[:margins][:z].to_d
     end
 
     def openscad_params
