@@ -445,8 +445,8 @@ module JennCad
     end
     alias :mi :mirror
 
-    def miz
-      mirror(z:1)
+    def mix
+      mirror(x:1)
     end
 
     def miy
