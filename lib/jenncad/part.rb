@@ -10,6 +10,8 @@ end
 module JennCad
   # Part should be inherited from the user when making parts
   class Part < Thing
+    attr_accessor :d
+
     def self.inherited(subclass)
       subclass.prepend(AutoName) if subclass.superclass == Part
     end
