@@ -7,6 +7,11 @@ module JennCad::Primitives
       else
         @parts = parts
       end
+
+      if @parts.first.respond_to? :anchors
+        @anchors = @parts.first.anchors
+      end
+
       if parts.first && parts.first.respond_to?(:debug?) && parts.first.debug?
         $log.debug("Creating new #{self.class} for part #{parts}")
       end
