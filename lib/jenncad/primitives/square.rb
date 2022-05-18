@@ -42,6 +42,8 @@ module JennCad::Primitives
 
     def set_anchors_2d
       @anchors = {} # this resets anchors
+      @corners = [:top_right, :top_left, :bottom_right, :bottom_left]
+      @sides = [:left, :right, :top, :bottom]
 
       if @opts[:center] || @opts[:center_x]
         left = -@opts[:x] / 2.0
