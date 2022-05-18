@@ -47,7 +47,6 @@ module JennCad
       self
     end
 
-
     def cut_to(face, part=nil, args={})
       an = anchor(face, part)
       unless an
@@ -144,6 +143,20 @@ module JennCad
       self
     end
     alias :sa :set_anchor
+
+    def copy_anchors(thing)
+      @anchors = thing.anchors
+    end
+
+    def copy_anchor(name, thing=nil)
+      # since it might be confusing to use / use shortcuts for copy_anchor and copy_anchors, let copy_anchor copy all of them when only one parameter is given
+      if thing.nil?
+        return copy_anchors(name)
+      end
+      @anchors ||= {}
+      @anchors[name] = thing.anchor(name)
+    end
+    alias :cpa :copy_anchor
 
     def set_anchor_from(name, new_name, args={})
       unless name.kind_of? Symbol or name.kind_of? String
@@ -361,6 +374,29 @@ module JennCad
 
     def mz(v=0)
       move(z:v)
+    end
+
+    # Perform something at an anchor location block
+    def at(keys, thing=nil, args={}, &block)
+      unless keys.kind_of? Array
+        keys = [keys]
+      end
+
+      part = self
+      keys.each do |key|
+        if key.kind_of? Hash
+          an = key
+        else
+          an = anchor(key, thing, args)
+        end
+        unless an
+          $log.error "at on #{thing.class} could not find anchor #{key}"
+          an = {} # this will move by 0,0 and still display the block
+        end
+        part.movei(an)
+        part = block.yield.move(an)
+      end
+      part
     end
 
     # move to anchor
