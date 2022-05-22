@@ -17,10 +17,18 @@ module JennCad
       run_exports
     end
 
+    def run_export!(part, file)
+      part.openscad([output_dir,file].join("/"))
+    end
+
     def run_exports
       outputs.each do |name|
         part = self.send(name)
-        part.openscad([output_dir,"#{name}.scad"].join("/"))
+        run_export!(part, "#{name}.scad")
+        if part.respond_to? :print
+          part = self.send(name).print
+          run_export!(part, "#{name}_print.scad")
+        end
       end
     end
 
