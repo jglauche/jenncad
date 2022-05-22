@@ -29,6 +29,9 @@ module JennCad::Primitives
         x: 0,
         y: 0,
         z: nil,
+        d1: nil,
+        d2: nil,
+        mode: :auto,
         cz: false,
         az: false,
         margins: {
@@ -116,11 +119,39 @@ module JennCad::Primitives
       end
     end
 
+    def get_mode
+      if @opts[:d1] && @opts[:d2]
+        case @opts[:mode]
+        when nil, :auto
+          :dia1
+        when :cyl
+          :cyl
+        else
+          :dia1
+        end
+      else
+        :default
+      end
+    end
+
     def to_openscad
+      mode = get_mode
+
       opts = @opts.clone
       opts.delete(:color)
-      c1 = ci(opts)
-      c2 = ci(opts)
+
+      case mode
+      when :default
+        c1 = ci(opts)
+        c2 = ci(opts)
+      when :dia1 # new default mode; d1 start dia, d2 end dia
+        c1 = ci(opts.merge(d: @opts[:d1]))
+        c2 = ci(opts.merge(d: @opts[:d2]))
+      when :cyl # old mode; use cylinders
+        c1 = cy(opts)
+        c2 = cy(opts)
+      end
+
       if @len_x
         c2.move(x:@len_x)
       end
@@ -128,7 +159,7 @@ module JennCad::Primitives
         c2.move(y:@len_y)
       end
       res = c1 & c2
-      if @z.to_d > 0
+      if mode != :cyl && @z.to_d > 0
         res = res.e(@z)
       elsif @opts[:az] == true
         # TODO: this needs testing, may not work
