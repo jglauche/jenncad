@@ -4,6 +4,10 @@ module JennCad::Primitives
     def initialize(part, args={})
       @transformations = []
       @parts = [part]
+      if args.kind_of? Numeric
+        args = {h: args}
+      end
+
       @z = args[:h] || args[:height] || args[:z]
       @center_bool = args[:center]
       @convexity = args[:convexity]
