@@ -46,6 +46,7 @@ module JennCad
 
     class Build < Run
       option :binary, type: :boolean, default: false, desc: "run through admesh to create a binary stl"
+      option :only_print, type: :boolean, default: true, desc: "If a part has a print orientation set, only build that orientation as STL"
 
       def build(options)
         if options[:binary]
@@ -55,7 +56,13 @@ module JennCad
           end
         end
 
-        Dir.glob("output/**/*.scad").each do |file|
+        files = Dir.glob("output/**/*.scad")
+        if options[:only_print]
+          # Remove non _print.scad files from the list of files to build if we have a print orientation (and the only_print flag set)
+          files -= Dir.glob("output/**/*_print.scad").map{|x| x.gsub("_print.scad",".scad")}
+        end
+
+        files.each do |file|
           stl = file.gsub(".scad",".stl")
           build_stl(file, stl)
           convert_to_binary(stl) if options[:binary] && admesh_installed
