@@ -1,3 +1,3 @@
 module JennCad
-  VERSION = "1.0.0-alpha20"
+  VERSION = "1.0.0-alpha21"
 end
