@@ -7,9 +7,6 @@ require "jenncad/features/stl_import"
 require "jenncad/features/path"
 require "jenncad/features/multiples_of"
 
-
-
-
 module JennCad
   include Features
 end

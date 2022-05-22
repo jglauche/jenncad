@@ -1,5 +1,6 @@
 module JennCad::Primitives
   class Slot < Primitive
+    include CircleIsh
     attr_accessor :d, :r, :h, :fn, :len_x, :len_y
 
     def initialize(args)
@@ -76,11 +77,7 @@ module JennCad::Primitives
 
     def set_anchors
       @anchors = {} # reset anchors
-      if @opts[:d]
-        rad = @opts[:d] / 2.0
-      else
-        rad = @opts[:r]
-      end
+      rad = radius
 
       if @x > 0
         set_anchor :left, x: - rad

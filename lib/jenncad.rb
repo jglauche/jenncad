@@ -23,6 +23,7 @@ require "jenncad/part"
 require "jenncad/project"
 require "jenncad/commands"
 
+require "jenncad/shared"
 require "jenncad/features"
 require "jenncad/primitives"
 

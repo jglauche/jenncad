@@ -1,0 +1,3 @@
+module CubeIsh
+  # TBD
+end
