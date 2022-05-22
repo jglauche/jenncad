@@ -2,6 +2,7 @@ module JennCad
   def circle(args)
     Circle.new(args).set_parent(self)
   end
+  alias :ci :circle
 
   def square(args)
     Square.new(args).set_parent(self)
@@ -22,14 +23,17 @@ module JennCad
   def polygon(args)
     Polygon.new(args).set_parent(self)
   end
+  alias :pg :polygon
 
   def polyhedron(args)
     Polyhedron.new(args).set_parent(self)
   end
+  alias :phd :polyhedron
 
   def slot(*args)
     Slot.new(args).set_parent(self)
   end
+  alias :sl :slot
 
   def cube(*args)
     Cube.new(args).set_parent(self)
@@ -55,14 +59,19 @@ module JennCad
   def extrude(args={})
     LinearExtrude.new(self, args)
   end
+  alias :e :extrude
+  alias :ex :extrude
 
   def rotate_extrude(args={})
     RotateExtrude.new(self, args)
   end
+  alias :re :rotate_extrude
+  alias :rex :rotate_extrude
 
   def to_2d(args={})
     Projection.new(self, args)
   end
+  alias :as_2d :to_2d
 
   def union(*args)
     UnionObject.new(*args)
