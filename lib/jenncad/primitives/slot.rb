@@ -30,6 +30,7 @@ module JennCad::Primitives
         y: 0,
         z: nil,
         cz: false,
+        az: false,
         margins: {
           r: 0,
           d: 0,
@@ -62,8 +63,6 @@ module JennCad::Primitives
         @len_y = ty - @d
       end
 
-      # TODO: this needs anchors like cube
-      # TODO: color on this needs to apply to hull, not on the cylinders.
       set_anchors
     end
 
@@ -118,8 +117,10 @@ module JennCad::Primitives
     end
 
     def to_openscad
-      c1 = cylinder(@opts)
-      c2 = cylinder(@opts)
+      opts = @opts.clone
+      opts.delete(:color)
+      c1 = ci(opts)
+      c2 = ci(opts)
       if @len_x
         c2.move(x:@len_x)
       end
@@ -127,6 +128,14 @@ module JennCad::Primitives
         c2.move(y:@len_y)
       end
       res = c1 & c2
+      if @z.to_d > 0
+        res = res.e(@z)
+      elsif @opts[:az] == true
+        # TODO: this needs testing, may not work
+        res = res.auto_extrude
+      end
+      res.inherit_color(self)
+
       if @a != 0.0
         res = res.rotate(z:@a)
       end
