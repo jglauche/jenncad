@@ -73,6 +73,10 @@ module JennCad
   end
   alias :as_2d :to_2d
 
+  def text(txt, args={})
+    Text.new(args.merge({text: txt}))
+  end
+
   def union(*args)
     UnionObject.new(*args)
   end

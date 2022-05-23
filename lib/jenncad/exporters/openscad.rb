@@ -95,6 +95,9 @@ module JennCad::Exporters
           if v == nil
             next
           end
+          if v.kind_of?(Symbol)
+            v = v.to_s
+          end
           if v.kind_of?(Array)
             v = handle_args(v)
           elsif !v.kind_of?(TrueClass) && !v.kind_of?(FalseClass) && v == v.to_i
@@ -172,6 +175,8 @@ module JennCad::Exporters
         prim('circle', part)
       when JennCad::Primitives::Square
         prim('square', part)
+      when JennCad::Primitives::Text
+        prim('text', part)
       when JennCad::Primitives::LinearExtrude
         new_obj(part, :linear_extrude, part.openscad_params, parse(part.parts))
       when JennCad::Primitives::RotateExtrude

@@ -16,6 +16,7 @@ require "jenncad/primitives/intersection_object"
 require "jenncad/primitives/projection"
 require "jenncad/primitives/linear_extrude"
 require "jenncad/primitives/rotate_extrude"
+require "jenncad/primitives/text"
 
 module JennCad
   include Primitives
