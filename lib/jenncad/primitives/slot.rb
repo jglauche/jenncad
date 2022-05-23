@@ -65,6 +65,11 @@ module JennCad::Primitives
       if ty
         @len_y = ty - @d
       end
+      if @opts[:z] && opts[:z].to_d > 0
+        @dimensions = [:x, :y, :z]
+      else
+        @dimensions = [:x, :y]
+      end
 
       set_anchors
     end
