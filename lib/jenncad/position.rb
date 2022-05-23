@@ -23,11 +23,25 @@ module JennCad
       false
     end
 
+    def to_a
+      if @z != 0.0
+        [@pos[:x], @pos[:y], @pos[:z]]
+      else
+        [@pos[:x], @pos[:y]]
+      end
+    end
+
     def to_h
       @pos.clone.delete_if{|k,v| v.to_d == 0.0}
     end
 
     def add(args)
+      if args.kind_of? Point
+        @x += args.x
+        @y += args.y
+        @z += args.z
+        return self
+      end
       args.each do |k, val|
         if [:chain, :debug].include? k
           next

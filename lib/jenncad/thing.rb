@@ -9,6 +9,7 @@ module JennCad
     attr_accessor :angle, :fn
     attr_accessor :anchors
     attr_accessor :parent
+    attr_accessor :pos
 
     def initialize(args={})
       init(args)
@@ -20,6 +21,7 @@ module JennCad
       @calc_x = 0
       @calc_y = 0
       @calc_z = 0
+      @pos = Point.new
       @calc_h = args[:z] || 0
       @anchors = {}
       @parent = args[:parent] || nil
@@ -341,26 +343,28 @@ module JennCad
       if point.zero?
         return self
       end
-      args = point.to_h # TODO: Move shoud use point class
+      args = point.to_h
 
       @transformations ||= []
       if args[:prepend]
-        @transformations.prepend(Move.new(args))
+        @transformations.prepend(Move.new(pos: point))
       else
         lt = @transformations.last
 
-
         if lt && lt.class == Move && chain == false
           $log.debug "#{self} at move: Adding to previous move #{lt.inspect} , args: #{args}" if self.debug?
+          lt.pos.add(point) # TODO: figure out why this doesn't work on export
           lt.x += args[:x].to_d
           lt.y += args[:y].to_d
           lt.z += args[:z].to_d
         else
           $log.debug "#{self} at move: Adding move of #{args} to transformations" if self.debug?
-          @transformations << Move.new(args)
+          @transformations << Move.new(pos: point)
         end
       end
-      # TODO: migrate to point here
+      @pos ||= Point.new
+      @pos.add(point)
+      # NOTE: this needs more migration so everythign runs over point
       @calc_x += args[:x].to_d
       @calc_y += args[:y].to_d
       @calc_z += args[:z].to_d
