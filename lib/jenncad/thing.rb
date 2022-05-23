@@ -263,6 +263,7 @@ module JennCad
       self.move(x:-x,y:-y,z:-z).rotate(args).move(x:x,y:y,z:z)
     end
 
+    # Deprecated, moved to Point
     def parse_xyz_shortcuts(args)
       unless args.kind_of? Hash
         $log.warn "parse_xyz_shortcuts called for type #{args.class} #{args.inspect}"
@@ -328,11 +329,19 @@ module JennCad
         x,y,z = args
         return move(x:x, y:y, z:z)
       end
-      args = parse_xyz_shortcuts(args)
 
-      if args[:x].to_d == 0.0 && args[:y].to_d == 0.0 && args[:z].to_d == 0.0
+      chain = if args[:chain]
+        args[:chain]
+      else
+        $jenncad_profile.chain_moves
+      end
+
+      point = Point.new(args)
+
+      if point.zero?
         return self
       end
+      args = point.to_h # TODO: Move shoud use point class
 
       @transformations ||= []
       if args[:prepend]
@@ -340,11 +349,6 @@ module JennCad
       else
         lt = @transformations.last
 
-        chain = if args[:chain]
-          args[:chain]
-        else
-          $jenncad_profile.chain_moves
-        end
 
         if lt && lt.class == Move && chain == false
           $log.debug "#{self} at move: Adding to previous move #{lt.inspect} , args: #{args}" if self.debug?
@@ -356,6 +360,7 @@ module JennCad
           @transformations << Move.new(args)
         end
       end
+      # TODO: migrate to point here
       @calc_x += args[:x].to_d
       @calc_y += args[:y].to_d
       @calc_z += args[:z].to_d
@@ -443,11 +448,13 @@ module JennCad
         x,y,z = args
         args = {x: x, y: y, z: z}
       end
-      [:x, :y, :z, :xy, :xyz, :xz, :yz].each do |key|
-        args[key] = args[key] / 2.0 unless args[key] == nil
+      to = {}
+      args.each do |key, val|
+        to[key] = val.to_d / 2.0 if val.kind_of? Numeric
       end
+      to[:chain] = args[:chain]
 
-      move(args)
+      move(to)
     end
     alias :mh :moveh
 
@@ -465,11 +472,9 @@ module JennCad
 
     def movei(args={})
       to = {}
-      [:x, :y, :z, :xy, :xz, :yz, :xyz].each do |key|
-        if args[key]
-          to[key] = args[key]*-1
-        end
-      end
+      args.each do |key, val|
+        to[key] = val.to_d * -1 if val.kind_of? Numeric
+       end
       to[:chain] = args[:chain]
       move(to)
     end

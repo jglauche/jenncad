@@ -73,7 +73,7 @@ module JennCad::Primitives
         circle(d: d).move(x: 0, y: @y - d),
         circle(d: d).move(x: @x - d, y: @y - d),
       )
-      res = res.move(xy: d/2.0)
+      res = res.move(xyh: d)
 
       @opts[:flat_edges].each do |edge|
         res += apply_flat_edge(edge)

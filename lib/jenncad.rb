@@ -18,6 +18,7 @@ JennCad::ProfileLoader.new
 
 
 require "jenncad/patches/array"
+require "jenncad/position"
 require "jenncad/thing"
 require "jenncad/part"
 require "jenncad/project"
