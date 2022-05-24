@@ -403,7 +403,10 @@ module JennCad
           an = {} # this will move by 0,0 and still display the block
         end
         part.movei(an)
-        part = block.yield.move(an)
+        bl = block.yield
+        unless bl == nil
+          part = bl.move(an)
+        end
       end
       part
     end
