@@ -1,4 +1,41 @@
 module JennCad
+  class Size
+    attr_accessor :size
+    def initialize(args={})
+      @size = {
+        x: args[:x].to_d,
+        y: args[:y].to_d,
+        z: args[:z].to_d,
+        d: args[:d].to_d,
+      }
+    end
+
+    def add(other)
+      @size[:x] = [@size[:x], other.x].max
+      @size[:y] = [@size[:y], other.y].max
+      @size[:z] = [@size[:z], other.z].max
+      @size[:d] = [@size[:d], other.d].max
+      self
+    end
+
+    def x
+      @size[:x]
+    end
+
+    def y
+      @size[:y]
+    end
+
+    def z
+      @size[:z]
+    end
+
+    def d
+      @size[:d]
+    end
+
+  end
+
   class Point
     attr_accessor :pos
     def initialize(args={})

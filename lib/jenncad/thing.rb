@@ -9,13 +9,15 @@ module JennCad
     attr_accessor :angle, :fn
     attr_accessor :anchors
     attr_accessor :parent
-    attr_accessor :pos
+    attr_accessor :pos, :csize
+    attr_accessor :sits_on
 
     def initialize(args={})
       init(args)
     end
 
     def init(args={})
+      @csize = Size.new()
       @transformations = []
       # calculated origin; only works for move atm
       @calc_x = 0
@@ -211,36 +213,42 @@ module JennCad
       rt(z:v)
     end
 
-    def flip(direction)
-      case self
-      when UnionObject
-        ref = self.parts.first
-        rz = self.z.to_d + self.calc_h.to_d
-      when BooleanObject
-        ref = self.parts.first
-        rz = ref.calc_z + ref.calc_h
+    def flipc(dir, args={})
+      flip(dir, args.merge(rel: true, center: true))
+    end
+
+    def flip(dir, args={})
+      @sits_on ||= :bottom
+
+      ro = flip_rotation(dir)
+      flip_rotation(@sits_on).each do |key, val|
+        ro[key] ||= 0
+        ro[key] -= val
+      end
+      self.moveai(:center).rotate(ro)
+      @opts ||= {}
+
+      if args[:center]
+        @opts[:center_z] = true
+        set_anchors_z if self.respond_to? :set_anchors_z
       else
-        ref = self
-        rz = self.z + self.calc_h
+        # FIXME: there's a problem if you call this directly to a cube, it causes some weird issue with to_openscad move
+
+        # TODO: fix anchors
+        case flip_axis(dir)
+          when :x
+            self.move(zh: @csize.x)
+          when :y
+            self.move(zh: @csize.y)
+          when :z
+            self.move(zh: @csize.z)
+        end
+        @opts[:center_z] = false
       end
+      @sits_on = dir
 
-      case direction
-      when :x
-        self.ry(90).mh(x: -rz, z: ref.x)
-      when :y
-        self.rx(90).mh(y: rz, z: ref.y)
-      end
+      self
     end
-
-    def flip_x
-      flip(:x)
-    end
-    alias :fx :flip_x
-
-    def flip_y
-      flip(:y)
-    end
-    alias :fy :flip_y
 
     def radians(a)
       a.to_d/180.0*PI
@@ -396,6 +404,7 @@ module JennCad
         if key.kind_of? Hash
           an = key
         else
+          thing ||= self
           an = anchor(key, thing, args)
         end
         unless an

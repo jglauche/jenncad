@@ -1,5 +1,7 @@
 module JennCad::Primitives
+  include ZIsh
   attr_accessor :center_bool, :convexity, :twist, :slices
+
   class LinearExtrude < JennCad::Thing
     def initialize(part, args={})
       @transformations = []
@@ -15,10 +17,16 @@ module JennCad::Primitives
       @slices = args[:slices]
       @fn = args[:fn]
       @opts = {
+        center_z: false,
         margins: {
           z: 0,
         }
       }.deep_merge(args)
+      set_anchors_z
+
+      @x = part.x
+      @y = part.y
+      @csize = Size.new(z: @z).add(part.csize)
     end
 
     def height

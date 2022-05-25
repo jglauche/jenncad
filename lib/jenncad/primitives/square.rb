@@ -28,6 +28,8 @@ module JennCad::Primitives
       @x = args[:x]
       @y = args[:y]
       @dimensions = [:x, :y]
+      @sits_on = :bottom
+      @size = Size.new(x: @opts[:x], y: @opts[:y])
     end
 
 
@@ -162,8 +164,6 @@ module JennCad::Primitives
     end
     alias :center_y :cy
 
-
-
     def centered_axis
       return [:x, :y] if @opts[:center]
       a = []
@@ -176,8 +176,6 @@ module JennCad::Primitives
     def to_openscad
       self.mh(centered_axis.to_h{|a| [a, -@opts[a]] }) # center cube
     end
-
-
 
   end
 end

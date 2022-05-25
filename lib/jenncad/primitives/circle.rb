@@ -38,6 +38,7 @@ module JennCad::Primitives
       handle_radius_diameter
       handle_fn
       set_anchors_2d
+      @csize = Size.new(d: @opts[:d])
     end
 
     def openscad_params

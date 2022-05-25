@@ -1,6 +1,7 @@
 module JennCad::Primitives
   class Cube < Square
     extend JennCad::Features::Cuttable
+    include ZIsh
 
     def initialize(args)
       @opts = {
@@ -26,27 +27,19 @@ module JennCad::Primitives
       end
       init
 
-
       handle_margins
       @h = @z.dup
       @calc_h = @z.dup
 
       @dimensions = [:x, :y, :z]
+      @csize = Size.new(x: @opts[:x], y: @opts[:y], z: @opts[:z])
 
       set_anchors
     end
 
     def set_anchors
       set_anchors_2d
-      if @opts[:center_z]
-        set_anchor :bottom_face, z: -@z/2.0
-        set_anchor :top_face, z: @z/2.0
-      else
-        set_anchor :bottom_face, z: 0
-        set_anchor :top_face, z: @z
-      end
-
-
+      set_anchors_z
     end
 
     # used for openscad export
@@ -54,13 +47,6 @@ module JennCad::Primitives
       [@x, @y, z+z_margin]
     end
 
-    def cz
-      nc
-      @opts[:center_z] = true
-      set_anchors
-      self
-    end
-    alias :center_z :cz
 
   end
 end

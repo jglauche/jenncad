@@ -17,6 +17,7 @@ module JennCad::Primitives
       end
 
       @parent = @parts.first.parent
+      @csize = @parts.first.csize
 
       after_add
     end

@@ -43,6 +43,7 @@ module JennCad::Primitives
       handle_fn
       @dimensions = [:x, :y, :z]
       set_anchors
+      @csize = Size.new(d: @opts[:d], z: @z)
     end
 
     def set_anchors
