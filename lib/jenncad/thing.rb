@@ -51,6 +51,11 @@ module JennCad
       self
     end
 
+    def dbg
+      set_flag(:debug)
+      self
+    end
+
     def cut_to(face, part=nil, args={})
       an = anchor(face, part)
       unless an
@@ -469,6 +474,8 @@ module JennCad
         to[key] = val.to_d / 2.0 if val.kind_of? Numeric
       end
       to[:chain] = args[:chain]
+      to[:prepend] = args[:prepend]
+
 
       move(to)
     end

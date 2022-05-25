@@ -13,7 +13,7 @@ module JennCad::Primitives
       end
 
       if parts.first && parts.first.respond_to?(:debug?) && parts.first.debug?
-        $log.debug("Creating new #{self.class} for part #{parts}")
+        $log.debug("Creating new #{self.class} for part #{parts.pretty_inspect}")
       end
 
       @parent = @parts.first.parent

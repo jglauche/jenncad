@@ -139,8 +139,6 @@ module JennCad::Primitives
       self
     end
 
-
-
     def not_centered
       @opts[:center] = false
       set_anchors

@@ -1,3 +1,4 @@
+require "pp"
 require "logger"
 $log = Logger.new(STDOUT)
 
