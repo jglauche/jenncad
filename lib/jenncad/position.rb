@@ -5,17 +5,34 @@ module JennCad
       @size = {
         x: args[:x].to_d,
         y: args[:y].to_d,
-        z: args[:z].to_d,
+        z: (args[:z] || args[:h]).to_d,
         d: args[:d].to_d,
       }
     end
 
     def add(other)
+      return self if other.nil?
+      @size[:x] += other.x
+      @size[:y] += other.y
+      @size[:z] += other.z
+      @size[:d] += other.d
+      self
+    end
+
+    def union(other)
       @size[:x] = [@size[:x], other.x].max
       @size[:y] = [@size[:y], other.y].max
       @size[:z] = [@size[:z], other.z].max
       @size[:d] = [@size[:d], other.d].max
       self
+    end
+
+    def to_point
+      Point.new(x: @size[:x], y: @size[:y], z: @size[:z])
+    end
+
+    def set(a, to)
+      @size[a] = to
     end
 
     def x
@@ -74,11 +91,12 @@ module JennCad
 
     def add(args)
       if args.kind_of? Point
-        @x += args.x
-        @y += args.y
-        @z += args.z
+        @pos[:x] += args.x
+        @pos[:y] += args.y
+        @pos[:z] += args.z
         return self
       end
+
       args.each do |k, val|
         if [:chain, :debug].include? k
           next
@@ -113,7 +131,7 @@ module JennCad
           @pos[a.to_sym] += val.to_d * multi.to_d
         end
       end
-
+      self
     end
   end
 

@@ -16,8 +16,10 @@ module JennCad::Primitives
         $log.debug("Creating new #{self.class} for part #{parts.pretty_inspect}")
       end
 
-      @parent = @parts.first.parent
-      @csize = @parts.first.csize
+
+      @parent = @parts.first.parent if @parts.first
+      @csize = @parts.first.csize if @parts.first
+      @csize ||= Size.new
 
       after_add
     end

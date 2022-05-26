@@ -5,7 +5,6 @@ module JennCad::Primitives
 
       blacklist = [SubtractObject, IntersectionObject]
 
-      # @size = Size.new(@parts.first.x, @parts.first.y, @parts.first.z)
       @parts[1..-1].each do |part|
         blacklist.each do |b|
           if part.kind_of? b
@@ -13,6 +12,7 @@ module JennCad::Primitives
           end
         end
         @csize = part.csize
+#        @csize.union(part.csize.clone) if part.csize
       end
 
     end

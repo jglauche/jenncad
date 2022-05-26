@@ -9,8 +9,9 @@ module JennCad::Primitives
       if args.kind_of? Numeric
         args = {h: args}
       end
-
       @z = args[:h] || args[:height] || args[:z]
+      @csize = Size.new(z: @z).add(part.csize)
+
       @center_bool = args[:center]
       @convexity = args[:convexity]
       @twist = args[:twist]
@@ -26,11 +27,10 @@ module JennCad::Primitives
 
       @x = part.x
       @y = part.y
-      @csize = Size.new(z: @z).add(part.csize)
     end
 
     def height
-      @z.to_d + @opts[:margins][:z].to_d
+      @z.to_d + z_margin
     end
 
     def openscad_params

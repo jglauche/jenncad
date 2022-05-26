@@ -369,16 +369,19 @@ module JennCad
 
       @transformations ||= []
       if pre
-        @transformations.prepend(Move.new(pos: point))
+        lt = @transformations.first
+        if lt && lt.class == Move && chain == false
+          $log.debug "#{self} at move(prepend): Adding to first move #{lt.inspect} , args: #{args}" if self.debug?
+          lt.pos.add(point)
+        else
+          @transformations.prepend(Move.new(pos: point))
+        end
       else
         lt = @transformations.last
 
         if lt && lt.class == Move && chain == false
           $log.debug "#{self} at move: Adding to previous move #{lt.inspect} , args: #{args}" if self.debug?
           lt.pos.add(point) # TODO: figure out why this doesn't work on export
-          lt.x += args[:x].to_d
-          lt.y += args[:y].to_d
-          lt.z += args[:z].to_d
         else
           $log.debug "#{self} at move: Adding move of #{args} to transformations" if self.debug?
           @transformations << Move.new(pos: point)

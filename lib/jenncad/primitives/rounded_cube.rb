@@ -44,6 +44,8 @@ module JennCad::Primitives
         feed_opts(parse_xyz_shortcuts(args))
       end
       init(args)
+      @d = opts[:d]
+      @csize = Size.new(x: @opts[:x], y: @opts[:y], z: @opts[:z])
 
       handle_margins
       handle_diameter
@@ -52,6 +54,7 @@ module JennCad::Primitives
       else
         @dimensions = [:x, :y]
       end
+
       set_anchors
     end
 
@@ -59,19 +62,19 @@ module JennCad::Primitives
       # FIXME: this check needs to be done on object creation
       #        otherwise it fails to position it
       if @d == 0
-        if @z.to_d > 0
+        if @csize.z.to_d > 0
           return cube(@opts)
         else
           return square(@opts)
         end
       end
       # make diameter not bigger than any side
-      d = [@d, @x, @y].min
+      d = [@d, @csize.x, @csize.y].min
       res = HullObject.new(
         circle(d: d),
-        circle(d: d).move(x: @x - d, y: 0),
-        circle(d: d).move(x: 0, y: @y - d),
-        circle(d: d).move(x: @x - d, y: @y - d),
+        circle(d: d).move(x: @csize.x - d, y: 0),
+        circle(d: d).move(x: 0, y: @csize.y - d),
+        circle(d: d).move(x: @csize.x - d, y: @csize.y - d),
       )
       res = res.move(xyh: d)
 
@@ -79,8 +82,8 @@ module JennCad::Primitives
         res += apply_flat_edge(edge)
       end
 
-      if @z.to_d > 0
-        res = res.extrude(z: @z + z_margin)
+      if @csize.z.to_d > 0
+        res = res.extrude(z: @csize.z + z_margin)
       end
 
       res = union(res) # put everything we have in a parent union that we can apply the transformations of this object of
@@ -103,13 +106,13 @@ module JennCad::Primitives
     def apply_flat_edge(edge)
       case edge
       when :up, :top
-        square(x: @x, y: @y/2.0).nc.moveh(y:@y)
+        square(x: @csize.x, y: @csize.y/2.0).nc.moveh(y:@csize.y)
       when :down, :bottom
-        square(x: @x, y: @y/2.0).nc
+        square(x: @csize.x, y: @csize.y/2.0).nc
       when :right
-        square(x: @x/2.0, y: @y).nc.moveh(x:@x)
+        square(x: @csize.x/2.0, y: @csize.y).nc.moveh(x:@csize.x)
       when :left
-        square(x: @x/2.0, y: @y).nc
+        square(x: @csize.x/2.0, y: @csize.y).nc
       else
         nil
       end
