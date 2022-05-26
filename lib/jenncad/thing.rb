@@ -230,16 +230,24 @@ module JennCad
         ro[key] ||= 0
         ro[key] -= val
       end
-      self.moveai(:center).rotate(ro)
+      unless ro == {}
+        self.moveai(:center).rotate(ro)
+      end
+
       @opts ||= {}
 
       if args[:center]
+        if ro == {} # if we didn't move earlier, let's move it now
+          self.moveai(:center)
+        end
         @opts[:center_z] = true
         set_anchors_z if self.respond_to? :set_anchors_z
       else
-        # FIXME: there's a problem if you call this directly to a cube, it causes some weird issue with to_openscad move
-
         # TODO: fix anchors
+        if debug?
+          $log.info "flip_axis(#{dir}): #{flip_axis(dir)} csize: #{@csize.size}"
+        end
+
         case flip_axis(dir)
           when :x
             self.move(zh: @csize.x)
@@ -356,10 +364,11 @@ module JennCad
       if point.zero?
         return self
       end
+      pre = args[:prepend]
       args = point.to_h
 
       @transformations ||= []
-      if args[:prepend]
+      if pre
         @transformations.prepend(Move.new(pos: point))
       else
         lt = @transformations.last
@@ -475,7 +484,6 @@ module JennCad
       end
       to[:chain] = args[:chain]
       to[:prepend] = args[:prepend]
-
 
       move(to)
     end

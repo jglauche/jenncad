@@ -29,7 +29,7 @@ module JennCad::Primitives
       @y = args[:y]
       @dimensions = [:x, :y]
       @sits_on = :bottom
-      @size = Size.new(x: @opts[:x], y: @opts[:y])
+      @csize = Size.new(x: @opts[:x], y: @opts[:y])
     end
 
 
@@ -172,7 +172,7 @@ module JennCad::Primitives
     end
 
     def to_openscad
-      self.mh(centered_axis.to_h{|a| [a, -@opts[a]] }) # center cube
+      self.mh(centered_axis.to_h{|a| [a, -@opts[a]] }.merge(prepend: true)) # center cube
     end
 
   end
