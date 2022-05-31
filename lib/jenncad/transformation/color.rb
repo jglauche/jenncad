@@ -7,6 +7,8 @@ module JennCad
 
     def self.parse(a)
       case a
+      when String, Symbol
+        check_color_strings(a)
       when Array
         check_color_array(a)
       else
@@ -20,6 +22,29 @@ module JennCad
       else
         a
       end
+    end
+
+    def self.check_color_strings(a)
+      case ret = check_color_hash($jenncad_profile.custom_colors, a)
+        when String, Symbol
+          check_color_hash(jenncad_colors, a)
+        else
+          ret
+      end
+    end
+
+    def self.check_color_hash(x, a)
+      if x[a]
+        x[a]
+      else
+        a
+      end
+    end
+
+    def self.jenncad_colors
+      {
+        glass: [250, 250, 250, 115],
+      }
     end
 
     def self.random

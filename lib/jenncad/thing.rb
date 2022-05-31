@@ -686,16 +686,12 @@ module JennCad
         set_option :no_auto_color, true
       when :random
         return Color.random
-      when Array
+      when Array, String, Symbol
         return Color.parse(args)
       when /(?<=#)(?<!^)(\h{6}|\h{3})/
         return args
       when /(?<!^)(\h{6}|\h{3})/
         return "##{args}"
-      when String
-        return args
-      when Symbol
-        return args.to_s
       end
       nil
     end

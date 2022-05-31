@@ -36,6 +36,14 @@ module JennCad
       @colors
     end
 
+    # add your custom colors here, in RGBA format
+    def custom_colors
+      {
+        # example:
+        # myblue: [0, 0, 255, 255],
+      }
+    end
+
     # called by the command line interface when receiving normal exit status
     def on_success(file)
       system("echo $'\033]30;#{file}: ok\007'")
