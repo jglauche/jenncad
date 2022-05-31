@@ -72,6 +72,12 @@ CLI
 - user profile file should be auto generated with examples
 
 
+Syntax improvements
+------------------
+- #at doesn't work without a reference part. If you omit it, self would be the reference and you may get an unintuitive error. May need to change how it works in that case
+
+
+
 
 
 Future plans
