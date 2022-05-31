@@ -8,9 +8,12 @@
 
 - needs a documentation and showcase
 
-Features wanted
+Features needed
 ===================
-28.4.22:
+
+Hardware subsystem
+------------------
+- Hardware system needs a big overhaul as it's basically just imported from CrystalScad and has the old quirkiness
 
 - instead of moving Bolts output, make it the default to make their positions an anchor
 
@@ -24,21 +27,51 @@ Features wanted
 	 - but also, when you have a part that can be mounted in any top/bottom direction, 	you always end up having the bolts facing the wrong direction..
 - Bolts should be able to also make thread inserts
 
-8.5.22:
-- need an easy way to switch between faces on an object to work efficiently in a 2.5D way
-	i.e. I worked on a part stacking a few things, added a cube along and now wanted to use inner_anchors for the y face for screws. it was easier to make anchors manually for the prototype
+- Bolts / Nuts by default should be able to use as mixin, i.e.
+  cylinder(Nut::M3)
+	slot(Nut::M5, x: 10)
+
+	possbibly M* like
+  cylinder(M4)
+  or
+  cylinder(M4, h: 25)
+
+	Possibly via symbols
+	cylinder(:m4, h: 30)
+	cylinder(:m4, :nut)
+
+	slot(:m5, :nut, x: 10)
 
 
+General Features
+------------------
+- define a material
+- split up Thing into multiple files for different features
 
 
+2D subsystem
+------------------
+- get slice of circle (input angle, output angle)
+
+3D subsystem
+------------------
+- position and Z inheritance system needs a complete overhaul, migrate to calculated values
+- [ideas needed ] #at doesn't work well if you need to mirror a part
+- anchors need to be able to do flipping, possibly rotation
+- BUG: flip doesn't work on print, figure out why
+- flip feature kinda keeps track of what's happening, but doesn't act on it yet. Options are now to implement all possible orientations, or it must apply the tranformations in the calculated size
 
 
-other awful things
-===================
-
-- cli needs to use templates and user defined templates, profile loader needs to have this.
-
+CLI
+------------------
+- skip stl build for part
+- make it definable to have more exports than part/print from one class
+- multithreading STL building
+- user profile generator via CLI
+- new project files must use a template system that checks user profiles first
 - user profile file should be auto generated with examples
+
+
 
 
 Future plans
