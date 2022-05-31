@@ -7,8 +7,11 @@ module JennCad
 
     def self.parse(a)
       case a
-      when String, Symbol
-        check_color_strings(a)
+        when String, Symbol
+          a = check_color_strings(a)
+      end
+
+      case a
       when Array
         check_color_array(a)
       else
