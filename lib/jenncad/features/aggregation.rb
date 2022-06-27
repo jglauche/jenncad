@@ -10,6 +10,7 @@ module JennCad::Features
     end
 
     def z
+      return 0 unless part
       part.z
     end
 

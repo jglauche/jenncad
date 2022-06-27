@@ -615,6 +615,7 @@ module JennCad
       end
 
       parts.each do |part|
+        next if part == nil
         #puts "  " * lvl + "[only_color?] #{part}"
         if part.has_explicit_color?
           #puts "  " * lvl + "found explicit color here: #{part.color}"
@@ -753,6 +754,7 @@ module JennCad
       end
 
       parts.each do |part|
+        next if part == nil
         if part.option(:auto_extrude)
           part.z = parent.calculated_h
         end

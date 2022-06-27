@@ -48,9 +48,10 @@ module JennCad
   alias :rsq :rounded_cube
 
   # import/use OpenScad library
-  def import(import,name,args)
+  def import(import,name,args={})
     OpenScadImport.new(import, name, args)
   end
+  alias :use :import
 
   def stl(file, args={})
     StlImport.new(file, args).set_parent(self)

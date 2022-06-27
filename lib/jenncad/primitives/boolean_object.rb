@@ -75,6 +75,7 @@ module JennCad::Primitives
       return if @parts.first == nil
       #return if @parts.first.z.to_d == 0.0
       get_primitives(@parts[1..-1]).flatten.each do |part|
+        next if part == nil
         if part.z.to_d == 0.0
           part.set_option :zref, @parts.first
         end

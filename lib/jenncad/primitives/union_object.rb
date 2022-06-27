@@ -3,7 +3,7 @@ module JennCad::Primitives
     def initialize(*parts)
       super(*parts)
 
-      blacklist = [SubtractObject, IntersectionObject]
+      blacklist = [SubtractObject, IntersectionObject, OpenScadImport]
 
       @parts[1..-1].each do |part|
         blacklist.each do |b|
