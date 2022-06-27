@@ -12,6 +12,16 @@ module JennCad
   class Part < Thing
     attr_accessor :d
 
+    def method_missing(method_name, *args)
+      if self.instance_variable_defined?("@#{method_name}")
+        self.class.__send__(:attr_accessor, method_name)
+        return self.send("#{method_name}")
+      end
+      puts "could not find #{method_name} in #{self} with args: #{args.inspect}"
+
+      raise NoMethodError
+    end
+
     def self.inherited(subclass)
       subclass.prepend(AutoName) if subclass.superclass == Part
     end
