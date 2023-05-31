@@ -12,7 +12,7 @@ module JennCad
       end
 
       def check_executable(file)
-        return true if File.exists?(file)
+        return true if File.exist?(file)
         # this is not too smart at the moment
         puts "cannot find executable #{file}"
         nil
@@ -110,7 +110,7 @@ module JennCad
         dir = Dir.pwd.split("/").last
         executable = underscore(dir)+".rb"
         executable_class = camelize(dir)
-        unless File.exists?(executable)
+        unless File.exist?(executable)
           puts "Could not find #{executable}. Are you in a JennCad project directory?"
           exit
         end
