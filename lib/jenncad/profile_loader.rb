@@ -13,7 +13,7 @@ module JennCad
     end
 
     def load_profile
-      if File.exists?(profile_path)
+      if File.exist?(profile_path)
         require profile_path
         check_profile
       else
