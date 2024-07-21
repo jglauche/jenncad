@@ -17,6 +17,9 @@ module JennCad
         self.class.__send__(:attr_accessor, method_name)
         return self.send("#{method_name}")
       end
+      if method_name == "to_ary"
+        return [self]
+      end
       puts "could not find #{method_name} in #{self} with args: #{args.inspect}"
 
       raise NoMethodError

@@ -116,7 +116,7 @@ module JennCad
     end
 
     def fixate
-      Marshal.load(Marshal.dump(self))
+      self.full_clone
     end
     alias :fix :fixate
 

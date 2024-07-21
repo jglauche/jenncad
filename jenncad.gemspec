@@ -26,4 +26,5 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "activesupport"
   gem.add_runtime_dependency "observr"
   gem.add_runtime_dependency "logger"
+  gem.add_runtime_dependency "full_clone"
 end

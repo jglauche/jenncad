@@ -8,6 +8,7 @@ require "deep_merge"
 require "fileutils"
 require "observr"
 require "active_support"
+require "full_clone"
 
 include Math
 include Geo3d
