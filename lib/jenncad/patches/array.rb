@@ -41,9 +41,12 @@ class Array
   end
   alias h hull
 
-
   def random
     self[Random.rand(size)]
+  end
+
+  def debug?
+    false
   end
 
 end
